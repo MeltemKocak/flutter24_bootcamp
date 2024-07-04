@@ -3,6 +3,7 @@
 
 # Product Name
 
+---
 ## Team Members 
 
 | Name   |Title  |
@@ -32,6 +33,7 @@
 
 </details>
 
+
 ---
 <details>
   <summary><h1>Sprint 1</h1></summary>
@@ -41,24 +43,28 @@
    
   </details>
 
+---
   <details>
     <summary><h2>App Map</h2></summary>
 
    
   </details>
 
+---
   <details>
     <summary><h2>Project Management</h2></summary>
 
    
   </details>
 
+---
   <details>
     <summary><h2>Burndown Chart</h2></summary>
 
     
   </details>
 
+---
 
 
 - **Sprint Notes:**
@@ -80,6 +86,8 @@
 
 - **Sprint Retrospective:**
 
+---
+
 
 
 
@@ -89,3 +97,20 @@
 
 </details>
 
+
+---
+<details>
+  <summary><h1>Sprint 2</h1></summary>
+
+
+</details>
+
+---
+
+<details>
+  <summary><h1>Sprint 3</h1></summary>
+
+
+</details>
+
+---
