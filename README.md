@@ -48,7 +48,7 @@ Sonuç olarak, zamanı doğru yönetmek, yaşamın her alanında başarıya ula�
 - **Daily Work and Completed Tasks:** Users can see their work for that day, their long-term goals, and whether they have completed them or not in the categorization. This makes daily task management and tracking easier.
 - **Weekly Calendar:** The weekly calendar at the top makes it easy for users to switch between different days.
 
-### 2. Goals Page:
+### 2. Goals Page
 - **Grid View:** All goals are presented in a view where users can easily see their progress.
 - **Goal Details:** By clicking on the goal, the details, start date, completion status and statistics of the goal can be accessed.
 - **Adding and Removing Targets:** New targets can be added or existing targets can be archived.
@@ -59,15 +59,15 @@ Sonuç olarak, zamanı doğru yönetmek, yaşamın her alanında başarıya ula�
     * **Progress Graphs:** Users can see their own and their friends' progress graphically. These graphics increase users' motivation.
     * **Goal Details:** Details and progress of the goals set with friends can be viewed on the challenge page. This page also includes buttons for adding and editing goals.
 
-### 3. Diary:
+### 3. Diary
 - **Daily Notes:** Users can keep a diary and record notes in chronological order. A separate note can be entered for each day.
 - **Adding Images and Text:** In addition to adding text to diary notes, images can also be added. This makes notes richer and more meaningful.
 
-### 4. Profile Page:
+### 4. Profile Page
 - **All Goals and Archive:** All goals and archived data of users are displayed on this page. Users can easily access their past goals and completed tasks.
 - **Detailed Progress Analysis:** Users' personal progress is analyzed graphically and statistically. These analyzes help users better understand their progress.
 
-### 5. Settings:
+### 5. Settings
 - **Profile Settings:**
   * **Edit Profile:** Allows users to update their personal information such as name, email, and profile picture.
   * **Account Information:** Provides detailed account information including membership status and account creation date.
@@ -88,7 +88,7 @@ Sonuç olarak, zamanı doğru yönetmek, yaşamın her alanında başarıya ula�
 - **Günlük İşler ve Tamamlanan Görevler:** Kullanıcılar, o güne ait işlerini, uzun vadede devam ettiği hedeflerini, bunları tamamlayıp tamamlamadıkları kategorizasyonu içinde görebilirler. Bu, günlük görev yönetimini ve takibini kolaylaştırır.
 - **Haftalık Takvim:** Üst kısımda yer alan haftalık takvim, kullanıcıların farklı günler arasında geçişini kolaylaştır.
 
-### 2. Hedefler Sayfası:
+### 2. Hedefler Sayfası
 - **Izgara Görünüm:** Tüm hedefler, kullanıcıların ilerlemesini kolayca görebileceği bir görünümde sunulur.
 - **Hedef Detayları:** Hedefe tıklanıldığında, hedefin detaylarına, başlangıç tarihine, tamamlanma durumuna ve istatistiklerine ulaşılabilir.
 - **Hedef Ekleme ve Çıkarma:** Yeni hedefler eklenebilir veya var olan hedefler arşivlenebilir.
@@ -99,15 +99,15 @@ Sonuç olarak, zamanı doğru yönetmek, yaşamın her alanında başarıya ula�
     * **İlerleme Grafikleri:** Kullanıcılar, kendi ve arkadaşlarının ilerlemelerini grafiksel olarak görebilirler. Bu grafikler, kullanıcıların motivasyonlarını artırır.
     * **Hedef Detayları:** Arkadaşlarla belirlenen hedeflerin detayları ve ilerlemeleri, challenge sayfasında görüntülenebilir. Bu sayfada ayrıca hedef ekleme ve düzenleme butonları bulunur.
  
-### 3. Günlük:
+### 3. Günlük
 - **Günlük:** Kullanıcılar, tarih sırasına göre günlük tutabilir, not kaydedebilirler. Her gün için ayrı bir not girişi yapılabilir.
 - **Görsel ve Metin Ekleme:** Günlük notlarına metin eklemenin yanı sıra, görseller de eklenebilir. Bu, notların daha zengin ve anlamlı olmasını sağlar.
 
-### 4. Profil Sayfası:
+### 4. Profil Sayfası
 - **Tüm Hedefler ve Arşiv:** Kullanıcıların tüm hedefleri ve arşivlenen verileri bu sayfada görüntülenir. Kullanıcılar, geçmiş hedeflerine ve tamamlanan görevlere kolayca ulaşabilirler.
 - **Detaylı İlerleme Analizi:** Kullanıcıların kişisel ilerlemeleri, grafiksel ve istatistiksel olarak analiz edilir. Bu analizler, kullanıcıların gelişimlerini daha iyi anlamalarına yardımcı olur.
 
-### 5. Ayarlar:
+### 5. Ayarlar
 - **Profil ayarları:**
   * **Profili Düzenle:** Kullanıcıların ad, e-posta adresi ve profil resmi gibi kişisel bilgilerini güncellemesine olanak tanır.
   * **Hesap Bilgileri:** Üyelik durumu ve hesap oluşturma tarihi dahil olmak üzere ayrıntılı hesap bilgileri sağlar.
