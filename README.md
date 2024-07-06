@@ -192,7 +192,7 @@ X Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş grupl
   <details>
     <summary><h2>App Map</h2></summary>
 
-![App Flowchart](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/map.png)
+![App Flowchart](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/Map.png)
    
   </details>
 
