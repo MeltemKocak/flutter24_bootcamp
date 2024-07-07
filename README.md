@@ -1,7 +1,7 @@
 # Flutter 24 Bootcamp Project
 
 
-# Product Name
+# PLANOVA
 
 ---
 ## Team Members 
@@ -19,20 +19,20 @@
   <summary><h2>Product Description</h2></summary>
 
 In today's fast-paced world, using time efficiently and managing personal time correctly is one of the most important keys to achieving both professional and personal success.
+Planova is a comprehensive mobile application that facilitates users' personal time management.
 
-X App is a comprehensive mobile application that facilitates users' personal time management.
 The application offers various features to make users' lives easier when it comes to time management. Users can set long-term goals, track these goals individually or with groups throughout the year, conduct internal analysis by keeping a diary, prioritize their tasks by creating a to-do list, and mark completed tasks. At the same time, it makes it easier for users to achieve their goals and progress with detailed analysis and artificial intelligence-supported planning features. Thanks to its minimalist design and user-friendly interface, users can easily adapt to the application.
 
-As a result, managing time correctly is the basis of achieving success in all areas of life and X Application will be your greatest assistant on this path.
+As a result, managing time correctly is the basis of achieving success in all areas of life and Planova Application will be your greatest assistant on this path.
 
   <details>
     <summary><h4>Turkish explanation</h4></summary>
 
-Günümüzün hızla akan dünyasında, zamanı verimli kullanmak ve kişisel zaman yönetimini doğru yapmak, hem profesyonel hem de kişisel başarıya ulaşmanın en önemli anahtarlarından biridir. X Uygulaması, kullanıcıların kişisel zaman yönetimini kolaylaştıran kapsamlı bir mobil uygulamadır.
+Günümüzün hızla akan dünyasında, zamanı verimli kullanmak ve kişisel zaman yönetimini doğru yapmak, hem profesyonel hem de kişisel başarıya ulaşmanın en önemli anahtarlarından biridir. Planova Uygulaması, kullanıcıların kişisel zaman yönetimini kolaylaştıran kapsamlı bir mobil uygulamadır.
 
 Uygulama, zaman yönetimi konusunda kullanıcıların hayatını kolaylaştırmak için çeşitli özellikler sunar. Kullanıcılar, uzun vadeli hedeflerini belirleyebilir, bu hedefleri bireysel veya topluluklarla birlikte yıl boyunca takip edebilir, günlük tutarak içsel analiz yapabilir, yapılacaklar listesi oluşturarak görevlerini önceliklendirebilir ve tamamlanan işleri işaretleyebilirler. Aynı zamanda, detaylı analiz ve yapay zeka destekli planlama özellikleri ile kullanıcıların hedeflerine ulaşmalarını ve ilerlemelerini kolaylaştırır. Minimalist tasarımı ve kullanıcı dostu arayüzü sayesinde, kullanıcılar uygulamaya kolayca adapte olabilirler.
 
-Sonuç olarak, zamanı doğru yönetmek, yaşamın her alanında başarıya ulaşmanın temelidir ve X Uygulaması bu yolda en büyük yardımcınız olacaktır.
+Sonuç olarak, zamanı doğru yönetmek, yaşamın her alanında başarıya ulaşmanın temelidir ve Planova Uygulaması bu yolda en büyük yardımcınız olacaktır.
     
   </details>
   
@@ -124,7 +124,7 @@ Sonuç olarak, zamanı doğru yönetmek, yaşamın her alanında başarıya ula�
 <details>
   <summary><h2>Target Audience</h2></summary>
 
-App X appeals to a wide range of users and offers features for people from different age groups and professions.
+Planova application appeals to a wide range of users and offers features for people from different age groups and professions.
 
 - **Students:**
   * **Academic Success:** Students who want to organize their study plans and academic goals.
@@ -150,7 +150,7 @@ App X appeals to a wide range of users and offers features for people from diffe
 <details>
     <summary><h4>Turkish explanation</h4></summary>
 
-X Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş gruplarından ve mesleklerden insanlara yönelik özellikler sunar.
+Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş gruplarından ve mesleklerden insanlara yönelik özellikler sunar.
 
 - **Öğrenciler:**
   * **Akademik Başarı:** Ders çalışma planlarını ve akademik hedeflerini düzenlemek isteyen öğrenciler.
@@ -183,10 +183,26 @@ X Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş grupl
 <details>
   <summary><h1>Sprint 1</h1></summary>
 
-  <details>
+<details>
     <summary><h2>App Screenshots</h2></summary>
+
+### Login Page
+![Loginpage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/App_ss/Loginpage.png)
+
+### Homepage(Today)
+![Homepage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/App_ss/Homepage.png)
+
+### Habits Page
+
+### Journal Page
+
+
+
+
+
+
    
-  </details>
+</details>
 
 ---
   <details>
