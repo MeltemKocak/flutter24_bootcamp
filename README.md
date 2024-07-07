@@ -238,6 +238,12 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
   <details>
     <summary><h2>Burndown Chart</h2></summary>
 
+![Burndown Chart](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/Burndown_chart/burndownchart_1.png)
+
+![Burndown Chart](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/Burndown_chart/Burndownchart_2.png)
+
+
+
     
   </details>
 
