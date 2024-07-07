@@ -218,7 +218,7 @@ X Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş grupl
    * It was decided to use Asana as a project management tool.
    * Daily scrum meetings were held using WhatsApp and Discord applications according to team availability.
    * It was decided to use e-mail for the login system.
-   * It was decided to make the application in dark theme.
+   * It was decided that the main theme of the application would be dark.
    * Due to global targets, it was decided to make designs and applications in English.
  
 - **Expected point completion within Sprint:**
@@ -247,6 +247,17 @@ X Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş grupl
     * Melisa Nur Alparslan, Olgun Baran Atik, Meltem Sena Koçak, Oğuzhan Gündüz, Onur Turan
 
 - **Sprint Retrospective:**
+   * In the second sprint, it was decided to install Firebase first.
+   * It was decided to finalize the application logo.
+   * It was decided that all team members would write code together in the second sprint.
+   * It was decided to conduct a free API research suitable for the application for the artificial intelligence plug-in.
+   * It was decided to add an open theme to the application.
+   * It was decided to edit the daily section UI.
+   * It was decided to improve the user profile creation and editing page.
+   * It was decided to integrate daily planner and calendar.
+   * It was decided to complete the habit creation and tracking page.
+   * It was decided to add task list and reminder features.
+   * It was decided to develop the target tracking and analysis page.
 
 <details>
     <summary><h4>Turkish explanation</h4></summary>
@@ -257,7 +268,7 @@ X Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş grupl
    * Proje yönetim aracı olarak Asana kullanılmasına karar verildi.
    * Daily scrum toplantıları whatsapp ve discord uygulamaları takım müsaitlik durumuna göre kullanılarak gerçekleştirildi.
    * Giriş sistemi için e-posta kullanılmasına karar verildi.
-   * Uygulamanın koyu temada yapılmasına karar verildi.
+   * Uygulamanın asıl temasının koyu olmasına karar verildi.
    * Globale yönelik hedefler nedeniyle İngilizce dili ile tasarımların ve uygulamanın yapılmasına karar verildi.
  
  
@@ -288,8 +299,17 @@ X Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş grupl
     * Melisa Nur Alparslan, Olgun Baran Atik, Meltem Sena Koçak, Oğuzhan Gündüz, Onur Turan
 
 - **Sprint Retrospektifi:**
-   * İkinci sprintte takımdaki tüm üyelerin kod yazmasına karar verildi.
-   * 
+   * İkinci sprintte ilk olarak Firebase kurulmasına karar verildi.
+   * Ugulama logosunun kesinleştirilmesine karar verildi.
+   * Tüm ekip üyelerinin ikinci sprintte birlikte kod yazmasına karar verildi.
+   * Yapay zeka eklentisi için uygulamaya uygun ücretsiz api araştırması yapılmasına karar verildi.
+   * Uygulamaya açık tema eklenilmesine karar verildi.
+   * Günlük kısmı UI düzenlenmesine karar verildi.
+   * Kullanıcı profili oluşturma ve düzenleme sayfasının geliştirilmesine karar verildi.
+   * Günlük planlayıcı ve takvim entegrasyonu yapılmasına karar verildi.
+   * Alışkanlık oluşturma ve takip etme sayfasının tamamlanmasına karar verildi.
+   * Görev listesi ve hatırlatıcı özelliklerinin eklenmesine karar verildi.
+   * Hedef takip ve analiz sayfasının geliştirilmesine karar verildi.
 </details>
 
 
