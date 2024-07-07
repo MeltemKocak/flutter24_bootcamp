@@ -193,6 +193,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 ![Homepage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/App_ss/Homepage.png)
 
 ### Habits Page
+![Habitpage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/App_ss/Habitpage.png)
 
 ### Journal Page
 
