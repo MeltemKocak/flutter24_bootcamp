@@ -21,7 +21,7 @@
 In today's fast-paced world, using time efficiently and managing personal time correctly is one of the most important keys to achieving both professional and personal success.
 Planova is a comprehensive mobile application that facilitates users' personal time management.
 
-The application offers various features to make users' lives easier when it comes to time management. Users can set long-term goals, track these goals individually or with groups throughout the year, conduct internal analysis by keeping a diary, prioritize their tasks by creating a to-do list, and mark completed tasks. At the same time, it makes it easier for users to achieve their goals and progress with detailed analysis and artificial intelligence-supported planning features. Thanks to its minimalist design and user-friendly interface, users can easily adapt to the application.
+The application offers various features to make users' lives easier when it comes to time management. Users can set long-term goals, track these goals individually or with groups throughout the year, conduct internal analysis by keeping a journal, prioritize their tasks by creating a to-do list, and mark completed tasks. At the same time, it makes it easier for users to achieve their goals and progress with detailed analysis and artificial intelligence-supported planning features. Thanks to its minimalist design and user-friendly interface, users can easily adapt to the application.
 
 As a result, managing time correctly is the basis of achieving success in all areas of life and Planova Application will be your greatest assistant on this path.
 
@@ -43,7 +43,7 @@ Sonuç olarak, zamanı doğru yönetmek, yaşamın her alanında başarıya ula�
   <summary><h2>Product Features</h2></summary>
 
 
-### 1. Home Page
+### 1. Today(Home)Page
 - **User-Friendly Interface:** The home page has a simple and minimalist design that allows users to easily get used to the application.
 - **Daily Work and Completed Tasks:** Users can see their work for that day, their long-term goals, and whether they have completed them or not in the categorization. This makes daily task management and tracking easier.
 - **Weekly Calendar:** The weekly calendar at the top makes it easy for users to switch between different days.
@@ -59,9 +59,9 @@ Sonuç olarak, zamanı doğru yönetmek, yaşamın her alanında başarıya ula�
     * **Progress Graphs:** Users can see their own and their friends' progress graphically. These graphics increase users' motivation.
     * **Goal Details:** Details and progress of the goals set with friends can be viewed on the challenge page. This page also includes buttons for adding and editing goals.
 
-### 3. Diary
+### 3. Journal
 - **Daily Notes:** Users can keep a diary and record notes in chronological order. A separate note can be entered for each day.
-- **Adding Images and Text:** In addition to adding text to diary notes, images can also be added. This makes notes richer and more meaningful.
+- **Adding Images and Text:** In addition to adding text to journal notes, images can also be added. This makes notes richer and more meaningful.
 
 ### 4. Profile Page
 - **All Goals and Archive:** All goals and archived data of users are displayed on this page. Users can easily access their past goals and completed tasks.
@@ -83,7 +83,7 @@ Sonuç olarak, zamanı doğru yönetmek, yaşamın her alanında başarıya ula�
 <details>
     <summary><h4>Turkish explanation</h4></summary>
 
-  ### 1. Ana Sayfa
+  ### 1. Ana Sayfa(Bugün)
 - **Kullanıcı Dostu Arayüz:** Ana sayfa, kullanıcıların uygulamaya kolayca alışmalarını sağlayan sade ve minimalist bir tasarıma sahiptir.
 - **Günlük İşler ve Tamamlanan Görevler:** Kullanıcılar, o güne ait işlerini, uzun vadede devam ettiği hedeflerini, bunları tamamlayıp tamamlamadıkları kategorizasyonu içinde görebilirler. Bu, günlük görev yönetimini ve takibini kolaylaştırır.
 - **Haftalık Takvim:** Üst kısımda yer alan haftalık takvim, kullanıcıların farklı günler arasında geçişini kolaylaştır.
@@ -189,7 +189,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 ### Login Page
 ![Loginpage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/App_ss/Loginpage.png)
 
-### Homepage(Today)
+### Today(Home)page
 ![Homepage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/App_ss/Homepage.png)
 
 ### Habits Page
@@ -197,7 +197,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 ### Journal Page
 
-
+### Settings Page
 
 
 
