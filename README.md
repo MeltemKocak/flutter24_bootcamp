@@ -227,7 +227,7 @@ X Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş grupl
 - **Point Completion Logic:**
   * A total target of 1100 points was set. In the first sprint, 300 points were targeted because the idea was planned and the designs were made, and 310 points were completed. In the second sprint, 450 points are targeted as the focus will be on writing code and adding APIs. In the third sprint, a target of 450 points was set as the remaining tasks would be completed and integration work would be carried out.
 
-- **Daily Scrum:**
+- **Daily Scrum:** [Daily Scrum](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Assets/Daily_Scrum)
 
 - **Product Backlog URL:**
 
@@ -277,11 +277,6 @@ X Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş grupl
 
 - **Puan Tamamlama Mantığı:**
   * Toplamda 1100 puanlık bir hedef belirlendi. Birinci sprintte, fikir oturması ve tasarımların yapılması planlandığı için 300 puan hedeflenmiştir ve 310 puan tamamlanmıştır. İkinci sprintte, kod yazma ve API ekleme çalışmalarına yoğunlaşılacağı için 450 puan hedeflenmiştir. Üçüncü sprintte ise kalan görevlerin tamamlanması ve entegrasyon çalışmaları yapılacağından 450 puan hedefi konulmuştur.
-  
-
-- **Günlük Scrum:**
-
-- **Ürün İş Listesi URL'si:**
 
 - **Sprint Gözden Geçirilmesi:**
    * Melisa Nur Alparslan ve Olgun Baran Atik prototip ve tasarımları yaptı.
