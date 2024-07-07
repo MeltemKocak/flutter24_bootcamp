@@ -229,7 +229,7 @@ X Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş grupl
 
 - **Daily Scrum:** [Daily Scrum](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Assets/Daily_Scrum)
 
-- **Product Backlog URL:**
+- **Product Backlog URL:**  [Asana](https://app.asana.com/0/1207708660563810/1207708543191861)
 
 - **Sprint Review:**
     * Melisa Nur Alparslan and Olgun Baran Atik made the prototypes and designs.
