@@ -10,7 +10,7 @@
 |:-------:| :-----:|
 | Melisa Nur Alparslan  | Scrum Master     |
 | Olgun Baran Atik   | Product Owner    |
-| Meltem Sena      | Developer  |
+| Meltem Sena Koçak     | Developer  |
 | Oğuzhan Gündüz    | Developer  |
 | Onur Turan     | Developer  |
 
