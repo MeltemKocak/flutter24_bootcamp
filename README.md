@@ -199,7 +199,12 @@ X Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş grupl
 ---
   <details>
     <summary><h2>Project Management</h2></summary>
-
+    
+![pm_1](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/Sprint1_PM/pm_1.png)
+![pm_2](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/Sprint1_PM/pm_2.png)
+![pm_3](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/Sprint1_PM/pm_3.png)
+![pm_4](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/Sprint1_PM/pm_4.png)
+![pm_5](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/Sprint1_PM/pm_5.png)
    
   </details>
 
