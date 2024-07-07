@@ -214,30 +214,83 @@ X Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş grupl
 
 
 - **Sprint Notes:**
-  * It has been decided to use Figma for UI designs.
+   * It was decided to use Figma in UI designs.
+   * It was decided to use Asana as a project management tool.
+   * Daily scrum meetings were held using WhatsApp and Discord applications according to team availability.
+   * It was decided to use e-mail for the login system.
+   * It was decided to make the application in dark theme.
+   * Due to global targets, it was decided to make designs and applications in English.
  
 - **Expected point completion within Sprint:**
   * 300 Point
 
 - **Point Completion Logic:**
-  
+  * A total target of 1100 points was set. In the first sprint, 300 points were targeted because the idea was planned and the designs were made, and 310 points were completed. In the second sprint, 450 points are targeted as the focus will be on writing code and adding APIs. In the third sprint, a target of 450 points was set as the remaining tasks would be completed and integration work would be carried out.
 
 - **Daily Scrum:**
 
-- **Product Backlog URL**
+- **Product Backlog URL:**
 
-- **Sprint Review**
+- **Sprint Review:**
+    * Melisa Nur Alparslan and Olgun Baran Atik made the prototypes and designs.
+   * Since we wanted the application to have different features, it was not easy to decide during the prioritization phase.
+   * It was decided to highlight the habit-forming feature.
+   * Although it did not take much time to decide on the logo, choosing the brand name did.
+   * The first week was spent in market research, user interviews, determining the details of the idea and making a draft prototype.
+   * Designs were made in the second week.
+   * In this process, the project management method was determined, the team got to know each other, and a system was created to be used in other sprints.
+   * Date addition in asana was not used in the first place because the next day's tasks were discussed in daily meetings in the WhatsApp group. Dates were added to the asana to create a burndown chart.
+   * The first sprint planning was generally based on design and idea and a good sprint process was passed.
+
 
 - **Sprint Review Participants:**
+    * Melisa Nur Alparslan, Olgun Baran Atik, Meltem Sena Koçak, Oğuzhan Gündüz, Onur Turan
 
 - **Sprint Retrospective:**
 
-
-  <details>
+<details>
     <summary><h4>Turkish explanation</h4></summary>
 
-    
-  </details>
+
+- **Sprint Notları:**
+   * UI tasarımlarında Figma kullanılmasına karar verilmiştir.
+   * Proje yönetim aracı olarak Asana kullanılmasına karar verildi.
+   * Daily scrum toplantıları whatsapp ve discord uygulamaları takım müsaitlik durumuna göre kullanılarak gerçekleştirildi.
+   * Giriş sistemi için e-posta kullanılmasına karar verildi.
+   * Uygulamanın koyu temada yapılmasına karar verildi.
+   * Globale yönelik hedefler nedeniyle İngilizce dili ile tasarımların ve uygulamanın yapılmasına karar verildi.
+ 
+ 
+- **Sprint İçinde Tamamlanması Beklenen Puan:**
+  * 300 Puan
+
+- **Puan Tamamlama Mantığı:**
+  * Toplamda 1100 puanlık bir hedef belirlendi. Birinci sprintte, fikir oturması ve tasarımların yapılması planlandığı için 300 puan hedeflenmiştir ve 310 puan tamamlanmıştır. İkinci sprintte, kod yazma ve API ekleme çalışmalarına yoğunlaşılacağı için 450 puan hedeflenmiştir. Üçüncü sprintte ise kalan görevlerin tamamlanması ve entegrasyon çalışmaları yapılacağından 450 puan hedefi konulmuştur.
+  
+
+- **Günlük Scrum:**
+
+- **Ürün İş Listesi URL'si:**
+
+- **Sprint Gözden Geçirilmesi:**
+   * Melisa Nur Alparslan ve Olgun Baran Atik prototip ve tasarımları yaptı.
+   * Uygulamanın farklı özellikler taşımasını istenildiği için önceliklendirme aşamasında karar vermek kolay olmadı.
+   * Alışkanlık oluşturma özelliğinin ön plana çıkarılmasına karar verildi.
+   * Logoya karar vermek çok zaman almasa da marka adını seçmek zaman aldı.
+   * Birinci hafta pazar araştırması, kullanıcı görüşmeleri, fikrin detaylarının belirlenmesi ve prototipin taslak olarak yapılması şeklinde geçirildi.
+   * İkinci hafta tasarımlar yapıldı.
+   * Bu süreçte proje yönetim yöntemi belirlendi, takım birbiriyle tanışmış oldu, ve diğer sprintlerde de kullanılmak üzere sistem oluşturuldu.
+   * Whatsapp grubunda günlük olarak toplantılarda ertesi gün görevleri konuşulduğu için asanada tarih eklemesi ilk etapta kullanılmadı. Burndown chart oluşturmak için asanaya tarihler sonrasında eklenildi.
+   * Birinci sprint planlaması genel olarak tasarım ve fikir üstüne oldu ve iyi bir sprint süreci geçirildi.
+     
+
+- **Sprint Gözden Geçirme Katılımcıları:**
+    * Melisa Nur Alparslan, Olgun Baran Atik, Meltem Sena Koçak, Oğuzhan Gündüz, Onur Turan
+
+- **Sprint Retrospektifi:**
+   * İkinci sprintte takımdaki tüm üyelerin kod yazmasına karar verildi.
+   * 
+</details>
 
 
 
