@@ -1,4 +1,4 @@
-package com.example.planova
+package com.planova.app
 
 import io.flutter.embedding.android.FlutterActivity
 
