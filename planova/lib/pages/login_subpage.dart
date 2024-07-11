@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:planova/pages/home.dart';
 import 'package:planova/pages/login_page.dart'; // Login sayfasını içe aktardık
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Firebase Authentication paketini ekledik
+// Home sayfasını içe aktardık
 
-// ignore_for_file: must_be_immutable
 class LoginSubPage extends StatelessWidget {
   LoginSubPage({super.key});
 
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance; // FirebaseAuth örneği oluşturduk
   int sliderIndex = 1;
 
   @override
@@ -14,7 +18,6 @@ class LoginSubPage extends StatelessWidget {
     double iconButtonWidth = MediaQuery.of(context).size.width * 0.38;
 
     return Container(
-      
       decoration: const BoxDecoration(
         color: Color.fromARGB(255, 30, 30, 30),
         borderRadius: BorderRadius.only(
@@ -32,23 +35,21 @@ class LoginSubPage extends StatelessWidget {
           _buildContinueSection(context, buttonWidth, iconButtonWidth),
           const SizedBox(height: 50),
           const Text(
-          "If you are creating a new account,\nTerms & Conditions and Privacy Policy will apply.",
-          maxLines: 2,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Color(0XFF797979),
-            fontSize: 13,
-            fontFamily: 'Lato',
-            fontWeight: FontWeight.w400,
-            
+            "If you are creating a new account,\nTerms & Conditions and Privacy Policy will apply.",
+            maxLines: 2,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Color(0XFF797979),
+              fontSize: 13,
+              fontFamily: 'Lato',
+              fontWeight: FontWeight.w400,
+            ),
           ),
-        )
         ],
       ),
     );
   }
 
-  /// Section Widget
   Widget _buildWelcomeSlider(BuildContext context) {
     return Container(
       width: double.maxFinite,
@@ -73,7 +74,6 @@ class LoginSubPage extends StatelessWidget {
     );
   }
 
-  /// Section Widget
   Widget _buildContinueSection(BuildContext context, double buttonWidth, double iconButtonWidth) {
     return Container(
       width: double.maxFinite,
@@ -138,7 +138,7 @@ class LoginSubPage extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildIconOutlinedButton(context, "assets/images/google.ico", iconButtonWidth),
+              _buildIconOutlinedButton(context, "assets/icons/google.ico", iconButtonWidth, onPressed: () => _signInWithGoogle(context)),
               SizedBox(width: MediaQuery.of(context).size.width * 0.04),
               _buildIconOutlinedButton(context, null, iconButtonWidth, icon: const Icon(
                 Icons.key,
@@ -157,6 +157,7 @@ class LoginSubPage extends StatelessWidget {
     String? assetPath,
     double buttonWidth, {
     Widget? icon,
+    VoidCallback? onPressed,
   }) {
     return OutlinedButton(
       style: OutlinedButton.styleFrom(
@@ -170,7 +171,7 @@ class LoginSubPage extends StatelessWidget {
         padding: EdgeInsets.zero,
         minimumSize: Size(buttonWidth, 60), // Genişlik %40, yükseklik sabit
       ),
-      onPressed: () {},
+      onPressed: onPressed,
       child: SizedBox(
         width: buttonWidth, // Genişlik %40
         height: 60,
@@ -181,6 +182,37 @@ class LoginSubPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _signInWithGoogle(BuildContext context) async {
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+
+    try {
+      final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
+
+      if (googleSignInAccount != null) {
+        final GoogleSignInAuthentication googleSignInAuthentication =
+            await googleSignInAccount.authentication;
+
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          idToken: googleSignInAuthentication.idToken,
+          accessToken: googleSignInAuthentication.accessToken,
+        );
+
+        await _firebaseAuth.signInWithCredential(credential);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const Home()), // Home sayfasına yönlendirme
+        );
+      }
+    } catch (e) {
+      showToast(context, message: "Some error occurred: $e");
+    }
+  }
+
+  void showToast(BuildContext context, {required String message}) {
+    // Show toast method implementation
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 }
 
@@ -211,7 +243,7 @@ class WelcomesliderItemWidget extends StatelessWidget {
             fontFamily: 'Lato',
             fontWeight: FontWeight.w400,
           ),
-        )
+        ),
       ],
     );
   }

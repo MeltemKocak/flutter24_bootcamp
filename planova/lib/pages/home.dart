@@ -1,6 +1,6 @@
-import 'package:planova/utilities/auth.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:planova/pages/welcome_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Home extends StatelessWidget {
@@ -12,33 +12,33 @@ class Home extends StatelessWidget {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                  'Hello👋',
-                  style: GoogleFonts.raleway(
-                    textStyle: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20
-                    )
+                'Hello👋',
+                style: GoogleFonts.raleway(
+                  textStyle: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
                   ),
                 ),
-                const SizedBox(height: 10,),
-                Text(
-                  FirebaseAuth.instance.currentUser!.email!.toString(),
-                  style: GoogleFonts.raleway(
-                    textStyle: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20
-                    )
+              ),
+              const SizedBox(height: 10),
+              Text(
+                FirebaseAuth.instance.currentUser!.email!.toString(),
+                style: GoogleFonts.raleway(
+                  textStyle: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
                   ),
                 ),
-                 const SizedBox(height: 30,),
-                _logout(context)
+              ),
+              const SizedBox(height: 30),
+              _logout(context),
             ],
           ),
         ),
@@ -57,9 +57,20 @@ class Home extends StatelessWidget {
         elevation: 0,
       ),
       onPressed: () async {
-        await Auth().signout(context: context);
+        await Auth().signOut(context: context);
       },
       child: const Text("Sign Out"),
     );
+  }
+}
+
+class Auth {
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+  Future<void> signOut({required BuildContext context}) async {
+    await _firebaseAuth.signOut();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const WelcomeScreen()));
   }
 }

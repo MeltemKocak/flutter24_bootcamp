@@ -12,7 +12,20 @@
           "package_name": "com.planova.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "396113815235-qaj65i29mtnv34qmmffve05fs16v9nh4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.planova.app",
+            "certificate_hash": "7ad30f98b73d5e87ca16b15b510d4312aee4aee7"
+          }
+        },
+        {
+          "client_id": "396113815235-vj9m83i73ch6htdsvbccfqhptm9nqte8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyC-Pyd4Dfsw-L_5ZEPPBsk_AcNj6ul8cjE"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "396113815235-vj9m83i73ch6htdsvbccfqhptm9nqte8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "396113815235-1q8597oh1cos5tetm1gtkdavsd1jrgp9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.planova"
+              }
+            }
+          ]
         }
       }
     }
