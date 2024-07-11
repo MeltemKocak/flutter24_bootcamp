@@ -21,7 +21,7 @@ class WelcomeScreen extends StatelessWidget {
           width: double.maxFinite,
           padding: EdgeInsets.symmetric(
             horizontal: 40,
-            vertical: 94,
+            vertical: 104,
           ),
           child: Column(
             children: [
@@ -68,7 +68,7 @@ class WelcomeScreen extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: 24),
       child: CarouselSlider.builder(
         options: CarouselOptions(
-          height: 78,
+          height: 108,
           initialPage: 0,
           autoPlay: true,
           viewportFraction: 1.0,
@@ -109,7 +109,7 @@ class WelcomeScreen extends StatelessWidget {
             horizontal: -4,
           ),
           padding: EdgeInsets.symmetric(
-            horizontal: 30,
+            horizontal: 60,
             vertical: 14,
           ),
         ),
@@ -124,7 +124,6 @@ class WelcomeScreen extends StatelessWidget {
         child: Text(
           "Get started",
           style: TextStyle(
-            color: Color(0XFF03DAC6),
             fontSize: 16,
             fontFamily: 'Lato',
             fontWeight: FontWeight.w600,

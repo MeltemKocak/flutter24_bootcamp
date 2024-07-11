@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:planova/pages/login_page.dart'; // Login sayfasını içe aktardık
 
 // ignore_for_file: must_be_immutable
 class TestScreen extends StatelessWidget {
-  TestScreen({Key? key})
-      : super(
-          key: key,
-        );
+  TestScreen({Key? key}) : super(key: key);
 
   int sliderIndex = 1;
 
   @override
   Widget build(BuildContext context) {
+    double buttonWidth = MediaQuery.of(context).size.width * 0.8;
+    double iconButtonWidth = buttonWidth * 0.4;
+
     return Container(
+      
       decoration: BoxDecoration(
         color: Color.fromARGB(255, 30, 30, 30),
         borderRadius: BorderRadius.only(
@@ -27,9 +27,23 @@ class TestScreen extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          SizedBox(height: 30),
           _buildWelcomeSlider(context),
-          SizedBox(height: 72),
-          _buildContinueSection(context)
+          SizedBox(height: 30),
+          _buildContinueSection(context, buttonWidth, iconButtonWidth),
+          SizedBox(height: 50),
+          Text(
+          "If you are creating a new account,\nTerms & Conditions and Privacy Policy will apply.",
+          maxLines: 2,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Color(0XFF797979),
+            fontSize: 13,
+            fontFamily: 'Lato',
+            fontWeight: FontWeight.w400,
+            
+          ),
+        )
         ],
       ),
     );
@@ -39,10 +53,10 @@ class TestScreen extends StatelessWidget {
   Widget _buildWelcomeSlider(BuildContext context) {
     return Container(
       width: double.maxFinite,
-      margin: EdgeInsets.symmetric(horizontal: 48),
+      margin: EdgeInsets.symmetric(horizontal: 68),
       child: CarouselSlider.builder(
         options: CarouselOptions(
-          height: 78,
+          height: 88,
           initialPage: 0,
           autoPlay: true,
           viewportFraction: 1.0,
@@ -61,15 +75,12 @@ class TestScreen extends StatelessWidget {
   }
 
   /// Section Widget
-  Widget _buildContinueSection(BuildContext context) {
+  Widget _buildContinueSection(BuildContext context, double buttonWidth, double iconButtonWidth) {
     return Container(
       width: double.maxFinite,
       padding: EdgeInsets.symmetric(vertical: 14),
       decoration: BoxDecoration(
-        color: Color(0XFF03DAC6),
-        borderRadius: BorderRadius.circular(
-          14,
-        ),
+        borderRadius: BorderRadius.circular(14),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -79,21 +90,15 @@ class TestScreen extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: Color(0XFF274F5E),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                  14,
-                ),
+                borderRadius: BorderRadius.circular(14),
               ),
-              padding: EdgeInsets.symmetric(
-                horizontal: 30,
-                vertical: 14,
-              ),
+              padding: EdgeInsets.symmetric(vertical: 14),
+              minimumSize: Size(buttonWidth, 0), // Genişlik %80
             ),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        Login()), // Login ekranına yönlendirme
+                MaterialPageRoute(builder: (context) => Login()), // Login ekranına yönlendirme
               );
             },
             child: Text(
@@ -114,14 +119,10 @@ class TestScreen extends StatelessWidget {
                 width: 1.0,
               ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                  14,
-                ),
+                borderRadius: BorderRadius.circular(14),
               ),
-              padding: EdgeInsets.symmetric(
-                horizontal: 30,
-                vertical: 14,
-              ),
+              padding: EdgeInsets.symmetric(vertical: 14),
+              minimumSize: Size(buttonWidth, 0), // Genişlik %80
             ),
             onPressed: () {},
             child: Text(
@@ -134,7 +135,51 @@ class TestScreen extends StatelessWidget {
               ),
             ),
           ),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildIconOutlinedButton(context, "assets/images/google.ico", iconButtonWidth),
+              SizedBox(width: 20),
+              _buildIconOutlinedButton(context, null, iconButtonWidth, icon: Icon(
+                Icons.key,
+                color: Colors.white,
+                size: 30,
+              )),
+            ],
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildIconOutlinedButton(
+    BuildContext context,
+    String? assetPath,
+    double buttonWidth, {
+    Widget? icon,
+  }) {
+    return OutlinedButton(
+      style: OutlinedButton.styleFrom(
+        side: BorderSide(
+          color: Color(0XFFD6D6D6),
+          width: 1.0,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+        ),
+        padding: EdgeInsets.zero,
+        minimumSize: Size(buttonWidth, 60), // Genişlik %40, yükseklik sabit
+      ),
+      onPressed: () {},
+      child: SizedBox(
+        width: buttonWidth, // Genişlik %40
+        height: 60,
+        child: Center(
+          child: assetPath != null
+              ? Image.asset(assetPath, width: 24, height: 24)
+              : icon,
+        ),
       ),
     );
   }
@@ -142,10 +187,7 @@ class TestScreen extends StatelessWidget {
 
 // ignore: must_be_immutable
 class WelcomesliderItemWidget extends StatelessWidget {
-  const WelcomesliderItemWidget({Key? key})
-      : super(
-          key: key,
-        );
+  const WelcomesliderItemWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -164,11 +206,10 @@ class WelcomesliderItemWidget extends StatelessWidget {
         Text(
           "Please select your preferred method to continue setting up your account",
           maxLines: 2,
-          overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Color(0XFF797979),
-            fontSize: 15,
+            fontSize: 16,
             fontFamily: 'Lato',
             fontWeight: FontWeight.w400,
           ),
