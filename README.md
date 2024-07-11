@@ -357,15 +357,94 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 <details>
   <summary><h1>Sprint 2</h1></summary>
 
+  ---
 
+<details>
+    <summary><h2>App Screenshots</h2></summary>
+
+
+   
+</details>
+
+---
+  <details>
+    <summary><h2>App Map</h2></summary>
+
+
+   
+  </details>
+
+---
+  <details>
+    <summary><h2>Project Management</h2></summary>
+
+   
+  </details>
+
+---
+  <details>
+    <summary><h2>Burndown Chart</h2></summary>
+
+
+
+    
+  </details>
+
+---
+
+
+- **Sprint Notes:**
+   * 
+ 
+- **Expected point completion within Sprint:**
+  * 
+
+- **Point Completion Logic:**
+  * 
+
+- **Daily Scrum:** 
+
+- **Product Backlog URL:**  [Asana](https://app.asana.com/0/1207708660563810/1207708543191861)
+
+- **Sprint Review:**
+    * 
+
+
+- **Sprint Review Participants:**
+    * Melisa Nur Alparslan, Olgun Baran Atik, Meltem Sena Koçak, Oğuzhan Gündüz, Onur Turan
+
+- **Sprint Retrospective:**
+   * 
+
+<details>
+    <summary><h4>Turkish explanation</h4></summary>
+
+
+- **Sprint Notları:**
+   * 
+ 
+- **Sprint İçinde Tamamlanması Beklenen Puan:**
+  * 
+
+- **Puan Tamamlama Mantığı:**
+  * 
+
+- **Sprint Gözden Geçirilmesi:**
+   * 
+     
+
+- **Sprint Gözden Geçirme Katılımcıları:**
+    * Melisa Nur Alparslan, Olgun Baran Atik, Meltem Sena Koçak, Oğuzhan Gündüz, Onur Turan
+
+- **Sprint Retrospektifi:**
+   * 
+</details>
 </details>
 
 ---
 
 <details>
   <summary><h1>Sprint 3</h1></summary>
-
-
 </details>
 
 ---
