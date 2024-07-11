@@ -1,38 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:planova/pages/login_page.dart'; // Login sayfasını içe aktardık
 
 // ignore_for_file: must_be_immutable
-class TestScreen extends StatelessWidget {
-  TestScreen({Key? key}) : super(key: key);
+class LoginSubPage extends StatelessWidget {
+  LoginSubPage({super.key});
 
   int sliderIndex = 1;
 
   @override
   Widget build(BuildContext context) {
     double buttonWidth = MediaQuery.of(context).size.width * 0.8;
-    double iconButtonWidth = buttonWidth * 0.4;
+    double iconButtonWidth = MediaQuery.of(context).size.width * 0.38;
 
     return Container(
       
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Color.fromARGB(255, 30, 30, 30),
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20.0),
           topRight: Radius.circular(20.0),
         ),
       ),
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
           _buildWelcomeSlider(context),
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
           _buildContinueSection(context, buttonWidth, iconButtonWidth),
-          SizedBox(height: 50),
-          Text(
+          const SizedBox(height: 50),
+          const Text(
           "If you are creating a new account,\nTerms & Conditions and Privacy Policy will apply.",
           maxLines: 2,
           textAlign: TextAlign.center,
@@ -53,7 +52,7 @@ class TestScreen extends StatelessWidget {
   Widget _buildWelcomeSlider(BuildContext context) {
     return Container(
       width: double.maxFinite,
-      margin: EdgeInsets.symmetric(horizontal: 68),
+      margin: const EdgeInsets.symmetric(horizontal: 68),
       child: CarouselSlider.builder(
         options: CarouselOptions(
           height: 88,
@@ -68,7 +67,7 @@ class TestScreen extends StatelessWidget {
         ),
         itemCount: 1,
         itemBuilder: (context, index, realIndex) {
-          return WelcomesliderItemWidget();
+          return const WelcomesliderItemWidget();
         },
       ),
     );
@@ -78,7 +77,7 @@ class TestScreen extends StatelessWidget {
   Widget _buildContinueSection(BuildContext context, double buttonWidth, double iconButtonWidth) {
     return Container(
       width: double.maxFinite,
-      padding: EdgeInsets.symmetric(vertical: 14),
+      padding: const EdgeInsets.symmetric(vertical: 14),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
       ),
@@ -88,11 +87,11 @@ class TestScreen extends StatelessWidget {
         children: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0XFF274F5E),
+              backgroundColor: const Color(0XFF274F5E),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14),
               ),
-              padding: EdgeInsets.symmetric(vertical: 14),
+              padding: const EdgeInsets.symmetric(vertical: 14),
               minimumSize: Size(buttonWidth, 0), // Genişlik %80
             ),
             onPressed: () {
@@ -101,7 +100,7 @@ class TestScreen extends StatelessWidget {
                 MaterialPageRoute(builder: (context) => Login()), // Login ekranına yönlendirme
               );
             },
-            child: Text(
+            child: const Text(
               "Continue with Email",
               style: TextStyle(
                 color: Color(0XFF03DAC6),
@@ -111,21 +110,21 @@ class TestScreen extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           OutlinedButton(
             style: OutlinedButton.styleFrom(
-              side: BorderSide(
+              side: const BorderSide(
                 color: Color(0XFFD6D6D6),
                 width: 1.0,
               ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14),
               ),
-              padding: EdgeInsets.symmetric(vertical: 14),
+              padding: const EdgeInsets.symmetric(vertical: 14),
               minimumSize: Size(buttonWidth, 0), // Genişlik %80
             ),
             onPressed: () {},
-            child: Text(
+            child: const Text(
               "Continue as a Guest",
               style: TextStyle(
                 color: Color(0XFFFFFFFF),
@@ -135,13 +134,13 @@ class TestScreen extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _buildIconOutlinedButton(context, "assets/images/google.ico", iconButtonWidth),
-              SizedBox(width: 20),
-              _buildIconOutlinedButton(context, null, iconButtonWidth, icon: Icon(
+              SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+              _buildIconOutlinedButton(context, null, iconButtonWidth, icon: const Icon(
                 Icons.key,
                 color: Colors.white,
                 size: 30,
@@ -161,7 +160,7 @@ class TestScreen extends StatelessWidget {
   }) {
     return OutlinedButton(
       style: OutlinedButton.styleFrom(
-        side: BorderSide(
+        side: const BorderSide(
           color: Color(0XFFD6D6D6),
           width: 1.0,
         ),
@@ -185,13 +184,12 @@ class TestScreen extends StatelessWidget {
   }
 }
 
-// ignore: must_be_immutable
 class WelcomesliderItemWidget extends StatelessWidget {
-  const WelcomesliderItemWidget({Key? key}) : super(key: key);
+  const WelcomesliderItemWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       children: [
         Text(
           "Login or Sign Up",

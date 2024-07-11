@@ -1,9 +1,7 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:planova/firebase_options.dart';
-import 'package:planova/pages/login_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:planova/pages/sign_up_page.dart';
 import 'package:planova/pages/welcome_screen.dart';
 
 Future<void> main() async {
@@ -20,9 +18,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: WelcomeScreen()
+      home: WelcomeScreen(),
     );
   }
 }
