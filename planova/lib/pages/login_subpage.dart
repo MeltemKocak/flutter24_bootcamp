@@ -92,12 +92,12 @@ class LoginSubPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
               ),
               padding: const EdgeInsets.symmetric(vertical: 14),
-              minimumSize: Size(buttonWidth, 0),
+              minimumSize: Size(buttonWidth, 0), // Genişlik %80
             ),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => LoginScreen()),
+                MaterialPageRoute(builder: (context) => LoginScreen()), // Login ekranına yönlendirme
               );
             },
             child: const Text(
@@ -121,14 +121,9 @@ class LoginSubPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
               ),
               padding: const EdgeInsets.symmetric(vertical: 14),
-              minimumSize: Size(buttonWidth, 0),
+              minimumSize: Size(buttonWidth, 0), // Genişlik %80
             ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const Home()), // Guest kullanıcı için Home sayfasına yönlendirme
-              );
-            },
+            onPressed: () => _signInAnonymously(context), // Anonymous authentication
             child: const Text(
               "Continue as a Guest",
               style: TextStyle(
@@ -170,11 +165,11 @@ class LoginSubPage extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
         ),
         padding: EdgeInsets.zero,
-        minimumSize: Size(buttonWidth, 60),
+        minimumSize: Size(buttonWidth, 60), // Genişlik %40, yükseklik sabit
       ),
       onPressed: onPressed,
       child: SizedBox(
-        width: buttonWidth,
+        width: buttonWidth, // Genişlik %40
         height: 60,
         child: Center(
           child: assetPath != null
@@ -227,6 +222,18 @@ class LoginSubPage extends StatelessWidget {
       } else {
         showToast(context, message: "Facebook sign-in failed: ${result.message}");
       }
+    } catch (e) {
+      showToast(context, message: "Some error occurred: $e");
+    }
+  }
+
+  Future<void> _signInAnonymously(BuildContext context) async {
+    try {
+      await _firebaseAuth.signInAnonymously();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const Home()),
+      );
     } catch (e) {
       showToast(context, message: "Some error occurred: $e");
     }

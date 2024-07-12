@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:planova/pages/home.dart';
 import 'package:planova/pages/welcome_screen.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
@@ -21,8 +20,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      
-      
       debugShowCheckedModeBanner: false,
       home: const WelcomeScreen(),
       routes: {
