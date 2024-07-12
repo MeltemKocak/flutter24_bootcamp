@@ -1,198 +1,383 @@
-import 'package:planova/pages/sign_up_page.dart';
-import 'package:planova/utilities/auth.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:planova/utilities/auth.dart';
 
-class Login extends StatelessWidget {
-  Login({super.key});
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
 
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Firebase Auth Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const LoginScreen(),
+    );
+  }
+}
+
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
+
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  bool newsletterOptIn = false;
+  bool isExistingUser = false;
+  bool isLoading = false;
+  bool showPasswordField = false;
+  bool isPasswordWrong = false;
+
+  @override
+  void initState() {
+    super.initState();
+    initializeFirebase();
+  }
+
+  Future<void> initializeFirebase() async {
+    await Firebase.initializeApp();
+  }
+
+  Future<void> checkEmail() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      final methods = await FirebaseAuth.instance.fetchSignInMethodsForEmail(emailController.text);
+      setState(() {
+        isExistingUser = methods.isNotEmpty;
+        showPasswordField = true;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Bir hata oluştu: $e')),
+      );
+    }
+  }
+
+  Future<void> signInOrSignUp() async {
+    if (isExistingUser) {
+      try {
+        await Auth().signin(
+          email: emailController.text,
+          password: passwordController.text,
+          context: context,
+        );
+      } catch (e) {
+        setState(() {
+          isPasswordWrong = true;
+        });
+        showErrorMessage('Şifre yanlış. Lütfen tekrar deneyin.');
+      }
+    } else {
+      try {
+        await Auth().signup(
+          email: emailController.text,
+          password: passwordController.text,
+          context: context,
+        );
+      } catch (e) {
+        showErrorMessage('Kayıt hatası: $e');
+      }
+    }
+  }
+
+  void showErrorMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(Icons.error, color: Colors.white),
+            SizedBox(width: 10),
+            Expanded(child: Text(message)),
+          ],
+        ),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        duration: Duration(seconds: 3),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      resizeToAvoidBottomInset: true,
-      bottomNavigationBar: _signup(context),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        toolbarHeight: 100,
-        leading: GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Container(
-            margin: const EdgeInsets.only(left: 10),
-            decoration: const BoxDecoration(
-              color: Color(0xffF7F7F9),
-              shape: BoxShape.circle
-            ),
-            child: const Center(
-              child: Icon(
-                Icons.arrow_back_ios_new_rounded,
-                color: Colors.black,
-              ),
-            ),
-          ),
-        ),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-         padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          leading: null,
+          toolbarHeight: 100,
+          titleSpacing: 0,
+          title: Row(
             children: [
-              Center(
-                child: Text(
-                  'Hello Again',
-                  style: GoogleFonts.raleway(
-                    textStyle: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 32
-                    )
-                  ),
+              IconButton(
+                icon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.03),
+                    const Icon(
+                      Icons.arrow_back_ios,
+                      color: Color.fromARGB(255, 3, 218, 198),
+                      size: 28,
+                    ),
+                    const Text(
+                      'Geri',
+                      style: TextStyle(
+                        fontFamily: 'Lato',
+                        color: Color.fromARGB(255, 3, 218, 198),
+                        fontSize: 17,
+                      ),
+                    ),
+                  ],
                 ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
-              const SizedBox(height: 80,),
-               _emailAddress(),
-               const SizedBox(height: 20,),
-               _password(),
-               const SizedBox(height: 50,),
-               _signin(context),
             ],
           ),
         ),
-      ),
-    );
-  }
-  
-  Widget _emailAddress() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Email Address',
-          style: GoogleFonts.raleway(
-            textStyle: const TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.normal,
-              fontSize: 16
-            )
-          ),
-        ),
-        const SizedBox(height: 16,),
-        TextField(
-          controller: _emailController,
-          decoration: InputDecoration(
-            filled: true,
-            hintText: 'example@example.com',
-            hintStyle: const TextStyle(
-              color: Color(0xff6A6A6A),
-              fontWeight: FontWeight.normal,
-              fontSize: 14
+        backgroundColor: const Color(0XFF1E1E1E),
+        resizeToAvoidBottomInset: false,
+        body: SingleChildScrollView(
+          child: Container(
+            width: double.maxFinite,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 4,
             ),
-            fillColor: const Color(0xffF7F7F9) ,
-            border: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(14)
-            )
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget _password() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Password',
-          style: GoogleFonts.raleway(
-            textStyle: const TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.normal,
-              fontSize: 16
-            )
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildEmailSection(context),
+                if (showPasswordField) _buildPasswordSection(context),
+                const SizedBox(height: 20),
+                _buildNewsletterOptIn(context),
+              ],
+            ),
           ),
         ),
-        const SizedBox(height: 16,),
-        TextField(
-          obscureText: true,
-          controller: _passwordController,
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: const Color(0xffF7F7F9) ,
-            border: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(14)
-            )
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget _signin(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xff0D6EFD),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-        ),
-        minimumSize: const Size(double.infinity, 60),
-        elevation: 0,
+        bottomNavigationBar: _buildContinueButton(context),
       ),
-      onPressed: () async {
-        await Auth().signin(
-          email: _emailController.text,
-          password: _passwordController.text,
-          context: context
-        );
-      },
-      child: const Text("Sign In"),
     );
   }
 
-  Widget _signup(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: RichText(
-        textAlign: TextAlign.center,
-        text: TextSpan(
+  Widget _buildEmailSection(BuildContext context) {
+    return SizedBox(
+      width: double.maxFinite,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const TextSpan(
-                text: "New User? ",
-                style: TextStyle(
-                  color: Color(0xff6A6A6A),
-                  fontWeight: FontWeight.normal,
-                  fontSize: 16
+            const SizedBox(height: 22),
+            SizedBox(
+              height: 40,
+              width: 40,
+              child: Image.asset("assets/images/Frame.png"),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              "E-posta ile devam edin",
+              style: TextStyle(
+                color: Color(0XFFFFFFFF),
+                fontSize: 20,
+                fontFamily: 'Lato',
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              "E-posta adresinin neden gerekli olduğunu açıklamak faydalıdır.",
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Color(0XFF797979),
+                fontSize: 15,
+                fontFamily: 'Lato',
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            const SizedBox(height: 20),
+            TextFormField(
+              
+              controller: emailController,
+              style: const TextStyle(
+                color: Color(0XFF797979),
+                fontSize: 18,
+                fontFamily: 'Lato',
+                fontWeight: FontWeight.w400,
+              ),
+              decoration: InputDecoration(
+                hintText: "E-posta adresi",
+                hintStyle: const TextStyle(
+                  color: Color(0XFF797979),
+                  fontSize: 16,
+                  fontFamily: 'Lato',
+                  fontWeight: FontWeight.w400,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: const BorderSide(
+                    color: Color(0XFF03DAC6),
+                    width: 2.5,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: const BorderSide(
+                    color: Color(0XFF03DAC6),
+                    width: 2.5,
+                  ),
+                ),
+                filled: true,
+                fillColor: const Color(0XFFFFFFFF),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
                 ),
               ),
-              TextSpan(
-                text: "Create Account",
-                style: const TextStyle(
-                    color: Color(0xff1A1D1E),
-                    fontWeight: FontWeight.normal,
-                    fontSize: 16
-                  ),
-                  recognizer: TapGestureRecognizer()..onTap = () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Signup()
-                      ),
-                    );
-                  }
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPasswordSection(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 20),
+          Text(
+            isExistingUser ? "Şifrenizi girin" : "Yeni şifre oluşturun",
+            style: const TextStyle(
+              color: Color(0XFFFFFFFF),
+              fontSize: 18,
+              fontFamily: 'Lato',
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 10),
+          TextFormField(
+            controller: passwordController,
+            obscureText: true,
+            style: const TextStyle(color: Color(0XFF797979)),
+            decoration: InputDecoration(
+              hintText: isExistingUser ? "Şifre" : "Yeni şifre",
+              hintStyle: const TextStyle(color: Color(0XFF797979)),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide(
+                  width: 2.5,
+                  color: isPasswordWrong ? Colors.red : Color(0XFF03DAC6),
+                ),
               ),
-          ]
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide(
+                  width: 2.5,
+                  color: isPasswordWrong ? Colors.red : Color(0XFF03DAC6),
+                ),
+              ),
+              filled: true,
+              fillColor: const Color(0XFFFFFFFF),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNewsletterOptIn(BuildContext context) {
+    return Row(
+      children: [
+        Checkbox(
+          value: newsletterOptIn,
+          onChanged: (value) {
+            setState(() {
+              newsletterOptIn = value ?? false;
+            });
+          },
+        ),
+        const Expanded(
+          child: Padding(
+            padding: EdgeInsets.only(left: 10),
+            child: Text(
+              "En son haberler ve kaynaklar direkt olarak gelen kutunuza gelsin",
+              style: TextStyle(
+                color: Color(0XFF797979),
+                fontSize: 15,
+                fontFamily: 'Lato',
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
         )
+      ],
+    );
+  }
+
+  Widget _buildContinueButton(BuildContext context) {
+    return Container(
+      width: double.maxFinite,
+      height: 54,
+      margin: const EdgeInsets.only(
+        left: 16,
+        right: 16,
+        bottom: 34,
+      ),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0XFF274F5E),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+        ),
+        onPressed: isLoading ? null : () async {
+          if (emailController.text.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Lütfen e-posta adresinizi girin')),
+            );
+            return;
+          }
+          if (!showPasswordField) {
+            await checkEmail();
+          } else {
+            await signInOrSignUp();
+          }
+        },
+        child: Text(
+          isLoading ? "Kontrol ediliyor..." : 
+          showPasswordField ? (isExistingUser ? "Giriş Yap" : "Hesap Oluştur") : "Devam et",
+          style: const TextStyle(
+            color: Color(0XFF03DAC6),
+            fontSize: 16,
+            fontFamily: 'Lato',
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
     );
   }

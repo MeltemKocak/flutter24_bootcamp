@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:planova/pages/login_page.dart';
 import 'package:planova/pages/home.dart';
-import 'package:planova/pages/login_page.dart'; // Login sayfasını içe aktardık
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Firebase Authentication paketini ekledik
 // Home sayfasını içe aktardık
 
+// ignore: must_be_immutable
 class LoginSubPage extends StatelessWidget {
   LoginSubPage({super.key});
 
@@ -97,7 +98,7 @@ class LoginSubPage extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Login()), // Login ekranına yönlendirme
+                MaterialPageRoute(builder: (context) => LoginScreen()), // Login ekranına yönlendirme
               );
             },
             child: const Text(

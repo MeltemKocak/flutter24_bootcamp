@@ -2,8 +2,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:planova/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:planova/pages/first_email_screen.dart';
+import 'package:planova/pages/home.dart';
 import 'package:planova/pages/welcome_screen.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,8 +21,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      
+      
       debugShowCheckedModeBanner: false,
-      home: WelcomeScreen(),
+      home: const WelcomeScreen(),
+      routes: {
+        '/home': (context) => const Home(),
+      },
     );
   }
 }

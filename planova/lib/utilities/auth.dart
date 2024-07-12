@@ -1,103 +1,81 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-
-import '../pages/home.dart';
-import '../pages/login_page.dart';
+import 'package:planova/pages/home.dart';
+import 'package:planova/pages/login_page.dart';
 
 class Auth {
-
   Future<void> signup({
     required String email,
     required String password,
-    required BuildContext context
+    required BuildContext context,
   }) async {
-    
     try {
-
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
-        password: password
+        password: password,
       );
 
       await Future.delayed(const Duration(seconds: 1));
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (BuildContext context) => const Home()
-        )
+          builder: (BuildContext context) => const Home(),
+        ),
       );
-      
-    } on FirebaseAuthException catch(e) {
+    } on FirebaseAuthException catch (e) {
       String message = '';
       if (e.code == 'weak-password') {
-        message = 'The password provided is too weak.';
+        message = 'Şifre çok zayıf.';
       } else if (e.code == 'email-already-in-use') {
-        message = 'An account already exists with that email.';
+        message = 'Bu e-posta ile zaten bir hesap var.';
+      } else {
+        message = 'Bir hata oluştu: ${e.message}';
       }
-       Fluttertoast.showToast(
-        msg: message,
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.SNACKBAR,
-        backgroundColor: Colors.black54,
-        textColor: Colors.white,
-        fontSize: 14.0,
-      );
+      throw Exception(message);
     }
-
   }
 
   Future<void> signin({
     required String email,
     required String password,
-    required BuildContext context
+    required BuildContext context,
   }) async {
-    
     try {
-
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
-        password: password
+        password: password,
       );
 
       await Future.delayed(const Duration(seconds: 1));
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (BuildContext context) => const Home()
-        )
+          builder: (BuildContext context) => const Home(),
+        ),
       );
-      
-    } on FirebaseAuthException catch(e) {
+    } on FirebaseAuthException catch (e) {
       String message = '';
       if (e.code == 'invalid-email') {
-        message = 'No user found for that email.';
-      } else if (e.code == 'invalid-credential') {
-        message = 'Wrong password provided for that user.';
+        message = 'Bu e-posta ile bir kullanıcı bulunamadı.';
+      } else if (e.code == 'wrong-password') {
+        message = 'Yanlış şifre.';
+      } else {
+        message = 'Bir hata oluştu: ${e.message}';
       }
-       Fluttertoast.showToast(
-        msg: message,
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.SNACKBAR,
-        backgroundColor: Colors.black54,
-        textColor: Colors.white,
-        fontSize: 14.0,
-      );
+      throw Exception(message);
     }
-
   }
 
   Future<void> signout({
-    required BuildContext context
+    required BuildContext context,
   }) async {
-    
     await FirebaseAuth.instance.signOut();
     await Future.delayed(const Duration(seconds: 1));
     Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) =>Login()
-        )
-      );
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) => const LoginScreen(),
+      ),
+    );
   }
 }
