@@ -8,6 +8,8 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    User? user = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -28,7 +30,7 @@ class Home extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                FirebaseAuth.instance.currentUser!.email!.toString(),
+                user?.email ?? 'Anonymous User',
                 style: GoogleFonts.raleway(
                   textStyle: const TextStyle(
                     color: Colors.black,

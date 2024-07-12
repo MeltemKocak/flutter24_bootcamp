@@ -3,14 +3,13 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:planova/pages/login_page.dart';
 import 'package:planova/pages/home.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // Firebase Authentication paketini ekledik
-// Home sayfasını içe aktardık
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
-// ignore: must_be_immutable
 class LoginSubPage extends StatelessWidget {
   LoginSubPage({super.key});
 
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance; // FirebaseAuth örneği oluşturduk
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   int sliderIndex = 1;
 
   @override
@@ -93,12 +92,12 @@ class LoginSubPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
               ),
               padding: const EdgeInsets.symmetric(vertical: 14),
-              minimumSize: Size(buttonWidth, 0), // Genişlik %80
+              minimumSize: Size(buttonWidth, 0),
             ),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => LoginScreen()), // Login ekranına yönlendirme
+                MaterialPageRoute(builder: (context) => LoginScreen()),
               );
             },
             child: const Text(
@@ -122,9 +121,14 @@ class LoginSubPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
               ),
               padding: const EdgeInsets.symmetric(vertical: 14),
-              minimumSize: Size(buttonWidth, 0), // Genişlik %80
+              minimumSize: Size(buttonWidth, 0),
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const Home()), // Guest kullanıcı için Home sayfasına yönlendirme
+              );
+            },
             child: const Text(
               "Continue as a Guest",
               style: TextStyle(
@@ -141,11 +145,7 @@ class LoginSubPage extends StatelessWidget {
             children: [
               _buildIconOutlinedButton(context, "assets/icons/google.ico", iconButtonWidth, onPressed: () => _signInWithGoogle(context)),
               SizedBox(width: MediaQuery.of(context).size.width * 0.04),
-              _buildIconOutlinedButton(context, null, iconButtonWidth, icon: const Icon(
-                Icons.key,
-                color: Colors.white,
-                size: 30,
-              )),
+              _buildIconOutlinedButton(context, "assets/icons/facebook.ico", iconButtonWidth, onPressed: () => _signInWithFacebook(context)),
             ],
           ),
         ],
@@ -170,11 +170,11 @@ class LoginSubPage extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
         ),
         padding: EdgeInsets.zero,
-        minimumSize: Size(buttonWidth, 60), // Genişlik %40, yükseklik sabit
+        minimumSize: Size(buttonWidth, 60),
       ),
       onPressed: onPressed,
       child: SizedBox(
-        width: buttonWidth, // Genişlik %40
+        width: buttonWidth,
         height: 60,
         child: Center(
           child: assetPath != null
@@ -203,7 +203,7 @@ class LoginSubPage extends StatelessWidget {
         await _firebaseAuth.signInWithCredential(credential);
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const Home()), // Home sayfasına yönlendirme
+          MaterialPageRoute(builder: (context) => const Home()),
         );
       }
     } catch (e) {
@@ -211,8 +211,28 @@ class LoginSubPage extends StatelessWidget {
     }
   }
 
+  Future<void> _signInWithFacebook(BuildContext context) async {
+    try {
+      final LoginResult result = await FacebookAuth.instance.login();
+
+      if (result.status == LoginStatus.success) {
+        final AccessToken accessToken = result.accessToken!;
+        final AuthCredential credential = FacebookAuthProvider.credential(accessToken.token);
+
+        await _firebaseAuth.signInWithCredential(credential);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const Home()),
+        );
+      } else {
+        showToast(context, message: "Facebook sign-in failed: ${result.message}");
+      }
+    } catch (e) {
+      showToast(context, message: "Some error occurred: $e");
+    }
+  }
+
   void showToast(BuildContext context, {required String message}) {
-    // Show toast method implementation
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 }

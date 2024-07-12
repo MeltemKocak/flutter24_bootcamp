@@ -57,6 +57,8 @@ dependencies:
   http: ^1.2.1
   cloud_firestore: ^5.1.0
 
+  flutter_facebook_auth: ^3.5.0
+
 
 
 dev_dependencies:
