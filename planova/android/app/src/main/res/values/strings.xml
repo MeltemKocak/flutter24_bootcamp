@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="facebook_app_id">1488226512063499</string>
-    <string name="fb_login_protocol_scheme">fb1488226512063499</string>
-    <string name="facebook_client_token">30bed1d99666f3bcb1c33d7c4a478972</string>
-    <string name="app_name">"planova"</string>
-
-</resources>

@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:planova/pages/home.dart';
 import 'package:planova/pages/login_page.dart';
+import 'package:planova/pages/home.dart';
 
 class Auth {
   Future<void> signup({
@@ -19,7 +19,7 @@ class Auth {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (BuildContext context) => const Home(),
+          builder: (BuildContext context) => const Homes(),
         ),
       );
     } on FirebaseAuthException catch (e) {
@@ -50,7 +50,7 @@ class Auth {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (BuildContext context) => const Home(),
+          builder: (BuildContext context) => const Homes(),
         ),
       );
     } on FirebaseAuthException catch (e) {

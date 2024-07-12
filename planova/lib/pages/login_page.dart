@@ -6,10 +6,12 @@ import 'package:planova/utilities/auth.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -23,7 +25,7 @@ class MyApp extends StatelessWidget {
 }
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -101,8 +103,8 @@ class _LoginScreenState extends State<LoginScreen> {
       SnackBar(
         content: Row(
           children: [
-            Icon(Icons.error, color: Colors.white),
-            SizedBox(width: 10),
+            const Icon(Icons.error, color: Colors.white),
+            const SizedBox(width: 10),
             Expanded(child: Text(message)),
           ],
         ),
@@ -111,7 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        duration: Duration(seconds: 3),
+        duration: const Duration(seconds: 3),
       ),
     );
   }
@@ -291,14 +293,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide(
                   width: 2.5,
-                  color: isPasswordWrong ? Colors.red : Color(0XFF03DAC6),
+                  color: isPasswordWrong ? Colors.red : const Color(0XFF03DAC6),
                 ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide(
                   width: 2.5,
-                  color: isPasswordWrong ? Colors.red : Color(0XFF03DAC6),
+                  color: isPasswordWrong ? Colors.red : const Color(0XFF03DAC6),
                 ),
               ),
               filled: true,

@@ -57,7 +57,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.0" // Kullanılan Kotlin sürümünü belirledik
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.0" // Uyumlu Kotlin kütüphanesi ekledik
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.0"
-    implementation "com.facebook.android:facebook-android-sdk:[5,6)"
  // Uyumlu Kotlin kütüphanesi ekledik
     // Diğer bağımlılıklarınızı buraya ekleyin
 }
