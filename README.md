@@ -187,27 +187,27 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
     <summary><h2>App Screenshots</h2></summary>
 
 ### Login Page
-![Loginpage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/App_ss/Loginpage.png)
+![Loginpage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_1/Sprint1_App_ss/Sprint1_Loginpage_UI.png)
 
 ---
 ### Today(Home)page
-![Homepage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/App_ss/Homepage.png)
+![Homepage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_1/Sprint1_App_ss/Sprint1_Homepage_UI.png)
 
 ---
 ### Habits Page
-![Habitpage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/App_ss/Habitpage.png)
+![Habitpage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_1/Sprint1_App_ss/Sprint1_Habitpage_UI.png)
 
 ---
 ### Journal Page
-![Habitpage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/App_ss/Journalpage.png)
+![Habitpage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_1/Sprint1_App_ss/Spritn1_Journalpage_UI.png)
 
 ---
 ### Profile Page
-![Habitpage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/App_ss/Profilepage.png)
+![Habitpage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_1/Sprint1_App_ss/Sprint1_Profilepage_UI.png)
 
 ---
 ### Settings Page
-<img src="https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/App_ss/settingspage.png" width="500">
+<img src="https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_1/Sprint1_App_ss/Sprint1_settingspage_UI.png" width="500">
 
 
 
@@ -218,7 +218,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
   <details>
     <summary><h2>App Map</h2></summary>
 
-![App Flowchart](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/Map.png)
+![App Flowchart](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_1/Sprint1_App_Map/Sprint1_App_Map.png)
    
   </details>
 
@@ -226,11 +226,11 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
   <details>
     <summary><h2>Project Management</h2></summary>
     
-![pm_1](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/Sprint1_PM/pm_1.png)
-![pm_2](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/Sprint1_PM/pm_2.png)
-![pm_3](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/Sprint1_PM/pm_3.png)
-![pm_4](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/Sprint1_PM/pm_4.png)
-![pm_5](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/Sprint1_PM/pm_5.png)
+![pm_1](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_1/Sprint1_PM/Sprint1_pm_1.png)
+![pm_2](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_1/Sprint1_PM/Sprint1_pm_2.png)
+![pm_3](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_1/Sprint1_PM/Sprint1_pm_3.png)
+![pm_4](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_1/Sprint1_PM/Sprint1_pm_4.png)
+![pm_5](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_1/Sprint1_PM/Sprint1_pm_5.png)
    
   </details>
 
@@ -238,9 +238,9 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
   <details>
     <summary><h2>Burndown Chart</h2></summary>
 
-![Burndown Chart](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/Burndown_chart/burndownchart_1.png)
+![Burndown Chart](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_1/Sprint1_Burndown_chart/Sprint1_Burndown_Chart_1.png)
 
-![Burndown Chart](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Assets/Burndown_chart/Burndownchart_2.png)
+![Burndown Chart](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_1/Sprint1_Burndown_chart/Sprint1_Burndown_Chart_2.png)
 
 
 
@@ -262,9 +262,9 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
   * 300 Point
 
 - **Point Completion Logic:**
-  * A total target of 1100 points was set. In the first sprint, 300 points were targeted because the idea was planned and the designs were made, and 310 points were completed. In the second sprint, 450 points are targeted as the focus will be on writing code and adding APIs. In the third sprint, a target of 450 points was set as the remaining tasks would be completed and integration work would be carried out.
+  * A total target of 1100 points was set. In the first sprint, 300 points were targeted because the idea was planned and the designs were made, and 300 points were completed. In the second sprint, 450 points are targeted as the focus will be on writing code and adding APIs. In the third sprint, a target of 450 points was set as the remaining tasks would be completed and integration work would be carried out.
 
-- **Daily Scrum:** [Daily Scrum](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Assets/Daily_Scrum)
+- **Daily Scrum:** [Daily Scrum](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Project_Management_Files/Sprint_1/Sprint1_Daily_Scrum)
 
 - **Product Backlog URL:**  [Asana](https://app.asana.com/0/1207708660563810/1207708543191861)
 
@@ -296,12 +296,13 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
    * It was decided to add task list and reminder features.
    * It was decided to develop the target tracking and analysis page.
 
+- **Additional Notes**
 <details>
     <summary><h4>Turkish explanation</h4></summary>
 
 
 - **Sprint Notları:**
-   * UI tasarımlarında Figma kullanılmasına karar verilmiştir.
+   * UI tasarımlarında Figma kullanılmasına karar verildi.
    * Proje yönetim aracı olarak Asana kullanılmasına karar verildi.
    * Daily scrum toplantıları whatsapp ve discord uygulamaları takım müsaitlik durumuna göre kullanılarak gerçekleştirildi.
    * Giriş sistemi için e-posta kullanılmasına karar verildi.
@@ -313,7 +314,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
   * 300 Puan
 
 - **Puan Tamamlama Mantığı:**
-  * Toplamda 1100 puanlık bir hedef belirlendi. Birinci sprintte, fikir oturması ve tasarımların yapılması planlandığı için 300 puan hedeflenmiştir ve 310 puan tamamlanmıştır. İkinci sprintte, kod yazma ve API ekleme çalışmalarına yoğunlaşılacağı için 450 puan hedeflenmiştir. Üçüncü sprintte ise kalan görevlerin tamamlanması ve entegrasyon çalışmaları yapılacağından 450 puan hedefi konulmuştur.
+  * Toplamda 1100 puanlık bir hedef belirlendi. Birinci sprintte, fikir oturması ve tasarımların yapılması planlandığı için 300 puan hedeflenmiştir ve 300 puan tamamlanmıştır. İkinci sprintte, kod yazma ve API ekleme çalışmalarına yoğunlaşılacağı için 450 puan hedeflenmiştir. Üçüncü sprintte ise kalan görevlerin tamamlanması ve entegrasyon çalışmaları yapılacağından 450 puan hedefi konulmuştur.
 
 - **Sprint Gözden Geçirilmesi:**
    * Melisa Nur Alparslan ve Olgun Baran Atik prototip ve tasarımları yaptı.
