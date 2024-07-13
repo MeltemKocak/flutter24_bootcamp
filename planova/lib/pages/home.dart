@@ -34,14 +34,13 @@ class NavigationExample extends StatefulWidget {
 
 class _NavigationExampleState extends State<NavigationExample> {
   static int currentPageIndex = 0;
-
   final List<String> appBarTitles = ['Today', 'Habits', 'Journal', 'Profile'];
 
   @override
   Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
- 
     final ThemeData theme = Theme.of(context);
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 30, 30, 30),
       appBar: AppBar(
@@ -60,7 +59,7 @@ class _NavigationExampleState extends State<NavigationExample> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(width: MediaQuery.of(context).size.width * 0.08), // Boş alan
+            SizedBox(width: MediaQuery.of(context).size.width * 0.08),
             Text(appBarTitles[currentPageIndex], style: const TextStyle(color: Colors.white)),
           ],
         ),
@@ -168,28 +167,24 @@ class _NavigationExampleState extends State<NavigationExample> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
-            switch (currentPageIndex) {
-      case 0:
-        // İlk durum için yapılacak işlemler
-        showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              backgroundColor: Colors.transparent,
-              builder: (context) => const TodayAddSubPage(),
-            );
-        break;
-      case 1:
-        // İkinci durum için yapılacak işlemler
-        print('Button pressed on page 1');
-        break;
-      case 2:
-        // Üçüncü durum için yapılacak işlemler
-        print('Button pressed on page 2');
-        break;
-      default:
-        // Varsayılan durum (isteğe bağlı)
-    }
+        onPressed: () {
+          switch (currentPageIndex) {
+            case 0:
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (context) => const TodayAddSubPage(),
+              );
+              break;
+            case 1:
+              print('Button pressed on page 1');
+              break;
+            case 2:
+              print('Button pressed on page 2');
+              break;
+            default:
+          }
         },
         backgroundColor: const Color.fromARGB(255, 3, 218, 198),
         child: const Icon(
@@ -359,8 +354,6 @@ class _NavigationExampleState extends State<NavigationExample> {
       ][currentPageIndex],
     );
   }
-
-
 }
 
 class Auth {

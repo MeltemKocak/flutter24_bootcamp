@@ -14,7 +14,6 @@ class Auth {
         email: email,
         password: password,
       );
-
       await Future.delayed(const Duration(seconds: 1));
       Navigator.pushReplacement(
         context,
@@ -23,13 +22,16 @@ class Auth {
         ),
       );
     } on FirebaseAuthException catch (e) {
-      String message = '';
-      if (e.code == 'weak-password') {
-        message = 'Şifre çok zayıf.';
-      } else if (e.code == 'email-already-in-use') {
-        message = 'Bu e-posta ile zaten bir hesap var.';
-      } else {
-        message = 'Bir hata oluştu: ${e.message}';
+      String message;
+      switch (e.code) {
+        case 'weak-password':
+          message = 'Şifre çok zayıf.';
+          break;
+        case 'email-already-in-use':
+          message = 'Bu e-posta ile zaten bir hesap var.';
+          break;
+        default:
+          message = 'Bir hata oluştu: ${e.message}';
       }
       throw Exception(message);
     }
@@ -45,7 +47,6 @@ class Auth {
         email: email,
         password: password,
       );
-
       await Future.delayed(const Duration(seconds: 1));
       Navigator.pushReplacement(
         context,
@@ -54,13 +55,16 @@ class Auth {
         ),
       );
     } on FirebaseAuthException catch (e) {
-      String message = '';
-      if (e.code == 'invalid-email') {
-        message = 'Bu e-posta ile bir kullanıcı bulunamadı.';
-      } else if (e.code == 'wrong-password') {
-        message = 'Yanlış şifre.';
-      } else {
-        message = 'Bir hata oluştu: ${e.message}';
+      String message;
+      switch (e.code) {
+        case 'invalid-email':
+          message = 'Bu e-posta ile bir kullanıcı bulunamadı.';
+          break;
+        case 'wrong-password':
+          message = 'Yanlış şifre.';
+          break;
+        default:
+          message = 'Bir hata oluştu: ${e.message}';
       }
       throw Exception(message);
     }

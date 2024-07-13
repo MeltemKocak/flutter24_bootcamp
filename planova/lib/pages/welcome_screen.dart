@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:planova/pages/login_subpage.dart'; // Test ekranını içe aktardık
+import 'package:planova/pages/login_subpage.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -11,8 +11,8 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
-  int sliderIndex = 0; // State içinde tanımlanmalı
-  final CarouselController _carouselController = CarouselController(); // CarouselController tanımlanması
+  int sliderIndex = 0;
+  final CarouselController _carouselController = CarouselController();
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +28,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           child: Column(
             children: [
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                 child: Image.asset(
                   "assets/images/img_rectangle_2769.png",
                   height: 284,
@@ -37,13 +36,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 ),
               ),
               const SizedBox(height: 62),
-              _buildWelcomeSlider(context),
+              _buildWelcomeSlider(),
               const SizedBox(height: 28),
               SizedBox(
                 height: 8,
                 child: AnimatedSmoothIndicator(
                   activeIndex: sliderIndex,
-                  count: 3, // Slide sayısını 3 olarak ayarladık
+                  count: 3,
                   axisDirection: Axis.horizontal,
                   effect: const ScrollingDotsEffect(
                     spacing: 6,
@@ -54,22 +53,21 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 4)
+              const SizedBox(height: 4),
             ],
           ),
         ),
-        bottomNavigationBar: _buildGetStartedButton(context),
+        bottomNavigationBar: _buildGetStartedButton(),
       ),
     );
   }
 
-  /// Section Widget
-  Widget _buildWelcomeSlider(BuildContext context) {
+  Widget _buildWelcomeSlider() {
     return Container(
       width: double.maxFinite,
       margin: const EdgeInsets.symmetric(horizontal: 24),
       child: CarouselSlider.builder(
-        carouselController: _carouselController, // CarouselController ekledik
+        carouselController: _carouselController,
         options: CarouselOptions(
           height: 108,
           initialPage: 0,
@@ -83,7 +81,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             });
           },
         ),
-        itemCount: 3, // Öğelerin sayısını 3 olarak ayarladık
+        itemCount: 3,
         itemBuilder: (context, index, realIndex) {
           return WelcomesliderItemWidget(index: index);
         },
@@ -91,16 +89,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     );
   }
 
-  /// Section Widget
-  Widget _buildGetStartedButton(BuildContext context) {
+  Widget _buildGetStartedButton() {
     return Container(
       width: double.maxFinite,
       height: 64,
-      margin: const EdgeInsets.only(
-        left: 16,
-        right: 16,
-        bottom: 34,
-      ),
+      margin: const EdgeInsets.only(left: 16, right: 16, bottom: 34),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0XFF274F5E),
@@ -111,21 +104,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             vertical: -4,
             horizontal: -4,
           ),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 60,
-            vertical: 14,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 14),
         ),
         onPressed: () {
-           // Son slayt mı kontrol ediyoruz
-            // Belirtilen yere git
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              backgroundColor: Colors.transparent,
-              builder: (context) => LoginSubPage(),
-            );
-          
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            builder: (context) => LoginSubPage(),
+          );
         },
         child: const Text(
           "Get started",
@@ -141,7 +128,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 }
 
-// ignore: must_be_immutable
 class WelcomesliderItemWidget extends StatelessWidget {
   final int index;
 
@@ -149,7 +135,6 @@ class WelcomesliderItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Her slayt için farklı içerik döndürmek için index'i kullanın
     switch (index) {
       case 0:
         return const Column(
