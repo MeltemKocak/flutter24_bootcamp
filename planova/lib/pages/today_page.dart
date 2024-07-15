@@ -1,7 +1,9 @@
 import 'package:easy_date_timeline/easy_date_timeline.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:planova/pages/today_edit.dart';
 
 class TodayPage extends StatefulWidget {
   const TodayPage({Key? key}) : super(key: key);
@@ -11,6 +13,18 @@ class TodayPage extends StatefulWidget {
 }
 
 class _TodayPageState extends State<TodayPage> {
+   final FirebaseAuth _auth = FirebaseAuth.instance;
+  User? _user;
+  @override
+  void initState() {
+    super.initState();
+    _user = _auth.currentUser;
+    _auth.authStateChanges().listen((User? user) {
+      setState(() {
+        _user = user;
+      });
+    });
+  }
   final EasyInfiniteDateTimelineController _controller = EasyInfiniteDateTimelineController();
   DateTime? _focusDate = DateTime.now();
   bool _showIncomplete = true;
@@ -64,6 +78,7 @@ class _TodayPageState extends State<TodayPage> {
             child: StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
                   .collection('todos')
+                  .where('userId', isEqualTo: _user!.uid)
                   .where('taskCreateDate', isGreaterThanOrEqualTo: DateTime(_focusDate!.year, _focusDate!.month, _focusDate!.day))
                   .where('taskCreateDate', isLessThan: DateTime(_focusDate!.year, _focusDate!.month, _focusDate!.day + 1))
                   .snapshots(),
@@ -140,57 +155,69 @@ class _TodayPageState extends State<TodayPage> {
   Widget _buildTaskCard(DocumentSnapshot task) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Card(
-        color: const Color.fromARGB(120, 96, 125, 139),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            children: [
-              Checkbox(
-                shape: RoundedRectangleBorder(
+      child: GestureDetector(
+        onTap: () {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (context) => TaskEditPage(task: task),
+  );
+},
+        child: Card(
+          color: const Color.fromARGB(120, 96, 125, 139),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              
+              children: [
+                Checkbox(
+                  shape: RoundedRectangleBorder(
+                    
+            borderRadius: BorderRadius.circular(4.0),
+          ),
+          side: BorderSide(color: const Color.fromARGB(200, 3, 218, 198)),
+                  value: task['taskIsDone'],
                   
-    borderRadius: BorderRadius.circular(4.0),
-  ),
-  side: BorderSide(color: const Color.fromARGB(200, 3, 218, 198)),
-                value: task['taskIsDone'],
-                onChanged: (bool? value) {
-                  FirebaseFirestore.instance.collection('todos').doc(task.id).update({
-                    'taskIsDone': value,
-                  });
-                },
-                activeColor: const Color.fromARGB(150, 3, 218, 198),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      task['taskName'],
-                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Text(
-                          DateFormat('HH:mm').format((task['taskCreateDate'] as Timestamp).toDate()),
-                          style: const TextStyle(color: Colors.white70),
-                        ),
-                        if (task['taskRecurring'] != null && (task['taskRecurring'] as List).isNotEmpty)
-                          const Padding(
-                            padding: EdgeInsets.only(left: 8),
-                            child: Icon(Icons.repeat, color: Colors.white70, size: 16),
-                          ),
-                      ],
-                    ),
-                  ],
+                  onChanged: (bool? value) {
+                    FirebaseFirestore.instance.collection('todos').doc(task.id).update({
+                      'taskIsDone': value,
+                    });
+                  },
+                  activeColor: const Color.fromARGB(150, 3, 218, 198),
                 ),
-              ),
-              const Icon(
-                Icons.person_outlined,
-                color: Colors.white70,
-              ),
-            ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        task['taskName'],
+                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Text(
+                            DateFormat('HH:mm').format((task['taskCreateDate'] as Timestamp).toDate()),
+                            style: const TextStyle(color: Colors.white70),
+                          ),
+                          if (task['taskRecurring'] != null && (task['taskRecurring'] as List).isNotEmpty)
+                            const Padding(
+                              padding: EdgeInsets.only(left: 8),
+                              child: Icon(Icons.repeat, color: Colors.white70, size: 16),
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(
+                  Icons.person_outlined,
+                  color: Colors.white70,
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -1,37 +1,47 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
-class TodayAddSubPage extends StatefulWidget {
-  const TodayAddSubPage({super.key});
+class TaskEditPage extends StatefulWidget {
+  final DocumentSnapshot task;
+
+  const TaskEditPage({Key? key, required this.task}) : super(key: key);
 
   @override
-  _TodayAddSubPageState createState() => _TodayAddSubPageState();
+  _TaskEditPageState createState() => _TaskEditPageState();
 }
 
-class _TodayAddSubPageState extends State<TodayAddSubPage> {
+class _TaskEditPageState extends State<TaskEditPage> {
+  late TextEditingController nameController;
+  late TextEditingController descriptionController;
+  late FocusNode taskNameFocusNode;
+  late FocusNode descriptionFocusNode;
+  late List<int> selectedDays;
+  late String selectedReminder;
 
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  User? _user;
 
   @override
   void initState() {
     super.initState();
-    _user = _auth.currentUser;
+    nameController = TextEditingController(text: widget.task['taskName']);
+    descriptionController = TextEditingController(text: widget.task['taskDescription']);
+    taskNameFocusNode = FocusNode();
+    descriptionFocusNode = FocusNode();
+    selectedDays = List<int>.from(widget.task['taskRecurring'] ?? []);
+    selectedReminder = widget.task['taskReminder'];
   }
 
-
-  TextEditingController nameController = TextEditingController();
-  TextEditingController edittextController = TextEditingController();
-  FocusNode taskNameFocusNode = FocusNode();
-  FocusNode descriptionFocusNode = FocusNode();
-  List<int> selectedDays = [];
-  String selectedReminder = '1 gün';
+  @override
+  void dispose() {
+    nameController.dispose();
+    descriptionController.dispose();
+    taskNameFocusNode.dispose();
+    descriptionFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Mevcut build metodu aynı kalacak
     return Container(
       decoration: const BoxDecoration(
         color: Color(0XFF1E1E1E),
@@ -55,122 +65,14 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
           Positioned(
             right: 20,
             bottom: 20,
-            child: _buildAiButton(context),
+            child: _buildUpdateButton(context),
           ),
         ],
       ),
     );
   }
 
-
-  // Diğer widget metodları aynı kalacak, sadece _buildRecurringSection ve _buildAiButton'ı güncelleyeceğim
-
-  Widget _buildRecurringSection(BuildContext context) {
-    return Container(
-      width: double.maxFinite,
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        children: [
-          SizedBox(
-            width: double.maxFinite,
-            child: Row(
-              children: [
-                Expanded(
-                  child: SizedBox(
-                    width: double.maxFinite,
-                    height: 60,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0X3F607D8B),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        visualDensity: const VisualDensity(
-                          vertical: -4,
-                          horizontal: -4,
-                        ),
-                        padding: const EdgeInsets.only(
-                          top: 16,
-                          right: 30,
-                          bottom: 16,
-                        ),
-                      ),
-                      onPressed: _showRecurringDialog,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(right: 16),
-                            child: const Icon(Icons.refresh_outlined, color: Colors.white, size: 28),
-                          ),
-                          const Text(
-                            "Recurring",
-                            style: TextStyle(
-                              color: Color(0XFFFFFFFF),
-                              fontSize: 20,
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: SizedBox(
-                    width: double.maxFinite,
-                    height: 60,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0X3F607D8B),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        visualDensity: const VisualDensity(
-                          vertical: -4,
-                          horizontal: -4,
-                        ),
-                        padding: const EdgeInsets.only(
-                          top: 16,
-                          right: 30,
-                          bottom: 16,
-                        ),
-                      ),
-                      onPressed: _showReminderDialog,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(right: 16),
-                            child: const Icon(Icons.notifications_none_outlined, color: Colors.white, size: 25),
-                          ),
-                          const Text(
-                            "Reminder",
-                            style: TextStyle(
-                              color: Color(0XFFFFFFFF),
-                              fontSize: 20,
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                )
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-    Widget _buildColumnVector(BuildContext context) {
+  Widget _buildColumnVector(BuildContext context) {
     return Container(
       width: double.maxFinite,
       margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -193,7 +95,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                   ),
                 ),
                 const Text(
-                  "Task",
+                  "Edit Task",
                   style: TextStyle(
                     color: Color(0XFFFFFFFF),
                     fontSize: 24,
@@ -222,7 +124,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
     );
   }
 
-  Widget _buildTaskSection(BuildContext context) {
+ Widget _buildTaskSection(BuildContext context) {
     return Container(
       width: double.maxFinite,
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -346,7 +248,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
           SizedBox(
             width: double.maxFinite,
             child: TextFormField(
-              controller: edittextController,
+              controller: descriptionController,
               focusNode: descriptionFocusNode,
               style: const TextStyle(
                 color: Colors.white,
@@ -391,10 +293,113 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
     );
   }
 
-
-  Widget _buildAiButton(BuildContext context) {
+  Widget _buildRecurringSection(BuildContext context) {
+    return Container(
+      width: double.maxFinite,
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        children: [
+          SizedBox(
+            width: double.maxFinite,
+            child: Row(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    width: double.maxFinite,
+                    height: 60,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0X3F607D8B),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        visualDensity: const VisualDensity(
+                          vertical: -4,
+                          horizontal: -4,
+                        ),
+                        padding: const EdgeInsets.only(
+                          top: 16,
+                          right: 30,
+                          bottom: 16,
+                        ),
+                      ),
+                      onPressed: _showRecurringDialog,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(right: 16),
+                            child: const Icon(Icons.refresh_outlined, color: Colors.white, size: 28),
+                          ),
+                          const Text(
+                            "Recurring",
+                            style: TextStyle(
+                              color: Color(0XFFFFFFFF),
+                              fontSize: 20,
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.w400,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: SizedBox(
+                    width: double.maxFinite,
+                    height: 60,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0X3F607D8B),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        visualDensity: const VisualDensity(
+                          vertical: -4,
+                          horizontal: -4,
+                        ),
+                        padding: const EdgeInsets.only(
+                          top: 16,
+                          right: 30,
+                          bottom: 16,
+                        ),
+                      ),
+                      onPressed: _showReminderDialog,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(right: 16),
+                            child: const Icon(Icons.notifications_none_outlined, color: Colors.white, size: 25),
+                          ),
+                          const Text(
+                            "Reminder",
+                            style: TextStyle(
+                              color: Color(0XFFFFFFFF),
+                              fontSize: 20,
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.w400,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+  Widget _buildUpdateButton(BuildContext context) {
     return GestureDetector(
-      onTap: _addTodo,
+      onTap: _updateTodo,
       child: Container(
         alignment: Alignment.center,
         height: 70,
@@ -404,11 +409,27 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
           color: const Color(0XFF03DAC6),
           borderRadius: BorderRadius.circular(16),
         ),
-        child: const SizedBox(
-          child: Icon(Icons.psychology_outlined, color: Colors.white, size: 45),
-        ),
+        child: const Icon(Icons.update, color: Colors.white, size: 45),
       ),
     );
+  }
+
+  void _updateTodo() {
+    FirebaseFirestore.instance.collection('todos').doc(widget.task.id).update({
+      'taskName': nameController.text,
+      'taskDescription': descriptionController.text,
+      'taskRecurring': selectedDays,
+      'taskReminder': selectedReminder,
+    }).then((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Task updated successfully')),
+      );
+      Navigator.pop(context);
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error updating task: $error')),
+      );
+    });
   }
 
   void _showRecurringDialog() {
@@ -450,10 +471,6 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
       },
     );
   }
- 
-
-  
- 
 
   void _showReminderDialog() {
     showDialog(
@@ -480,36 +497,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
       },
     );
   }
-
-   void _addTodo() {
-    if (_user == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('You must be logged in to add a task')),
-      );
-      return;
-    }
-
-    FirebaseFirestore.instance.collection('todos').add({
-      'userId': _user!.uid,
-      'taskName': nameController.text,
-      'taskDescription': edittextController.text,
-      'taskCreateDate': FieldValue.serverTimestamp(),
-      'taskIsDone': false,
-      'taskRecurring': selectedDays,
-      'taskReminder': selectedReminder,
-    }).then((_) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Task added successfully')),
-      );
-      Navigator.pop(context);
-    }).catchError((error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error adding task: $error')),
-      );
-    });
-  }
-
-  String _getDayName(int day) {
+    String _getDayName(int day) {
     switch (day) {
       case 1: return 'Pzt';
       case 2: return 'Sal';
