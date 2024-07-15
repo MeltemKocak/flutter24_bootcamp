@@ -2,8 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:planova/pages/today_add.dart';
 import 'package:planova/pages/welcome_screen.dart';
-
-void main() => runApp(const Homes());
+import 'package:easy_date_timeline/easy_date_timeline.dart';
 
 class Homes extends StatelessWidget {
   const Homes({super.key});
@@ -35,6 +34,9 @@ class NavigationExample extends StatefulWidget {
 class _NavigationExampleState extends State<NavigationExample> {
   static int currentPageIndex = 0;
   final List<String> appBarTitles = ['Today', 'Habits', 'Journal', 'Profile'];
+  final EasyInfiniteDateTimelineController _controller =
+      EasyInfiniteDateTimelineController();
+  DateTime? _focusDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +62,8 @@ class _NavigationExampleState extends State<NavigationExample> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(width: MediaQuery.of(context).size.width * 0.08),
-            Text(appBarTitles[currentPageIndex], style: const TextStyle(color: Colors.white)),
+            Text(appBarTitles[currentPageIndex],
+                style: const TextStyle(color: Colors.white)),
           ],
         ),
         actions: [
@@ -110,7 +113,8 @@ class _NavigationExampleState extends State<NavigationExample> {
             ),
             ListTile(
               leading: const Icon(Icons.list, color: Colors.white),
-              title: const Text('All tasks', style: TextStyle(color: Colors.white)),
+              title: const Text('All tasks',
+                  style: TextStyle(color: Colors.white)),
               onTap: () {
                 setState(() {
                   currentPageIndex = 0;
@@ -120,7 +124,8 @@ class _NavigationExampleState extends State<NavigationExample> {
             ),
             ListTile(
               leading: const Icon(Icons.check_circle, color: Colors.white),
-              title: const Text('Habits', style: TextStyle(color: Colors.white)),
+              title:
+                  const Text('Habits', style: TextStyle(color: Colors.white)),
               onTap: () {
                 setState(() {
                   currentPageIndex = 1;
@@ -130,7 +135,8 @@ class _NavigationExampleState extends State<NavigationExample> {
             ),
             ListTile(
               leading: const Icon(Icons.star, color: Colors.white),
-              title: const Text('Important Task', style: TextStyle(color: Colors.white)),
+              title: const Text('Important Task',
+                  style: TextStyle(color: Colors.white)),
               onTap: () {
                 setState(() {
                   currentPageIndex = 2;
@@ -140,7 +146,8 @@ class _NavigationExampleState extends State<NavigationExample> {
             ),
             ListTile(
               leading: const Icon(Icons.delete, color: Colors.white),
-              title: const Text('Deleted', style: TextStyle(color: Colors.white)),
+              title:
+                  const Text('Deleted', style: TextStyle(color: Colors.white)),
               onTap: () {
                 setState(() {
                   currentPageIndex = 3;
@@ -151,7 +158,8 @@ class _NavigationExampleState extends State<NavigationExample> {
             const Divider(color: Colors.grey),
             ListTile(
               leading: const Icon(Icons.settings, color: Colors.white),
-              title: const Text('Settings', style: TextStyle(color: Colors.white)),
+              title:
+                  const Text('Settings', style: TextStyle(color: Colors.white)),
               onTap: () {
                 // Implement your settings action here
               },
@@ -262,13 +270,57 @@ class _NavigationExampleState extends State<NavigationExample> {
         Card(
           color: const Color.fromARGB(255, 30, 30, 30),
           shadowColor: Colors.transparent,
-          margin: const EdgeInsets.all(8.0),
-          child: SizedBox.expand(
-            child: Center(
-              child: Text(
-                'Home page',
-                style: theme.textTheme.bodyLarge,
-              ),
+          margin: const EdgeInsets.only(right: 18),
+          child: SizedBox.square(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 60,
+                  child: EasyInfiniteDateTimeLine(
+                    showTimelineHeader: false,
+                    selectionMode: const SelectionMode.autoCenter(),
+                    controller: _controller,
+                    focusDate: _focusDate,
+                    firstDate: DateTime(2024),
+                    lastDate: DateTime(2024, 12, 31),
+                    onDateChange: (selectedDate) {
+                      setState(() {
+                        _focusDate = selectedDate;
+                      });
+                    },
+                    activeColor: const Color.fromARGB(255, 3, 218, 75),
+                    dayProps: const EasyDayProps(
+                      todayStyle: DayStyle(
+                          decoration: BoxDecoration(
+                              color: Color.fromARGB(99, 43, 158, 87),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(18)))),
+                      activeDayStyle: DayStyle(
+                          decoration: BoxDecoration(
+                              color: Color.fromARGB(255, 3, 218, 182),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(18)))),
+                      borderColor: Color.fromARGB(0, 0, 255, 242),
+                      height: 60.0,
+                      width: 50,
+                      dayStructure: DayStructure.dayStrDayNum,
+                      inactiveDayStyle: DayStyle(
+                        borderRadius: 18,
+                        dayNumStyle:
+                            TextStyle(fontSize: 18.0, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      'Content for Today Page',
+                      style: theme.textTheme.bodyLarge,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -361,8 +413,7 @@ class Auth {
 
   Future<void> signOut({required BuildContext context}) async {
     await _firebaseAuth.signOut();
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const WelcomeScreen()));
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => const WelcomeScreen()));
   }
 }
