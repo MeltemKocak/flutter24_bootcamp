@@ -534,14 +534,14 @@ class _TaskEditPageState extends State<TaskEditPage> {
     );
   }
 
- void _deleteTodo() {
+void _deleteTodo() {
   showDialog(
     context: context,
-    builder: (BuildContext dialogContext) {  // dialogContext kullanıyoruz
+    builder: (BuildContext dialogContext) {
       return AlertDialog(
         backgroundColor: const Color.fromARGB(255, 30, 30, 30),
         title: const Text("Görevi Sil", style: TextStyle(color: Colors.white),),
-        content: const Text("Bu görevi silmek istediğinizden emin misiniz?", style: TextStyle(color: Colors.white)),
+        content: const Text("Bu görevi silmek istediğinizden emin misiniz? Gelecekteki tekrarlar korunacaktır.", style: TextStyle(color: Colors.white)),
         actions: <Widget>[
           TextButton(
             child: const Text("İptal", style: TextStyle(color: Colors.white)),
@@ -552,14 +552,20 @@ class _TaskEditPageState extends State<TaskEditPage> {
           TextButton(
             child: const Text("Sil", style: TextStyle(color: Colors.white)),
             onPressed: () {
-              FirebaseFirestore.instance.collection('todos').doc(widget.task.id).delete().then((_) {
-                Navigator.of(dialogContext).pop();  // Önce dialog'u kapat
+              // Şu anki tarihi al
+              DateTime now = DateTime.now();
+              
+              // Firestore belgesini güncelle, silmek yerine
+              FirebaseFirestore.instance.collection('todos').doc(widget.task.id).update({
+                'deletedDate': now,
+              }).then((_) {
+                Navigator.of(dialogContext).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Görev başarıyla silindi')),
+                  const SnackBar(content: Text('Görev başarıyla silindi. Gelecekteki tekrarlar korundu.')),
                 );
-                Navigator.of(context).pop();  // Sonra TaskEditPage'i kapat
+                Navigator.of(context).pop();
               }).catchError((error) {
-                Navigator.of(dialogContext).pop();  // Hata durumunda da dialog'u kapat
+                Navigator.of(dialogContext).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Görev silinirken hata oluştu: $error')),
                 );

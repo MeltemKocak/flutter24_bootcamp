@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class HabitPage extends StatefulWidget {
   
-  const HabitPage({ Key? key }) : super(key: key);
+  const HabitPage({ super.key });
 
   @override
   _TodayPageState createState() => _TodayPageState();
@@ -15,10 +15,10 @@ class _TodayPageState extends State<HabitPage> {
  
   @override
   Widget build(BuildContext context) {
-    return Card(
-          color: const Color.fromARGB(255, 30, 30, 30),
+    return const Card(
+          color: Color.fromARGB(255, 30, 30, 30),
           shadowColor: Colors.transparent,
-          margin: const EdgeInsets.only(right: 18),
+          margin: EdgeInsets.only(right: 18),
           child: SizedBox.square(
             child: Column(
               children: [

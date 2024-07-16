@@ -481,33 +481,38 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
     );
   }
 
-   void _addTodo() {
-    if (_user == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('You must be logged in to add a task')),
-      );
-      return;
-    }
-
-    FirebaseFirestore.instance.collection('todos').add({
-      'userId': _user!.uid,
-      'taskName': nameController.text,
-      'taskDescription': edittextController.text,
-      'taskCreateDate': FieldValue.serverTimestamp(),
-      'taskIsDone': false,
-      'taskRecurring': selectedDays,
-      'taskReminder': selectedReminder,
-    }).then((_) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Task added successfully')),
-      );
-      Navigator.pop(context);
-    }).catchError((error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error adding task: $error')),
-      );
-    });
+ void _addTodo() {
+  if (_user == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('You must be logged in to add a task')),
+    );
+    return;
   }
+
+  Map<String, bool> taskCompletionStatus = {};
+  for (int day in selectedDays) {
+    taskCompletionStatus[day.toString()] = false;
+  }
+
+  FirebaseFirestore.instance.collection('todos').add({
+    'userId': _user!.uid,
+    'taskName': nameController.text,
+    'taskDescription': edittextController.text,
+    'taskCreateDate': FieldValue.serverTimestamp(),
+    'taskRecurring': selectedDays,
+    'taskReminder': selectedReminder,
+    'taskCompletionStatus': taskCompletionStatus,
+  }).then((_) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Task added successfully')),
+    );
+    Navigator.pop(context);
+  }).catchError((error) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error adding task: $error')),
+    );
+  });
+}
 
   String _getDayName(int day) {
     switch (day) {

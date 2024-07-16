@@ -5,6 +5,7 @@ import 'package:planova/pages/journal_page.dart';
 import 'package:planova/pages/profile_page.dart';
 import 'package:planova/pages/today_add.dart';
 import 'package:planova/pages/today_page.dart';
+import 'package:planova/pages/today_trash.dart';
 import 'package:planova/pages/welcome_screen.dart';
 
 class Homes extends StatelessWidget {
@@ -150,10 +151,11 @@ class _NavigationExampleState extends State<NavigationExample> {
               title:
                   const Text('Deleted', style: TextStyle(color: Colors.white)),
               onTap: () {
-                setState(() {
-                  currentPageIndex = 3;
-                });
-                Navigator.of(context).pop();
+                 Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => const TrashPage()),
+  );
+
               },
             ),
             const Divider(color: Colors.grey),

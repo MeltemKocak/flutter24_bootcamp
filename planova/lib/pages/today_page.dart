@@ -91,23 +91,33 @@ class _TodayPageState extends State<TodayPage> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    List<DocumentSnapshot> tasksForToday = [];
-   DateTime now = DateTime.now();
+      List<DocumentSnapshot> tasksForToday = [];
+    DateTime now = DateTime.now();
 
-for (var doc in snapshot.data!.docs) {
-  DateTime taskDate = (doc['taskCreateDate'] as Timestamp).toDate();
-  List<int> recurringDays = List<int>.from(doc['taskRecurring'] ?? []);
-  
-  if (
-    (isSameDay(taskDate, _focusDate!) && taskDate.isAfter(DateTime(now.year, now.month, now.day))) || 
-    (recurringDays.isNotEmpty && recurringDays.contains(_focusDate!.weekday) && _focusDate!.isAfter(now))
-  ) {
-    tasksForToday.add(doc);
-  }
-}
+    for (var doc in snapshot.data!.docs) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      DateTime taskDate = (data['taskCreateDate'] as Timestamp?)?.toDate() ?? now;
+      List<int> recurringDays = List<int>.from(data['taskRecurring'] ?? []);
+      DateTime? deletedDate = (data['deletedDate'] as Timestamp?)?.toDate();
+      
+      if (deletedDate == null || _focusDate!.isAfter(deletedDate)) {
+        if (
+          (isSameDay(taskDate, _focusDate!) && taskDate.isAfter(DateTime(now.year, now.month, now.day))) || 
+          (recurringDays.isNotEmpty && recurringDays.contains(_focusDate!.weekday) && _focusDate!.isAfter(now))
+        ) {
+          tasksForToday.add(doc);
+        }
+      }
+    }
 
-    List<DocumentSnapshot> incompleteTasks = tasksForToday.where((task) => !task['taskIsDone']).toList();
-    List<DocumentSnapshot> completedTasks = tasksForToday.where((task) => task['taskIsDone']).toList();
+    Map<String, dynamic> getCompletionStatus(DocumentSnapshot doc) {
+      return (doc.data() as Map<String, dynamic>)['taskCompletionStatus'] ?? {};
+    }
+
+    List<DocumentSnapshot> incompleteTasks = tasksForToday.where((task) => 
+      !(getCompletionStatus(task)[_focusDate!.weekday.toString()] ?? false)).toList();
+    List<DocumentSnapshot> completedTasks = tasksForToday.where((task) => 
+      getCompletionStatus(task)[_focusDate!.weekday.toString()] ?? false).toList();
 
     return ListView(
       children: [
@@ -165,77 +175,76 @@ for (var doc in snapshot.data!.docs) {
     );
   }
 
-  Widget _buildTaskCard(DocumentSnapshot task) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: GestureDetector(
-        onTap: () {
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
-    builder: (context) => TaskEditPage(task: task),
-  );
-},
-        child: Card(
-          color: const Color.fromARGB(120, 96, 125, 139),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Row(
-              
-              children: [
-                Checkbox(
-                  shape: RoundedRectangleBorder(
-                    
-            borderRadius: BorderRadius.circular(4.0),
-          ),
-          side: const BorderSide(color: Color.fromARGB(200, 3, 218, 198)),
-                  value: task['taskIsDone'],
-                  
-                  onChanged: (bool? value) {
-                    FirebaseFirestore.instance.collection('todos').doc(task.id).update({
-                      'taskIsDone': value,
-                    });
-                  },
-                  activeColor: const Color.fromARGB(150, 3, 218, 198),
+Widget _buildTaskCard(DocumentSnapshot task) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    child: GestureDetector(
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          builder: (context) => TaskEditPage(task: task),
+        );
+      },
+      child: Card(
+        color: const Color.fromARGB(120, 96, 125, 139),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              Checkbox(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4.0),
                 ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        task['taskName'],
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Text(
-                            DateFormat('HH:mm').format((task['taskCreateDate'] as Timestamp).toDate()),
-                            style: const TextStyle(color: Colors.white70),
+                side: const BorderSide(color: Color.fromARGB(200, 3, 218, 198)),
+                value: task['taskCompletionStatus'][_focusDate!.weekday.toString()] ?? false,
+                onChanged: (bool? value) {
+                  Map<String, dynamic> completionStatus = Map<String, dynamic>.from(task['taskCompletionStatus']);
+                  completionStatus[_focusDate!.weekday.toString()] = value;
+                  FirebaseFirestore.instance.collection('todos').doc(task.id).update({
+                    'taskCompletionStatus': completionStatus,
+                  });
+                },
+                activeColor: const Color.fromARGB(150, 3, 218, 198),
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      task['taskName'],
+                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Text(
+                          DateFormat('HH:mm').format((task['taskCreateDate'] as Timestamp).toDate()),
+                          style: const TextStyle(color: Colors.white70),
+                        ),
+                        if (task['taskRecurring'] != null && (task['taskRecurring'] as List).isNotEmpty)
+                          const Padding(
+                            padding: EdgeInsets.only(left: 8),
+                            child: Icon(Icons.repeat, color: Colors.white70, size: 16),
                           ),
-                          if (task['taskRecurring'] != null && (task['taskRecurring'] as List).isNotEmpty)
-                            const Padding(
-                              padding: EdgeInsets.only(left: 8),
-                              child: Icon(Icons.repeat, color: Colors.white70, size: 16),
-                            ),
-                        ],
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
+                  ],
                 ),
-                const Icon(
-                  Icons.person_outlined,
-                  color: Colors.white70,
-                ),
-              ],
-            ),
+              ),
+              const Icon(
+                Icons.person_outlined,
+                color: Colors.white70,
+              ),
+            ],
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
 
 
