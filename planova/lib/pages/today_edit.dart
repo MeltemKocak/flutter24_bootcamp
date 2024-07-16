@@ -5,7 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 class TaskEditPage extends StatefulWidget {
   final DocumentSnapshot task;
 
-  const TaskEditPage({Key? key, required this.task}) : super(key: key);
+  const TaskEditPage({super.key, required this.task});
 
   @override
   _TaskEditPageState createState() => _TaskEditPageState();

@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:planova/pages/today_edit.dart';
 
 class TodayPage extends StatefulWidget {
-  const TodayPage({Key? key}) : super(key: key);
+  const TodayPage({super.key});
 
   @override
   _TodayPageState createState() => _TodayPageState();
@@ -160,7 +160,7 @@ for (var doc in snapshot.data!.docs) {
           ),
         ),
         if (isExpanded)
-          ...tasks.map((task) => _buildTaskCard(task)).toList(),
+          ...tasks.map((task) => _buildTaskCard(task)),
       ],
     );
   }
@@ -190,7 +190,7 @@ for (var doc in snapshot.data!.docs) {
                     
             borderRadius: BorderRadius.circular(4.0),
           ),
-          side: BorderSide(color: const Color.fromARGB(200, 3, 218, 198)),
+          side: const BorderSide(color: Color.fromARGB(200, 3, 218, 198)),
                   value: task['taskIsDone'],
                   
                   onChanged: (bool? value) {

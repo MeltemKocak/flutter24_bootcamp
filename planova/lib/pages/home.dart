@@ -268,10 +268,10 @@ class _NavigationExampleState extends State<NavigationExample> {
         ],
       ),
       body: [
-        TodayPage(),
-        HabitPage(),
-        JournalPage(),
-        ProfilePage(),
+        const TodayPage(),
+        const HabitPage(),
+        const JournalPage(),
+        const ProfilePage(),
         ListView.builder(
           reverse: true,
           itemCount: 3,

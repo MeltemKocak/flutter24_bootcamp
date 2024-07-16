@@ -6,7 +6,7 @@ import 'package:planova/pages/journal_voice_text.dart';
 
 class JournalPage extends StatefulWidget {
   
-  const JournalPage({ Key? key }) : super(key: key);
+  const JournalPage({ super.key });
 
   @override
   _TodayPageState createState() => _TodayPageState();
@@ -19,8 +19,8 @@ class _TodayPageState extends State<JournalPage> {
  
   @override
   Widget build(BuildContext context) {
-    return Card(
-                color: const Color.fromARGB(255, 30, 30, 30),
+    return const Card(
+                color: Color.fromARGB(255, 30, 30, 30),
 
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
