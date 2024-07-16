@@ -12,8 +12,13 @@ class voice extends StatelessWidget {
                 margin: EdgeInsets.fromLTRB(20, 0, 20, 17),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Color(0xFF2B373F),
                     borderRadius: BorderRadius.circular(17),
+                    gradient: LinearGradient(
+                      begin: Alignment(-1, 0),
+                      end: Alignment(1, 0),
+                      colors: <Color>[Color(0xFF004942), Color(0xFF005C54), Color.fromARGB(166, 1, 143, 131), Color.fromARGB(156, 3, 218, 197)],
+                      stops: <double>[0.331, 0.536, 0.821, 1],
+                    ),
                   ),
                   child: Container(
                     padding: EdgeInsets.fromLTRB(19, 17, 21, 14),

@@ -114,7 +114,7 @@ class _NavigationExampleState extends State<NavigationExample> {
             ),
             ListTile(
               leading: const Icon(Icons.list, color: Colors.white),
-              title: const Text('All tasks',
+              title: const Text('Today',
                   style: TextStyle(color: Colors.white)),
               onTap: () {
                 setState(() {

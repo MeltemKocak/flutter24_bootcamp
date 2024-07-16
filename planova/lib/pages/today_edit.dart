@@ -40,6 +40,8 @@ class _TaskEditPageState extends State<TaskEditPage> {
     super.dispose();
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -66,6 +68,11 @@ class _TaskEditPageState extends State<TaskEditPage> {
             right: 20,
             bottom: 20,
             child: _buildUpdateButton(context),
+          ),
+          Positioned(
+            left: 20,
+            bottom: 20,
+            child: _buildDeleteButton(context),
           ),
         ],
       ),
@@ -509,4 +516,59 @@ class _TaskEditPageState extends State<TaskEditPage> {
       default: return '';
     }
   }
+
+  Widget _buildDeleteButton(BuildContext context) {
+    return GestureDetector(
+      onTap: _deleteTodo,
+      child: Container(
+        alignment: Alignment.center,
+        height: 70,
+        width: 70,
+        padding: const EdgeInsets.all(0),
+        decoration: BoxDecoration(
+          color: const Color(0XFFCF6679), // Kırmızımsı bir renk
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: const Icon(Icons.delete_outline, color: Colors.white, size: 45),
+      ),
+    );
+  }
+
+ void _deleteTodo() {
+  showDialog(
+    context: context,
+    builder: (BuildContext dialogContext) {  // dialogContext kullanıyoruz
+      return AlertDialog(
+        backgroundColor: const Color.fromARGB(255, 30, 30, 30),
+        title: const Text("Görevi Sil", style: TextStyle(color: Colors.white),),
+        content: const Text("Bu görevi silmek istediğinizden emin misiniz?", style: TextStyle(color: Colors.white)),
+        actions: <Widget>[
+          TextButton(
+            child: const Text("İptal", style: TextStyle(color: Colors.white)),
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+            },
+          ),
+          TextButton(
+            child: const Text("Sil", style: TextStyle(color: Colors.white)),
+            onPressed: () {
+              FirebaseFirestore.instance.collection('todos').doc(widget.task.id).delete().then((_) {
+                Navigator.of(dialogContext).pop();  // Önce dialog'u kapat
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Görev başarıyla silindi')),
+                );
+                Navigator.of(context).pop();  // Sonra TaskEditPage'i kapat
+              }).catchError((error) {
+                Navigator.of(dialogContext).pop();  // Hata durumunda da dialog'u kapat
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Görev silinirken hata oluştu: $error')),
+                );
+              });
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
 }

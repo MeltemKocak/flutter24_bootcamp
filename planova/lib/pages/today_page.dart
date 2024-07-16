@@ -25,6 +25,8 @@ class _TodayPageState extends State<TodayPage> {
       });
     });
   }
+        DateTime taskAddedDate = (Timestamp.now()).toDate();
+
   final EasyInfiniteDateTimelineController _controller = EasyInfiniteDateTimelineController();
   DateTime? _focusDate = DateTime.now();
   bool _showIncomplete = true;
@@ -76,45 +78,56 @@ class _TodayPageState extends State<TodayPage> {
           ),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('todos')
-                  .where('userId', isEqualTo: _user!.uid)
-                  .where('taskCreateDate', isGreaterThanOrEqualTo: DateTime(_focusDate!.year, _focusDate!.month, _focusDate!.day))
-                  .where('taskCreateDate', isLessThan: DateTime(_focusDate!.year, _focusDate!.month, _focusDate!.day + 1))
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}', style: const TextStyle(color: Colors.white));
-                }
+  stream: FirebaseFirestore.instance
+      .collection('todos')
+      .where('userId', isEqualTo: _user!.uid)
+      .snapshots(),
+  builder: (context, snapshot) {
+    if (snapshot.hasError) {
+      return Text('Error: ${snapshot.error}', style: const TextStyle(color: Colors.white));
+    }
 
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
-                List<DocumentSnapshot> incompleteTasks = [];
-                List<DocumentSnapshot> completedTasks = [];
+    List<DocumentSnapshot> tasksForToday = [];
+   DateTime now = DateTime.now();
 
-                for (var doc in snapshot.data!.docs) {
-                  if (doc['taskIsDone']) {
-                    completedTasks.add(doc);
-                  } else {
-                    incompleteTasks.add(doc);
-                  }
-                }
+for (var doc in snapshot.data!.docs) {
+  DateTime taskDate = (doc['taskCreateDate'] as Timestamp).toDate();
+  List<int> recurringDays = List<int>.from(doc['taskRecurring'] ?? []);
+  
+  if (
+    (isSameDay(taskDate, _focusDate!) && taskDate.isAfter(DateTime(now.year, now.month, now.day))) || 
+    (recurringDays.isNotEmpty && recurringDays.contains(_focusDate!.weekday) && _focusDate!.isAfter(now))
+  ) {
+    tasksForToday.add(doc);
+  }
+}
 
-                return ListView(
-                  children: [
-                    _buildTaskSection('Incomplete', incompleteTasks, _showIncomplete),
-                    _buildTaskSection('Completed', completedTasks, _showCompleted),
-                  ],
-                );
-              },
-            ),
+    List<DocumentSnapshot> incompleteTasks = tasksForToday.where((task) => !task['taskIsDone']).toList();
+    List<DocumentSnapshot> completedTasks = tasksForToday.where((task) => task['taskIsDone']).toList();
+
+    return ListView(
+      children: [
+        _buildTaskSection('Incomplete', incompleteTasks, _showIncomplete),
+        _buildTaskSection('Completed', completedTasks, _showCompleted),
+      ],
+    );
+  },
+)
           ),
         ],
       ),
     );
   }
+
+  bool isSameDay(DateTime taskDate, DateTime focusDate) {
+  return taskDate.year == focusDate.year &&
+         taskDate.month == focusDate.month &&
+         taskDate.day == focusDate.day;
+}
 
   Widget _buildTaskSection(String title, List<DocumentSnapshot> tasks, bool isExpanded) {
     return Column(
