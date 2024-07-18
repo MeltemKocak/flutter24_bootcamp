@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class TodayAddSubPage extends StatefulWidget {
   const TodayAddSubPage({super.key});
@@ -11,7 +12,6 @@ class TodayAddSubPage extends StatefulWidget {
 }
 
 class _TodayAddSubPageState extends State<TodayAddSubPage> {
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
   User? _user;
 
@@ -21,17 +21,17 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
     _user = _auth.currentUser;
   }
 
-
   TextEditingController nameController = TextEditingController();
   TextEditingController edittextController = TextEditingController();
   FocusNode taskNameFocusNode = FocusNode();
   FocusNode descriptionFocusNode = FocusNode();
   List<int> selectedDays = [];
-  String selectedReminder = '1 gün';
+  String selectedRecurrence = 'Tekrar yapma';
+  TimeOfDay? selectedTime;
+  bool isTaskNameEmpty = false;
 
   @override
   Widget build(BuildContext context) {
-    // Mevcut build metodu aynı kalacak
     return Container(
       decoration: const BoxDecoration(
         color: Color(0XFF1E1E1E),
@@ -39,18 +39,21 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
       ),
       child: Stack(
         children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildColumnVector(context),
-              const SizedBox(height: 26),
-              _buildTaskSection(context),
-              const SizedBox(height: 14),
-              _buildDescriptionSection(context),
-              const SizedBox(height: 24),
-              _buildRecurringSection(context),
-              const SizedBox(height: 150),
-            ],
+          SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildColumnVector(context),
+                const SizedBox(height: 26),
+                _buildTaskSection(context),
+                const SizedBox(height: 14),
+                _buildDescriptionSection(context),
+                const SizedBox(height: 24),
+                _buildRecurringSection(context),
+                if (selectedRecurrence != 'Tekrar yapma') _buildDaySelectionSection(context),
+                const SizedBox(height: 150),
+              ],
+            ),
           ),
           Positioned(
             right: 20,
@@ -62,115 +65,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
     );
   }
 
-
-  // Diğer widget metodları aynı kalacak, sadece _buildRecurringSection ve _buildAiButton'ı güncelleyeceğim
-
-  Widget _buildRecurringSection(BuildContext context) {
-    return Container(
-      width: double.maxFinite,
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        children: [
-          SizedBox(
-            width: double.maxFinite,
-            child: Row(
-              children: [
-                Expanded(
-                  child: SizedBox(
-                    width: double.maxFinite,
-                    height: 60,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0X3F607D8B),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        visualDensity: const VisualDensity(
-                          vertical: -4,
-                          horizontal: -4,
-                        ),
-                        padding: const EdgeInsets.only(
-                          top: 16,
-                          right: 30,
-                          bottom: 16,
-                        ),
-                      ),
-                      onPressed: _showRecurringDialog,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(right: 16),
-                            child: const Icon(Icons.refresh_outlined, color: Colors.white, size: 28),
-                          ),
-                          const Text(
-                            "Recurring",
-                            style: TextStyle(
-                              color: Color(0XFFFFFFFF),
-                              fontSize: 20,
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: SizedBox(
-                    width: double.maxFinite,
-                    height: 60,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0X3F607D8B),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        visualDensity: const VisualDensity(
-                          vertical: -4,
-                          horizontal: -4,
-                        ),
-                        padding: const EdgeInsets.only(
-                          top: 16,
-                          right: 30,
-                          bottom: 16,
-                        ),
-                      ),
-                      onPressed: _showReminderDialog,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(right: 16),
-                            child: const Icon(Icons.notifications_none_outlined, color: Colors.white, size: 25),
-                          ),
-                          const Text(
-                            "Reminder",
-                            style: TextStyle(
-                              color: Color(0XFFFFFFFF),
-                              fontSize: 20,
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                )
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-    Widget _buildColumnVector(BuildContext context) {
+  Widget _buildColumnVector(BuildContext context) {
     return Container(
       width: double.maxFinite,
       margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -276,19 +171,27 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none,
+                  borderSide: BorderSide(
+                    color: isTaskNameEmpty ? Colors.red : Colors.transparent,
+                  ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none,
+                  borderSide: BorderSide(
+                    color: isTaskNameEmpty ? Colors.red : Colors.transparent,
+                  ),
                 ),
                 disabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none,
+                  borderSide: BorderSide(
+                    color: isTaskNameEmpty ? Colors.red : Colors.transparent,
+                  ),
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none,
+                  borderSide: BorderSide(
+                    color: isTaskNameEmpty ? Colors.red : Colors.transparent,
+                  ),
                 ),
                 filled: true,
                 fillColor: const Color(0X3F607D8B),
@@ -391,6 +294,153 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
     );
   }
 
+  Widget _buildRecurringSection(BuildContext context) {
+    return Container(
+      width: double.maxFinite,
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        children: [
+          const SizedBox(height: 10),
+          SizedBox(
+            width: double.maxFinite,
+            child: Row(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    width: double.maxFinite,
+                    height: 60,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0X3F607D8B),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: _showRecurringDialog,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            child: const Icon(Icons.refresh_outlined,
+                                color: Colors.white, size: 28),
+                          ),
+                          const SizedBox(width: 12),
+                          const Text(
+                            "Recurring",
+                            style: TextStyle(
+                              color: Color(0XFFFFFFFF),
+                              fontSize: 17,
+                              fontFamily: 'Roboto',
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: SizedBox(
+                    width: double.maxFinite,
+                    height: 60,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0X3F607D8B),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        visualDensity: const VisualDensity(
+                          vertical: -4,
+                          horizontal: -4,
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                      onPressed: () async {
+                        TimeOfDay? pickedTime = await showTimePicker(
+                          context: context,
+                          initialTime: TimeOfDay.now(),
+                          builder: (BuildContext context, Widget? child) {
+                            return Theme(
+                              data: ThemeData.dark().copyWith(
+                                colorScheme: const ColorScheme.dark(
+                                  primary: Color(0XFF03DAC6),
+                                  onPrimary: Colors.black,
+                                  surface: Color(0XFF1E1E1E),
+                                  onSurface: Colors.white,
+                                ),
+                                dialogBackgroundColor: const Color(0XFF1E1E1E),
+                              ),
+                              child: child!,
+                            );
+                          },
+                        );
+                        if (pickedTime != null) {
+                          setState(() {
+                            selectedTime = pickedTime;
+                          });
+                        }
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.access_time, color: Colors.white),
+                          const SizedBox(width: 12),
+                          Text(
+                            selectedTime != null
+                                ? selectedTime!.format(context)
+                                : "Select Time",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 17,
+                              fontFamily: 'Roboto',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDaySelectionSection(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      width: MediaQuery.of(context).size.width * 0.8,
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        alignment: WrapAlignment.center,
+        children: List<Widget>.generate(7, (int index) {
+          return FilterChip(
+            label: Text(
+              _getDayName(index + 1),
+              style: const TextStyle(color: Colors.white, fontSize: 18),
+            ),
+            selected: selectedDays.contains(index + 1),
+            onSelected: (bool selected) {
+              setState(() {
+                if (selected) {
+                  selectedDays.add(index + 1);
+                } else {
+                  selectedDays.remove(index + 1);
+                }
+              });
+            },
+            backgroundColor: const Color(0XFF607D8B),
+            selectedColor: const Color(0XFF03DAC6),
+          );
+        }),
+      ),
+    );
+  }
 
   Widget _buildAiButton(BuildContext context) {
     return GestureDetector(
@@ -415,115 +465,142 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Select Recurring Days"),
-          content: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-              return Wrap(
-                children: List<Widget>.generate(7, (int index) {
-                  return FilterChip(
-                    label: Text(_getDayName(index + 1)),
-                    selected: selectedDays.contains(index + 1),
-                    onSelected: (bool selected) {
-                      setState(() {
-                        if (selected) {
-                          selectedDays.add(index + 1);
-                        } else {
-                          selectedDays.remove(index + 1);
-                        }
-                      });
-                    },
-                  );
-                }),
-              );
-            },
+        return Theme(
+          data: ThemeData.dark().copyWith(
+            colorScheme: const ColorScheme.dark(
+              primary: Color(0XFF03DAC6),
+              onPrimary: Colors.black,
+              surface: Color(0XFF1E1E1E),
+              onSurface: Colors.white,
+            ),
+            dialogBackgroundColor: const Color(0XFF1E1E1E),
           ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text("OK"),
-              onPressed: () {
+          child: AlertDialog(
+            title: const Text("Select Recurrence", style: TextStyle(color: Colors.white)),
+            content: DropdownButton<String>(
+              value: selectedRecurrence,
+              items: [
+                'Tekrar yapma',
+                '1 hafta tekrar',
+                '2 hafta tekrar',
+                '3 hafta tekrar',
+                '1 ay tekrar'
+              ].map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                setState(() {
+                  selectedRecurrence = newValue!;
+                });
                 Navigator.of(context).pop();
               },
+              dropdownColor: const Color(0XFF1E1E1E),
+              style: const TextStyle(color: Colors.white),
             ),
-          ],
-        );
-      },
-    );
-  }
- 
-
-  
- 
-
-  void _showReminderDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Select Reminder"),
-          content: DropdownButton<String>(
-            value: selectedReminder,
-            items: ['1 gün', '1 hafta', '1 ay', '1 yıl'].map((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                selectedReminder = newValue!;
-              });
-              Navigator.of(context).pop();
-            },
           ),
         );
       },
     );
   }
 
- void _addTodo() {
-  if (_user == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('You must be logged in to add a task')),
-    );
-    return;
-  }
+  void _addTodo() {
+    if (_user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('You must be logged in to add a task')),
+      );
+      return;
+    }
 
-  Map<String, bool> taskCompletionStatus = {};
-  for (int day in selectedDays) {
-    taskCompletionStatus[day.toString()] = false;
-  }
+    setState(() {
+      isTaskNameEmpty = nameController.text.trim().isEmpty;
+    });
 
-  FirebaseFirestore.instance.collection('todos').add({
-    'userId': _user!.uid,
-    'taskName': nameController.text,
-    'taskDescription': edittextController.text,
-    'taskCreateDate': FieldValue.serverTimestamp(),
-    'taskRecurring': selectedDays,
-    'taskReminder': selectedReminder,
-    'taskCompletionStatus': taskCompletionStatus,
-  }).then((_) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Task added successfully')),
-    );
-    Navigator.pop(context);
-  }).catchError((error) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error adding task: $error')),
-    );
-  });
-}
+    if (isTaskNameEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Task name cannot be empty')),
+      );
+      return;
+    }
+
+    int recurrenceDays = 0;
+    switch (selectedRecurrence) {
+      case '1 hafta tekrar':
+        recurrenceDays = 7;
+        break;
+      case '2 hafta tekrar':
+        recurrenceDays = 14;
+        break;
+      case '3 hafta tekrar':
+        recurrenceDays = 21;
+        break;
+      case '1 ay tekrar':
+        recurrenceDays = 30;
+        break;
+    }
+
+    Map<String, bool> taskCompletionStatus = {};
+    DateTime currentDate = DateTime.now();
+
+    if (selectedDays.isNotEmpty) {
+      for (int i = 0; i < recurrenceDays; i++) {
+        DateTime taskDate = currentDate.add(Duration(days: i));
+        if (selectedDays.contains(taskDate.weekday)) {
+          taskCompletionStatus[DateFormat('yyyy-MM-dd').format(taskDate)] = false;
+        }
+      }
+    } else {
+      taskCompletionStatus[DateFormat('yyyy-MM-dd').format(currentDate)] = false;
+    }
+
+    Map<String, dynamic> taskData = {
+      'userId': _user!.uid,
+      'taskName': nameController.text,
+      'taskDescription': edittextController.text,
+      'taskCreateDate': FieldValue.serverTimestamp(),
+      'taskRecurring': selectedRecurrence,
+      'taskCompletionStatus': taskCompletionStatus,
+      'selectedDays': selectedDays,
+    };
+
+    if (selectedTime != null) {
+      taskData['taskTime'] = selectedTime!.format(context);
+    } else {
+      taskData['taskTime'] = "boş";
+    }
+
+    FirebaseFirestore.instance.collection('todos').add(taskData).then((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Task added successfully')),
+      );
+      Navigator.pop(context);
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error adding task: $error')),
+      );
+    });
+  }
 
   String _getDayName(int day) {
     switch (day) {
-      case 1: return 'Pzt';
-      case 2: return 'Sal';
-      case 3: return 'Çar';
-      case 4: return 'Per';
-      case 5: return 'Cum';
-      case 6: return 'Cmt';
-      case 7: return 'Paz';
-      default: return '';
+      case 1:
+        return 'Pzt';
+      case 2:
+        return 'Sal';
+      case 3:
+        return 'Çar';
+      case 4:
+        return 'Per';
+      case 5:
+        return 'Cum';
+      case 6:
+        return 'Cmt';
+      case 7:
+        return 'Paz';
+      default:
+        return '';
     }
   }
 }

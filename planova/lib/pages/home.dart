@@ -1,7 +1,6 @@
-// ignore_for_file: use_build_context_synchronously, avoid_print
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:planova/pages/bottom_sheet_calendar.dart';
 import 'package:planova/pages/habit_page.dart';
 import 'package:planova/pages/journal_page.dart';
 import 'package:planova/pages/profile_page.dart';
@@ -10,6 +9,7 @@ import 'package:planova/pages/today_page.dart';
 import 'package:planova/pages/today_trash.dart';
 import 'package:planova/pages/welcome_screen.dart';
 import 'package:planova/pages/journal_add.dart';
+import 'package:easy_date_timeline/easy_date_timeline.dart';
 
 class Homes extends StatelessWidget {
   const Homes({super.key});
@@ -41,7 +41,26 @@ class NavigationExample extends StatefulWidget {
 class _NavigationExampleState extends State<NavigationExample> {
   static int currentPageIndex = 0;
   final List<String> appBarTitles = ['Today', 'Habits', 'Journal', 'Profile'];
- 
+
+  final EasyInfiniteDateTimelineController _controller =
+      EasyInfiniteDateTimelineController();
+  DateTime? _focusDate = DateTime.now();
+
+  void _openCalendarBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => BottomSheetCalendar(
+        controller: _controller,
+        onDateSelected: (selectedDate) {
+          setState(() {
+            _focusDate = selectedDate;
+          });
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,12 +97,13 @@ class _NavigationExampleState extends State<NavigationExample> {
               // Implement your search action here
             },
           ),
-          IconButton(
-            icon: const Icon(Icons.more_vert, color: Colors.white),
-            onPressed: () {
-              // Implement your more action here
-            },
-          ),
+
+          if (currentPageIndex == 0)
+            IconButton(
+              icon: const Icon(Icons.calendar_today, color: Colors.white),
+              onPressed:
+                  _openCalendarBottomSheet, // Takvim butonuna basıldığında açılır
+            ),
         ],
       ),
       drawer: Drawer(
@@ -118,8 +138,7 @@ class _NavigationExampleState extends State<NavigationExample> {
             ),
             ListTile(
               leading: const Icon(Icons.list, color: Colors.white),
-              title: const Text('Today',
-                  style: TextStyle(color: Colors.white)),
+              title: const Text('Today', style: TextStyle(color: Colors.white)),
               onTap: () {
                 setState(() {
                   currentPageIndex = 0;
@@ -143,9 +162,10 @@ class _NavigationExampleState extends State<NavigationExample> {
               title: const Text('Important Task',
                   style: TextStyle(color: Colors.white)),
               onTap: () {
-                setState(() {
+                setState() {
                   currentPageIndex = 2;
-                });
+                }
+
                 Navigator.of(context).pop();
               },
             ),
@@ -154,11 +174,10 @@ class _NavigationExampleState extends State<NavigationExample> {
               title:
                   const Text('Deleted', style: TextStyle(color: Colors.white)),
               onTap: () {
-                 Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => const TrashPage()),
-  );
-
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const TrashPage()),
+                );
               },
             ),
             const Divider(color: Colors.grey),
@@ -279,50 +298,18 @@ class _NavigationExampleState extends State<NavigationExample> {
         ],
       ),
       body: [
-        const TodayPage(),
+        TodayPage(
+          controller: _controller,
+          focusDate: _focusDate,
+          onDateChange: (selectedDate) {
+            setState(() {
+              _focusDate = selectedDate;
+            });
+          },
+        ),
         const HabitPage(),
         const JournalPage(),
         const ProfilePage(),
-        ListView.builder(
-          reverse: true,
-          itemCount: 3,
-          itemBuilder: (BuildContext context, int index) {
-            if (index == 0) {
-              return Align(
-                alignment: Alignment.centerRight,
-                child: Container(
-                  margin: const EdgeInsets.all(8.0),
-                  padding: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.primary,
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Text(
-                    'Hello',
-                    style: theme.textTheme.bodyMedium!
-                        .copyWith(color: Colors.white38),
-                  ),
-                ),
-              );
-            }
-            return Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                margin: const EdgeInsets.all(8.0),
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primary,
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Text(
-                  'Hi!',
-                  style: theme.textTheme.bodyMedium!
-                      .copyWith(color: theme.colorScheme.onPrimary),
-                ),
-              ),
-            );
-          },
-        ),
       ][currentPageIndex],
     );
   }

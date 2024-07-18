@@ -70,7 +70,7 @@ XFile? _image;
               _buildImageSection(context),
               const SizedBox(height: 50,),
               _buildRecordingSection(context),
-              const SizedBox(height: 150),
+              const SizedBox(height: 50),
                _buildDateTime(context),
               const SizedBox(height: 150),
             ],
