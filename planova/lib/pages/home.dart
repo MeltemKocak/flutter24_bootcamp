@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, avoid_print
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:planova/pages/habit_page.dart';
@@ -7,6 +9,7 @@ import 'package:planova/pages/today_add.dart';
 import 'package:planova/pages/today_page.dart';
 import 'package:planova/pages/today_trash.dart';
 import 'package:planova/pages/welcome_screen.dart';
+import 'package:planova/pages/journal_add.dart';
 
 class Homes extends StatelessWidget {
   const Homes({super.key});
@@ -192,7 +195,13 @@ class _NavigationExampleState extends State<NavigationExample> {
               print('Button pressed on page 1');
               break;
             case 2:
-              print('Button pressed on page 2');
+              // Üçüncü durum için yapılacak işlemler
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (context) => const JournalAddSubPage(),
+              );
               break;
             default:
           }
