@@ -113,9 +113,11 @@ class _TodayPageState extends State<TodayPage> {
                           data['taskCompletionStatus'] ?? {});
                   DateTime? deletedDate =
                       (data['deletedDate'] as Timestamp?)?.toDate();
+                  List<dynamic> deletedTasks = data['deletedTasks'] ?? [];
 
                   if (deletedDate == null || _focusDate!.isAfter(deletedDate)) {
-                    if (taskCompletionStatus.containsKey(formattedFocusDate)) {
+                    if (taskCompletionStatus.containsKey(formattedFocusDate) &&
+                        !deletedTasks.contains(formattedFocusDate)) {
                       tasksForToday.add(doc);
                     }
                   }
@@ -205,7 +207,7 @@ class _TodayPageState extends State<TodayPage> {
             context: context,
             isScrollControlled: true,
             backgroundColor: Colors.transparent,
-            builder: (context) => TaskEditPage(task: task),
+            builder: (context) => TaskEditPage(task: task, selectedDate: _focusDate!),
           );
         },
         child: Card(

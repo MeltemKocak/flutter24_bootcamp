@@ -1,4 +1,3 @@
-import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
@@ -11,56 +10,50 @@ class TrashPage extends StatefulWidget {
 }
 
 class _TrashPageState extends State<TrashPage> {
-          DateTime taskAddedDate = (Timestamp.now()).toDate();
-
-  final EasyInfiniteDateTimelineController _controller = EasyInfiniteDateTimelineController();
-  DateTime? _focusDate = DateTime.now();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0XFF1E1E1E),
       appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          leading: null,
-          toolbarHeight: 100,
-          titleSpacing: 0,
-          title: Row(
-            children: [
-              IconButton(
-                icon: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                    const Icon(
-                      Icons.arrow_back_ios,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        leading: null,
+        toolbarHeight: 100,
+        titleSpacing: 0,
+        title: Row(
+          children: [
+            IconButton(
+              icon: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.03),
+                  const Icon(
+                    Icons.arrow_back_ios,
+                    color: Color.fromARGB(255, 3, 218, 198),
+                    size: 28,
+                  ),
+                  const Text(
+                    'Geri',
+                    style: TextStyle(
+                      fontFamily: 'Lato',
                       color: Color.fromARGB(255, 3, 218, 198),
-                      size: 28,
+                      fontSize: 17,
                     ),
-                    const Text(
-                      'Geri',
-                      style: TextStyle(
-                        fontFamily: 'Lato',
-                        color: Color.fromARGB(255, 3, 218, 198),
-                        fontSize: 17,
-                      ),
-                    ),
-                  ],
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+                  ),
+                ],
               ),
-            ],
-          ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
         ),
+      ),
       body: Column(
         children: [
-          _buildDatePicker(),
-          const SizedBox(height: 30,),
+          const SizedBox(height: 30),
           Expanded(
-            
             child: _buildDeletedTasksList(),
           ),
         ],
@@ -68,59 +61,37 @@ class _TrashPageState extends State<TrashPage> {
     );
   }
 
-  Widget _buildDatePicker() {
-    return EasyInfiniteDateTimeLine(
-              showTimelineHeader: false,
-              selectionMode: const SelectionMode.autoCenter(),
-              controller: _controller,
-              focusDate: _focusDate,
-              firstDate: DateTime(2024),
-              lastDate: DateTime(2024, 12, 31),
-              onDateChange: (selectedDate) {
-                setState(() {
-                  _focusDate = selectedDate;
-                });
-              },
-              activeColor: const Color.fromARGB(255, 3, 218, 75),
-              dayProps: const EasyDayProps(
-                todayStyle: DayStyle(
-                    decoration: BoxDecoration(
-                        color: Color.fromARGB(99, 43, 158, 87),
-                        borderRadius: BorderRadius.all(Radius.circular(18)))),
-                activeDayStyle: DayStyle(
-                    decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 3, 218, 182),
-                        borderRadius: BorderRadius.all(Radius.circular(18)))),
-                borderColor: Color.fromARGB(0, 0, 255, 242),
-                height: 60.0,
-                width: 50,
-                dayStructure: DayStructure.dayStrDayNum,
-                inactiveDayStyle: DayStyle(
-                  borderRadius: 18,
-                  dayNumStyle: TextStyle(fontSize: 18.0, color: Colors.white),
-                ),
-              ),
-            );
-  }
-
   Widget _buildDeletedTasksList() {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('todos')
-          .where('deletedDate', isNull: false)
-          .orderBy('deletedDate', descending: true)
+          .where('deletedTasks', isNotEqualTo: [])
           .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
 
         var tasks = snapshot.data!.docs;
+        List<Map<String, dynamic>> deletedTasks = [];
+
+        for (var task in tasks) {
+          List<dynamic> taskDeletedDates = task['deletedTasks'];
+          for (var date in taskDeletedDates) {
+            deletedTasks.add({
+              'task': task,
+              'deletedDate': date,
+            });
+          }
+        }
+
         return ListView.builder(
-          itemCount: tasks.length,
+          itemCount: deletedTasks.length,
           itemBuilder: (context, index) {
-            var task = tasks[index];
+            var taskData = deletedTasks[index];
+            var task = taskData['task'];
+            var deletedDate = taskData['deletedDate'];
+
             return Dismissible(
-            
-              key: Key(task.id),
+              key: Key(task.id + deletedDate),
               background: Container(
                 color: const Color(0XFF03DAC6),
                 child: const Align(
@@ -133,9 +104,9 @@ class _TrashPageState extends State<TrashPage> {
               ),
               direction: DismissDirection.endToStart,
               onDismissed: (direction) {
-                _showRestoreBottomSheet(task);
+                _showRestoreBottomSheet(task, deletedDate);
               },
-              child: _buildTaskCard(task),
+              child: _buildTaskCard(task, deletedDate),
             );
           },
         );
@@ -143,25 +114,22 @@ class _TrashPageState extends State<TrashPage> {
     );
   }
 
-  Widget _buildTaskCard(DocumentSnapshot task) {
-    
+  Widget _buildTaskCard(DocumentSnapshot task, String deletedDate) {
     return Card(
-      
       color: const Color(0X3F607D8B),
       child: ListTile(
-        
         title: Text(task['taskName'], style: const TextStyle(color: Colors.white)),
         subtitle: Text(
-          DateFormat('dd/MM/yyyy HH:mm').format(task['deletedDate'].toDate()),
+          DateFormat('dd/MM/yyyy').format(DateTime.parse(deletedDate)),
           style: const TextStyle(color: Colors.white70),
         ),
         trailing: const Icon(Icons.swipe_left, color: Colors.white54),
-        onTap: () => _showRestoreBottomSheet(task),
+        onTap: () => _showRestoreBottomSheet(task, deletedDate),
       ),
     );
   }
 
-  void _showRestoreBottomSheet(DocumentSnapshot task) {
+  void _showRestoreBottomSheet(DocumentSnapshot task, String deletedDate) {
     showModalBottomSheet(
       context: context,
       backgroundColor: const Color(0XFF1E1E1E),
@@ -185,7 +153,7 @@ class _TrashPageState extends State<TrashPage> {
                     child: const Text('İptal', style: TextStyle(color: Colors.white),),
                   ),
                   ElevatedButton(
-                    onPressed: () => _restoreTask(task),
+                    onPressed: () => _restoreTask(task, deletedDate),
                     style: ElevatedButton.styleFrom(backgroundColor: const Color(0XFF03DAC6)),
                     child: const Text('Geri Getir'),
                   ),
@@ -198,9 +166,16 @@ class _TrashPageState extends State<TrashPage> {
     );
   }
 
-  void _restoreTask(DocumentSnapshot task) {
+  void _restoreTask(DocumentSnapshot task, String deletedDate) {
+    Map<String, bool> taskCompletionStatus =
+        Map<String, bool>.from(task['taskCompletionStatus']);
+
+    // Görev tamamlanma durumu için tarihi geri yükle
+    taskCompletionStatus[deletedDate] = false;
+
     FirebaseFirestore.instance.collection('todos').doc(task.id).update({
-      'deletedDate': FieldValue.delete(),
+      'taskCompletionStatus': taskCompletionStatus,
+      'deletedTasks': FieldValue.arrayRemove([deletedDate]),
     }).then((_) {
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(

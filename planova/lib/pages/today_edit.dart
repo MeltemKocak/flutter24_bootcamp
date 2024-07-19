@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 
 class TaskEditPage extends StatefulWidget {
   final DocumentSnapshot task;
+  final DateTime selectedDate;
 
-  const TaskEditPage({super.key, required this.task});
+  const TaskEditPage({super.key, required this.task, required this.selectedDate});
 
   @override
   _TaskEditPageState createState() => _TaskEditPageState();
@@ -17,8 +19,8 @@ class _TaskEditPageState extends State<TaskEditPage> {
   late FocusNode taskNameFocusNode;
   late FocusNode descriptionFocusNode;
   late List<int> selectedDays;
-  late String selectedReminder;
-
+  late String selectedRecurrence;
+  late TimeOfDay? selectedTime;
 
   @override
   void initState() {
@@ -27,8 +29,14 @@ class _TaskEditPageState extends State<TaskEditPage> {
     descriptionController = TextEditingController(text: widget.task['taskDescription']);
     taskNameFocusNode = FocusNode();
     descriptionFocusNode = FocusNode();
-    selectedDays = List<int>.from(widget.task['taskRecurring'] ?? []);
-    selectedReminder = widget.task['taskReminder'];
+    selectedDays = List<int>.from(widget.task['selectedDays'] ?? []);
+    selectedRecurrence = widget.task['taskRecurring'] ?? 'Tekrar yapma';
+    selectedTime = widget.task['taskTime'] != "boş"
+        ? TimeOfDay(
+            hour: int.parse(widget.task['taskTime'].split(":")[0]),
+            minute: int.parse(widget.task['taskTime'].split(":")[1]),
+          )
+        : null;
   }
 
   @override
@@ -40,8 +48,6 @@ class _TaskEditPageState extends State<TaskEditPage> {
     super.dispose();
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -51,18 +57,22 @@ class _TaskEditPageState extends State<TaskEditPage> {
       ),
       child: Stack(
         children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildColumnVector(context),
-              const SizedBox(height: 26),
-              _buildTaskSection(context),
-              const SizedBox(height: 14),
-              _buildDescriptionSection(context),
-              const SizedBox(height: 24),
-              _buildRecurringSection(context),
-              const SizedBox(height: 150),
-            ],
+          SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildColumnVector(context),
+                const SizedBox(height: 26),
+                _buildTaskSection(context),
+                const SizedBox(height: 14),
+                _buildDescriptionSection(context),
+                const SizedBox(height: 24),
+                _buildRecurringSection(context),
+                if (selectedRecurrence != 'Tekrar yapma')
+                  _buildDaySelectionSection(context),
+                const SizedBox(height: 150),
+              ],
+            ),
           ),
           Positioned(
             right: 20,
@@ -131,7 +141,7 @@ class _TaskEditPageState extends State<TaskEditPage> {
     );
   }
 
- Widget _buildTaskSection(BuildContext context) {
+  Widget _buildTaskSection(BuildContext context) {
     return Container(
       width: double.maxFinite,
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -306,6 +316,7 @@ class _TaskEditPageState extends State<TaskEditPage> {
       margin: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: [
+          const SizedBox(height: 10),
           SizedBox(
             width: double.maxFinite,
             child: Row(
@@ -320,15 +331,6 @@ class _TaskEditPageState extends State<TaskEditPage> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        visualDensity: const VisualDensity(
-                          vertical: -4,
-                          horizontal: -4,
-                        ),
-                        padding: const EdgeInsets.only(
-                          top: 16,
-                          right: 30,
-                          bottom: 16,
-                        ),
                       ),
                       onPressed: _showRecurringDialog,
                       child: Row(
@@ -336,16 +338,16 @@ class _TaskEditPageState extends State<TaskEditPage> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Container(
-                            margin: const EdgeInsets.only(right: 16),
-                            child: const Icon(Icons.refresh_outlined, color: Colors.white, size: 28),
+                            child: const Icon(Icons.refresh_outlined,
+                                color: Colors.white, size: 28),
                           ),
+                          const SizedBox(width: 12),
                           const Text(
                             "Recurring",
                             style: TextStyle(
                               color: Color(0XFFFFFFFF),
-                              fontSize: 20,
+                              fontSize: 17,
                               fontFamily: 'Roboto',
-                              fontWeight: FontWeight.w400,
                             ),
                           )
                         ],
@@ -368,30 +370,48 @@ class _TaskEditPageState extends State<TaskEditPage> {
                           vertical: -4,
                           horizontal: -4,
                         ),
-                        padding: const EdgeInsets.only(
-                          top: 16,
-                          right: 30,
-                          bottom: 16,
-                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
-                      onPressed: _showReminderDialog,
+                      onPressed: () async {
+                        TimeOfDay? pickedTime = await showTimePicker(
+                          context: context,
+                          initialTime: selectedTime ?? TimeOfDay.now(),
+                          builder: (BuildContext context, Widget? child) {
+                            return Theme(
+                              data: ThemeData.dark().copyWith(
+                                colorScheme: const ColorScheme.dark(
+                                  primary: Color(0XFF03DAC6),
+                                  onPrimary: Colors.black,
+                                  surface: Color(0XFF1E1E1E),
+                                  onSurface: Colors.white,
+                                ),
+                                dialogBackgroundColor: const Color(0XFF1E1E1E),
+                              ),
+                              child: child!,
+                            );
+                          },
+                        );
+                        if (pickedTime != null) {
+                          setState(() {
+                            selectedTime = pickedTime;
+                          });
+                        }
+                      },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Container(
-                            margin: const EdgeInsets.only(right: 16),
-                            child: const Icon(Icons.notifications_none_outlined, color: Colors.white, size: 25),
-                          ),
-                          const Text(
-                            "Reminder",
-                            style: TextStyle(
-                              color: Color(0XFFFFFFFF),
-                              fontSize: 20,
+                          const Icon(Icons.access_time, color: Colors.white),
+                          const SizedBox(width: 12),
+                          Text(
+                            selectedTime != null
+                                ? selectedTime!.format(context)
+                                : "Select Time",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 17,
                               fontFamily: 'Roboto',
-                              fontWeight: FontWeight.w400,
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ),
@@ -399,11 +419,45 @@ class _TaskEditPageState extends State<TaskEditPage> {
                 )
               ],
             ),
-          )
+          ),
         ],
       ),
     );
   }
+
+  Widget _buildDaySelectionSection(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      width: MediaQuery.of(context).size.width * 0.8,
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        alignment: WrapAlignment.center,
+        children: List<Widget>.generate(7, (int index) {
+          return FilterChip(
+            label: Text(
+              _getDayName(index + 1),
+              style: const TextStyle(color: Colors.white, fontSize: 18),
+            ),
+            selected: selectedDays.contains(index + 1),
+            onSelected: (bool selected) {
+              setState(() {
+                if (selected) {
+                  selectedDays.add(index + 1);
+                } else {
+                  selectedDays.remove(index + 1);
+                }
+              });
+            },
+            backgroundColor: const Color(0XFF607D8B),
+            selectedColor: const Color(0XFF03DAC6),
+          );
+        }),
+      ),
+    );
+  }
+
   Widget _buildUpdateButton(BuildContext context) {
     return GestureDetector(
       onTap: _updateTodo,
@@ -422,11 +476,44 @@ class _TaskEditPageState extends State<TaskEditPage> {
   }
 
   void _updateTodo() {
+    Map<String, bool> taskCompletionStatus =
+        Map<String, bool>.from(widget.task['taskCompletionStatus']);
+
+    int recurrenceDays = 0;
+    switch (selectedRecurrence) {
+      case '1 hafta tekrar':
+        recurrenceDays = 7;
+        break;
+      case '2 hafta tekrar':
+        recurrenceDays = 14;
+        break;
+      case '3 hafta tekrar':
+        recurrenceDays = 21;
+        break;
+      case '1 ay tekrar':
+        recurrenceDays = 30;
+        break;
+    }
+
+    if (selectedDays.isNotEmpty) {
+      DateTime currentDate = widget.selectedDate;
+      for (int i = 0; i < recurrenceDays; i++) {
+        DateTime taskDate = currentDate.add(Duration(days: i));
+        if (selectedDays.contains(taskDate.weekday)) {
+          taskCompletionStatus[DateFormat('yyyy-MM-dd').format(taskDate)] =
+              taskCompletionStatus[DateFormat('yyyy-MM-dd').format(taskDate)] ??
+                  false;
+        }
+      }
+    }
+
     FirebaseFirestore.instance.collection('todos').doc(widget.task.id).update({
       'taskName': nameController.text,
       'taskDescription': descriptionController.text,
-      'taskRecurring': selectedDays,
-      'taskReminder': selectedReminder,
+      'selectedDays': selectedDays,
+      'taskRecurring': selectedRecurrence,
+      'taskTime': selectedTime != null ? selectedTime!.format(context) : "boş",
+      'taskCompletionStatus': taskCompletionStatus,
     }).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Task updated successfully')),
@@ -443,34 +530,94 @@ class _TaskEditPageState extends State<TaskEditPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        return Theme(
+          data: ThemeData.dark().copyWith(
+            colorScheme: const ColorScheme.dark(
+              primary: Color(0XFF03DAC6),
+              onPrimary: Colors.black,
+              surface: Color(0XFF1E1E1E),
+              onSurface: Colors.white,
+            ),
+            dialogBackgroundColor: const Color(0XFF1E1E1E),
+          ),
+          child: AlertDialog(
+            title: const Text("Select Recurrence", style: TextStyle(color: Colors.white)),
+            content: DropdownButton<String>(
+              value: selectedRecurrence,
+              items: [
+                'Tekrar yapma',
+                '1 hafta tekrar',
+                '2 hafta tekrar',
+                '3 hafta tekrar',
+                '1 ay tekrar'
+              ].map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                setState(() {
+                  selectedRecurrence = newValue!;
+                });
+                Navigator.of(context).pop();
+              },
+              dropdownColor: const Color(0XFF1E1E1E),
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildDeleteButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () => _confirmDeleteTask(),
+      child: Container(
+        alignment: Alignment.center,
+        height: 70,
+        width: 70,
+        padding: const EdgeInsets.all(0),
+        decoration: BoxDecoration(
+          color: const Color(0XFFCF6679),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: const Icon(Icons.delete_outline, color: Colors.white, size: 45),
+      ),
+    );
+  }
+
+  void _confirmDeleteTask() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Select Recurring Days"),
-          content: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-              return Wrap(
-                children: List<Widget>.generate(7, (int index) {
-                  return FilterChip(
-                    label: Text(_getDayName(index + 1)),
-                    selected: selectedDays.contains(index + 1),
-                    onSelected: (bool selected) {
-                      setState(() {
-                        if (selected) {
-                          selectedDays.add(index + 1);
-                        } else {
-                          selectedDays.remove(index + 1);
-                        }
-                      });
-                    },
-                  );
-                }),
-              );
-            },
+          backgroundColor: const Color(0XFF1E1E1E),
+          title: const Text("Görevi Sil", style: TextStyle(color: Colors.white)),
+          content: const Text(
+            "Bu görevi mi yoksa tüm tekrarlanan görevleri mi silmek istiyorsunuz?",
+            style: TextStyle(color: Colors.white),
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text("OK"),
+              child: const Text("İptal", style: TextStyle(color: Colors.white)),
               onPressed: () {
                 Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text("Sadece Bu Görev", style: TextStyle(color: Colors.white)),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _deleteTask(false);
+              },
+            ),
+            TextButton(
+              child: const Text("Tüm Tekrarlanan Görevler", style: TextStyle(color: Colors.white)),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _deleteTask(true);
               },
             ),
           ],
@@ -479,102 +626,65 @@ class _TaskEditPageState extends State<TaskEditPage> {
     );
   }
 
-  void _showReminderDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Select Reminder"),
-          content: DropdownButton<String>(
-            value: selectedReminder,
-            items: ['1 gün', '1 hafta', '1 ay', '1 yıl'].map((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                selectedReminder = newValue!;
-              });
-              Navigator.of(context).pop();
-            },
-          ),
-        );
-      },
-    );
+  void _deleteTask(bool deleteAll) {
+    String formattedSelectedDate = DateFormat('yyyy-MM-dd').format(widget.selectedDate);
+
+    Map<String, bool> taskCompletionStatus =
+        Map<String, bool>.from(widget.task['taskCompletionStatus']);
+    List<dynamic> deletedTasks;
+if ((widget.task.data() as Map).containsKey('deletedTasks')) {
+      deletedTasks = List<dynamic>.from(widget.task['deletedTasks']);
+    } else {
+      deletedTasks = [];
+    }
+
+    if (deleteAll) {
+      // Tüm tekrarlanan görevleri sil
+      taskCompletionStatus.forEach((date, _) {
+        deletedTasks.add(date);
+      });
+      taskCompletionStatus.clear();
+    } else {
+      // Sadece seçili tarihi sil
+      if (taskCompletionStatus.containsKey(formattedSelectedDate)) {
+        taskCompletionStatus.remove(formattedSelectedDate);
+        deletedTasks.add(formattedSelectedDate);
+      }
+    }
+
+    FirebaseFirestore.instance.collection('todos').doc(widget.task.id).update({
+      'taskCompletionStatus': taskCompletionStatus,
+      'deletedTasks': deletedTasks,
+    }).then((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Görev başarıyla silindi.')),
+      );
+      Navigator.pop(context);
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Görev silinirken hata oluştu: $error')),
+      );
+    });
   }
-    String _getDayName(int day) {
+
+  String _getDayName(int day) {
     switch (day) {
-      case 1: return 'Pzt';
-      case 2: return 'Sal';
-      case 3: return 'Çar';
-      case 4: return 'Per';
-      case 5: return 'Cum';
-      case 6: return 'Cmt';
-      case 7: return 'Paz';
-      default: return '';
+      case 1:
+        return 'Pzt';
+      case 2:
+        return 'Sal';
+      case 3:
+        return 'Çar';
+      case 4:
+        return 'Per';
+      case 5:
+        return 'Cum';
+      case 6:
+        return 'Cmt';
+      case 7:
+        return 'Paz';
+      default:
+        return '';
     }
   }
-
-  Widget _buildDeleteButton(BuildContext context) {
-    return GestureDetector(
-      onTap: _deleteTodo,
-      child: Container(
-        alignment: Alignment.center,
-        height: 70,
-        width: 70,
-        padding: const EdgeInsets.all(0),
-        decoration: BoxDecoration(
-          color: const Color(0XFFCF6679), // Kırmızımsı bir renk
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: const Icon(Icons.delete_outline, color: Colors.white, size: 45),
-      ),
-    );
-  }
-
-void _deleteTodo() {
-  showDialog(
-    context: context,
-    builder: (BuildContext dialogContext) {
-      return AlertDialog(
-        backgroundColor: const Color.fromARGB(255, 30, 30, 30),
-        title: const Text("Görevi Sil", style: TextStyle(color: Colors.white),),
-        content: const Text("Bu görevi silmek istediğinizden emin misiniz? Gelecekteki tekrarlar korunacaktır.", style: TextStyle(color: Colors.white)),
-        actions: <Widget>[
-          TextButton(
-            child: const Text("İptal", style: TextStyle(color: Colors.white)),
-            onPressed: () {
-              Navigator.of(dialogContext).pop();
-            },
-          ),
-          TextButton(
-            child: const Text("Sil", style: TextStyle(color: Colors.white)),
-            onPressed: () {
-              // Şu anki tarihi al
-              DateTime now = DateTime.now();
-              
-              // Firestore belgesini güncelle, silmek yerine
-              FirebaseFirestore.instance.collection('todos').doc(widget.task.id).update({
-                'deletedDate': now,
-              }).then((_) {
-                Navigator.of(dialogContext).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Görev başarıyla silindi. Gelecekteki tekrarlar korundu.')),
-                );
-                Navigator.of(context).pop();
-              }).catchError((error) {
-                Navigator.of(dialogContext).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Görev silinirken hata oluştu: $error')),
-                );
-              });
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
 }
