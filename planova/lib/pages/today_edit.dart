@@ -3,17 +3,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
-class TaskEditPage extends StatefulWidget {
+class TodayEditPage extends StatefulWidget {
   final DocumentSnapshot task;
   final DateTime selectedDate;
 
-  const TaskEditPage({super.key, required this.task, required this.selectedDate});
+  const TodayEditPage(
+      {super.key, required this.task, required this.selectedDate});
 
   @override
-  _TaskEditPageState createState() => _TaskEditPageState();
+  _TodayEditPageState createState() => _TodayEditPageState();
 }
 
-class _TaskEditPageState extends State<TaskEditPage> {
+class _TodayEditPageState extends State<TodayEditPage> {
   late TextEditingController nameController;
   late TextEditingController descriptionController;
   late FocusNode taskNameFocusNode;
@@ -26,15 +27,22 @@ class _TaskEditPageState extends State<TaskEditPage> {
   void initState() {
     super.initState();
     nameController = TextEditingController(text: widget.task['taskName']);
-    descriptionController = TextEditingController(text: widget.task['taskDescription']);
+    descriptionController =
+        TextEditingController(text: widget.task['taskDescription']);
     taskNameFocusNode = FocusNode();
     descriptionFocusNode = FocusNode();
     selectedDays = List<int>.from(widget.task['selectedDays'] ?? []);
     selectedRecurrence = widget.task['taskRecurring'] ?? 'Tekrar yapma';
-    selectedTime = widget.task['taskTime'] != "boş"
+    selectedTime = widget.task['taskTimes']
+                [DateFormat('yyyy-MM-dd').format(widget.selectedDate)] !=
+            "boş"
         ? TimeOfDay(
-            hour: int.parse(widget.task['taskTime'].split(":")[0]),
-            minute: int.parse(widget.task['taskTime'].split(":")[1]),
+            hour: int.parse(widget.task['taskTimes']
+                    [DateFormat('yyyy-MM-dd').format(widget.selectedDate)]
+                .split(":")[0]),
+            minute: int.parse(widget.task['taskTimes']
+                    [DateFormat('yyyy-MM-dd').format(widget.selectedDate)]
+                .split(":")[1]),
           )
         : null;
   }
@@ -438,20 +446,13 @@ class _TaskEditPageState extends State<TaskEditPage> {
           return FilterChip(
             label: Text(
               _getDayName(index + 1),
-              style: const TextStyle(color: Colors.white, fontSize: 18),
+              style: const TextStyle(
+                  color: Color.fromARGB(255, 255, 255, 255), fontSize: 18),
             ),
             selected: selectedDays.contains(index + 1),
-            onSelected: (bool selected) {
-              setState(() {
-                if (selected) {
-                  selectedDays.add(index + 1);
-                } else {
-                  selectedDays.remove(index + 1);
-                }
-              });
-            },
+            onSelected: null, // Günlerin değiştirilemez olmasını sağlamak için
             backgroundColor: const Color(0XFF607D8B),
-            selectedColor: const Color(0XFF03DAC6),
+            selectedColor: const Color.fromARGB(255, 90, 92, 92),
           );
         }),
       ),
@@ -476,35 +477,103 @@ class _TaskEditPageState extends State<TaskEditPage> {
   }
 
   void _updateTodo() {
-    Map<String, bool> taskCompletionStatus =
-        Map<String, bool>.from(widget.task['taskCompletionStatus']);
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          backgroundColor: const Color(0XFF1E1E1E),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Saat Güncelleme",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  "Bu görevin saatini mi yoksa tüm tekrarlanan görevlerin saatini mi güncellemek istiyorsunuz?",
+                  style: TextStyle(color: Colors.white70),
+                ),
+                const SizedBox(height: 20),
+                Column(
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _updateTask(false);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0XFF03DAC6),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 12,
+                          horizontal: 24,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text(
+                        "Sadece Bu Görev",
+                        style: TextStyle(fontSize: 16, color: Colors.black),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _updateTask(true);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0XFF03DAC6),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 12,
+                          horizontal: 24,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text(
+                        "Tüm Tekrarlanan Görevler",
+                        style: TextStyle(fontSize: 16, color: Colors.black),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
-    int recurrenceDays = 0;
-    switch (selectedRecurrence) {
-      case '1 hafta tekrar':
-        recurrenceDays = 7;
-        break;
-      case '2 hafta tekrar':
-        recurrenceDays = 14;
-        break;
-      case '3 hafta tekrar':
-        recurrenceDays = 21;
-        break;
-      case '1 ay tekrar':
-        recurrenceDays = 30;
-        break;
-    }
+  void _updateTask(bool updateAll) {
+    Map<String, String> taskTimes =
+        Map<String, String>.from(widget.task['taskTimes']);
 
-    if (selectedDays.isNotEmpty) {
-      DateTime currentDate = widget.selectedDate;
-      for (int i = 0; i < recurrenceDays; i++) {
-        DateTime taskDate = currentDate.add(Duration(days: i));
-        if (selectedDays.contains(taskDate.weekday)) {
-          taskCompletionStatus[DateFormat('yyyy-MM-dd').format(taskDate)] =
-              taskCompletionStatus[DateFormat('yyyy-MM-dd').format(taskDate)] ??
-                  false;
-        }
+    String selectedDate = DateFormat('yyyy-MM-dd').format(widget.selectedDate);
+    String newTime =
+        selectedTime != null ? selectedTime!.format(context) : "boş";
+
+    if (updateAll) {
+      // Tüm tekrarlanan görevlerin saatini güncelle
+      for (String date in taskTimes.keys) {
+        taskTimes[date] = newTime;
       }
+    } else {
+      // Sadece seçilen günün saatini güncelle
+      taskTimes[selectedDate] = newTime;
     }
 
     FirebaseFirestore.instance.collection('todos').doc(widget.task.id).update({
@@ -512,8 +581,7 @@ class _TaskEditPageState extends State<TaskEditPage> {
       'taskDescription': descriptionController.text,
       'selectedDays': selectedDays,
       'taskRecurring': selectedRecurrence,
-      'taskTime': selectedTime != null ? selectedTime!.format(context) : "boş",
-      'taskCompletionStatus': taskCompletionStatus,
+      'taskTimes': taskTimes,
     }).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Task updated successfully')),
@@ -541,7 +609,8 @@ class _TaskEditPageState extends State<TaskEditPage> {
             dialogBackgroundColor: const Color(0XFF1E1E1E),
           ),
           child: AlertDialog(
-            title: const Text("Select Recurrence", style: TextStyle(color: Colors.white)),
+            title: const Text("Select Recurrence",
+                style: TextStyle(color: Colors.white)),
             content: DropdownButton<String>(
               value: selectedRecurrence,
               items: [
@@ -594,31 +663,58 @@ class _TaskEditPageState extends State<TaskEditPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: const Color(0XFF1E1E1E),
-          title: const Text("Görevi Sil", style: TextStyle(color: Colors.white)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: const Text(
+            "Görevi Sil",
+            style: TextStyle(
+                color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+          ),
           content: const Text(
             "Bu görevi mi yoksa tüm tekrarlanan görevleri mi silmek istiyorsunuz?",
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: Colors.white70),
           ),
           actions: <Widget>[
-            TextButton(
-              child: const Text("İptal", style: TextStyle(color: Colors.white)),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text("Sadece Bu Görev", style: TextStyle(color: Colors.white)),
-              onPressed: () {
-                Navigator.of(context).pop();
-                _deleteTask(false);
-              },
-            ),
-            TextButton(
-              child: const Text("Tüm Tekrarlanan Görevler", style: TextStyle(color: Colors.white)),
-              onPressed: () {
-                Navigator.of(context).pop();
-                _deleteTask(true);
-              },
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _deleteTask(false);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0XFF03DAC6),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text(
+                    "Sadece Bu Görev",
+                    style: TextStyle(fontSize: 16, color: Colors.black),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _deleteTask(true);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0XFF03DAC6),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text(
+                    "Tüm Tekrarlanan Görevler",
+                    style: TextStyle(fontSize: 16, color: Colors.black),
+                  ),
+                ),
+              ],
             ),
           ],
         );
@@ -627,12 +723,15 @@ class _TaskEditPageState extends State<TaskEditPage> {
   }
 
   void _deleteTask(bool deleteAll) {
-    String formattedSelectedDate = DateFormat('yyyy-MM-dd').format(widget.selectedDate);
+    String formattedSelectedDate =
+        DateFormat('yyyy-MM-dd').format(widget.selectedDate);
 
     Map<String, bool> taskCompletionStatus =
         Map<String, bool>.from(widget.task['taskCompletionStatus']);
+    Map<String, String> taskTimes =
+        Map<String, String>.from(widget.task['taskTimes']);
     List<dynamic> deletedTasks;
-if ((widget.task.data() as Map).containsKey('deletedTasks')) {
+    if ((widget.task.data() as Map).containsKey('deletedTasks')) {
       deletedTasks = List<dynamic>.from(widget.task['deletedTasks']);
     } else {
       deletedTasks = [];
@@ -644,16 +743,21 @@ if ((widget.task.data() as Map).containsKey('deletedTasks')) {
         deletedTasks.add(date);
       });
       taskCompletionStatus.clear();
+      taskTimes.clear();
     } else {
       // Sadece seçili tarihi sil
       if (taskCompletionStatus.containsKey(formattedSelectedDate)) {
         taskCompletionStatus.remove(formattedSelectedDate);
         deletedTasks.add(formattedSelectedDate);
       }
+      if (taskTimes.containsKey(formattedSelectedDate)) {
+        taskTimes.remove(formattedSelectedDate);
+      }
     }
 
     FirebaseFirestore.instance.collection('todos').doc(widget.task.id).update({
       'taskCompletionStatus': taskCompletionStatus,
+      'taskTimes': taskTimes,
       'deletedTasks': deletedTasks,
     }).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(

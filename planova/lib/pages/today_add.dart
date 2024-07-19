@@ -50,7 +50,8 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                 _buildDescriptionSection(context),
                 const SizedBox(height: 24),
                 _buildRecurringSection(context),
-                if (selectedRecurrence != 'Tekrar yapma') _buildDaySelectionSection(context),
+                if (selectedRecurrence != 'Tekrar yapma')
+                  _buildDaySelectionSection(context),
                 const SizedBox(height: 150),
               ],
             ),
@@ -541,18 +542,19 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
         break;
     }
 
-    Map<String, bool> taskCompletionStatus = {};
+    Map<String, String> taskTimes = {};
     DateTime currentDate = DateTime.now();
+    String taskTime = selectedTime != null ? selectedTime!.format(context) : "boş";
 
     if (selectedDays.isNotEmpty) {
       for (int i = 0; i < recurrenceDays; i++) {
         DateTime taskDate = currentDate.add(Duration(days: i));
         if (selectedDays.contains(taskDate.weekday)) {
-          taskCompletionStatus[DateFormat('yyyy-MM-dd').format(taskDate)] = false;
+          taskTimes[DateFormat('yyyy-MM-dd').format(taskDate)] = taskTime;
         }
       }
     } else {
-      taskCompletionStatus[DateFormat('yyyy-MM-dd').format(currentDate)] = false;
+      taskTimes[DateFormat('yyyy-MM-dd').format(currentDate)] = taskTime;
     }
 
     Map<String, dynamic> taskData = {
@@ -561,15 +563,10 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
       'taskDescription': edittextController.text,
       'taskCreateDate': FieldValue.serverTimestamp(),
       'taskRecurring': selectedRecurrence,
-      'taskCompletionStatus': taskCompletionStatus,
+      'taskCompletionStatus': {},
+      'taskTimes': taskTimes,
       'selectedDays': selectedDays,
     };
-
-    if (selectedTime != null) {
-      taskData['taskTime'] = selectedTime!.format(context);
-    } else {
-      taskData['taskTime'] = "boş";
-    }
 
     FirebaseFirestore.instance.collection('todos').add(taskData).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(

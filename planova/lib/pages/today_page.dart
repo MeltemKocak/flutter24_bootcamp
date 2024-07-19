@@ -108,18 +108,9 @@ class _TodayPageState extends State<TodayPage> {
                   Map<String, dynamic> data =
                       doc.data() as Map<String, dynamic>;
 
-                  Map<String, bool> taskCompletionStatus =
-                      Map<String, bool>.from(
-                          data['taskCompletionStatus'] ?? {});
-                  DateTime? deletedDate =
-                      (data['deletedDate'] as Timestamp?)?.toDate();
-                  List<dynamic> deletedTasks = data['deletedTasks'] ?? [];
-
-                  if (deletedDate == null || _focusDate!.isAfter(deletedDate)) {
-                    if (taskCompletionStatus.containsKey(formattedFocusDate) &&
-                        !deletedTasks.contains(formattedFocusDate)) {
-                      tasksForToday.add(doc);
-                    }
+                  if (data['taskTimes'] != null &&
+                      data['taskTimes'].containsKey(formattedFocusDate)) {
+                    tasksForToday.add(doc);
                   }
                 }
 
@@ -207,13 +198,13 @@ class _TodayPageState extends State<TodayPage> {
             context: context,
             isScrollControlled: true,
             backgroundColor: Colors.transparent,
-            builder: (context) => TaskEditPage(task: task, selectedDate: _focusDate!),
+            builder: (context) =>
+                TodayEditPage(task: task, selectedDate: _focusDate!),
           );
         },
         child: Card(
           color: const Color.fromARGB(120, 96, 125, 139),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Padding(
             padding: const EdgeInsets.all(12),
             child: Row(
@@ -222,16 +213,15 @@ class _TodayPageState extends State<TodayPage> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4.0),
                   ),
-                  side:
-                      const BorderSide(color: Color.fromARGB(200, 3, 218, 198)),
+                  side: const BorderSide(color: Color.fromARGB(200, 3, 218, 198)),
                   value: task['taskCompletionStatus']
                           [DateFormat('yyyy-MM-dd').format(_focusDate!)] ??
                       false,
                   onChanged: (bool? value) {
                     Map<String, bool> completionStatus =
                         Map<String, bool>.from(task['taskCompletionStatus']);
-                    completionStatus[
-                        DateFormat('yyyy-MM-dd').format(_focusDate!)] = value!;
+                    completionStatus[DateFormat('yyyy-MM-dd').format(_focusDate!)] =
+                        value!;
                     FirebaseFirestore.instance
                         .collection('todos')
                         .doc(task.id)
@@ -278,11 +268,15 @@ class _TodayPageState extends State<TodayPage> {
   }
 
   Widget _timeShow(DocumentSnapshot task) {
-    bool hasTime = task['taskTime'] != "boş";
+    String selectedDate = DateFormat('yyyy-MM-dd').format(_focusDate!);
+    Map<String, dynamic> taskData = task.data() as Map<String, dynamic>;
+    String taskTime = taskData.containsKey('taskTimes')
+        ? taskData['taskTimes'][selectedDate] ?? "boş"
+        : "boş";
 
     return Row(
       children: [
-        if (hasTime) ...[
+        if (taskTime != "boş") ...[
           const Padding(
             padding: EdgeInsets.only(left: 0),
             child: Icon(Icons.access_time, color: Colors.white70, size: 16),
@@ -290,7 +284,7 @@ class _TodayPageState extends State<TodayPage> {
           Padding(
             padding: const EdgeInsets.only(left: 4),
             child: Text(
-              task['taskTime'],
+              taskTime,
               style: const TextStyle(color: Colors.white70, fontSize: 16),
             ),
           ),
