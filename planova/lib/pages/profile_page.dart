@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:planova/pages/today_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -13,6 +15,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  int _incompleteTasks = 0;
+  int _completedTasks = 0;
   User? user;
   Uint8List? _image;
   String? imageUrl;
@@ -24,6 +28,7 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     _fetchUser();
     _fetchUserProfile();
+    getTaskCountsForToday();
   }
 
   Future<void> _fetchUser() async {
@@ -85,21 +90,21 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Card(
       color: const Color.fromARGB(255, 30, 30, 30),
-      margin: const EdgeInsets.all(16),
+      margin: const EdgeInsets.all(4),
       child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 16),
+            const SizedBox(height: 36),
             Stack(
               alignment: Alignment.center,
               children: [
                 CircleAvatar(
-                  radius: 66,
+                  radius: 80,
                   backgroundColor: const Color.fromARGB(255, 3, 218, 198),
                   child: CircleAvatar(
-                    radius: 64,
+                    radius: 78,
                     backgroundImage: _image != null
                         ? MemoryImage(_image!)
                         : (imageUrl != null
@@ -131,63 +136,70 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
             const SizedBox(height: 24),
-            TextField(
-              controller: nameController,
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                hintText: 'Enter Name',
-                hintStyle: const TextStyle(color: Colors.white70),
-                contentPadding: const EdgeInsets.all(10),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide:
-                      const BorderSide(color: Color.fromARGB(200, 3, 218, 198)),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide:
-                      const BorderSide(color: Color.fromARGB(200, 3, 218, 198)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide:
-                      const BorderSide(color: Color.fromARGB(255, 3, 218, 198)),
-                ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  TextField(
+                    controller: nameController,
+                    style: const TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      hintText: 'Enter Name',
+                      hintStyle: const TextStyle(color: Colors.white70),
+                      contentPadding: const EdgeInsets.all(10),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide:
+                            const BorderSide(color: Color.fromARGB(200, 3, 218, 198)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide:
+                            const BorderSide(color: Color.fromARGB(200, 3, 218, 198)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide:
+                            const BorderSide(color: Color.fromARGB(255, 3, 218, 198)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: bioController,
+                    style: const TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      hintText: 'Enter Bio',
+                      hintStyle: const TextStyle(color: Colors.white70),
+                      contentPadding: const EdgeInsets.all(10),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide:
+                            const BorderSide(color: Color.fromARGB(200, 3, 218, 198)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide:
+                            const BorderSide(color: Color.fromARGB(200, 3, 218, 198)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide:
+                            const BorderSide(color: Color.fromARGB(255, 3, 218, 198)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 35),
+                ],
               ),
             ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: bioController,
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                hintText: 'Enter Bio',
-                hintStyle: const TextStyle(color: Colors.white70),
-                contentPadding: const EdgeInsets.all(10),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide:
-                      const BorderSide(color: Color.fromARGB(200, 3, 218, 198)),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide:
-                      const BorderSide(color: Color.fromARGB(200, 3, 218, 198)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide:
-                      const BorderSide(color: Color.fromARGB(255, 3, 218, 198)),
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
             ElevatedButton.icon(
               onPressed: saveProfile,
               icon: const Icon(Icons.save,
                   color: Color.fromARGB(255, 30, 30, 30)),
               label: const Text(
                 'Save Profile',
-                style: TextStyle(color: Color.fromARGB(200, 30, 30, 30)),
+                style: TextStyle(color: Color.fromARGB(230, 30, 30, 30), fontSize: 20, fontWeight: FontWeight.bold),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(255, 3, 218, 198),
@@ -198,6 +210,46 @@ class _ProfilePageState extends State<ProfilePage> {
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 textStyle:
                     const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
+            SizedBox(height: 60),
+            Text(
+              "Daily Task Overview",
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 23 ),
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                TaskCard(
+                  title: 'Incomplete Task',
+                  count: _incompleteTasks,
+                ),
+                TaskCard(
+                  title: 'Completed Task' ,
+                  count: _completedTasks,
+                ),
+              ],
+            ),
+            SizedBox(height: 40),
+            Text(
+              "Daily Task Statistics",
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 23 ),
+            ),
+            SizedBox(height: 20),
+            Container(
+              width: MediaQuery.of(context).size.width * 0.85,
+              decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(15.0),
+                color: const Color.fromARGB(255, 42, 42, 42)
+              ),
+              height: 200,
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: BarChart(
+                  _getBarChartData(),
+                ),
               ),
             ),
           ],
@@ -214,5 +266,128 @@ class _ProfilePageState extends State<ProfilePage> {
     } else {
       throw Exception('No image selected');
     }
+  }
+
+  Future<void> getTaskCountsForToday() async {
+    DateTime today = DateTime.now();
+    Map<String, int> counts = await TodayPage.getTaskCounts(today);
+
+    setState(() {
+      _incompleteTasks = counts['incomplete'] ?? 0;
+      _completedTasks = counts['completed'] ?? 0;
+    });
+  }
+
+  BarChartData _getBarChartData() {
+    return BarChartData(
+      gridData: FlGridData(show: false),
+      titlesData: FlTitlesData(show: false),
+      borderData: FlBorderData(show: false),
+      barGroups: [
+        BarChartGroupData(
+          x: 0,
+          barsSpace: 4,
+          barRods: [
+            BarChartRodData(
+              toY: _incompleteTasks.toDouble(),
+              color: Color.fromARGB(70, 3, 218, 198),
+              width: 20,
+              borderRadius: BorderRadius.circular(6),
+            ),
+          ],
+        ),
+        BarChartGroupData(
+          x: 0,
+          barsSpace: 4,
+          barRods: [
+            BarChartRodData(
+              toY: _completedTasks.toDouble(),
+              color: Color.fromARGB(200, 3, 218, 198),
+              width: 20,
+              borderRadius: BorderRadius.circular(6),
+            ),
+          ],
+        ),
+        BarChartGroupData(
+          x: 1,
+          barsSpace: 4,
+          barRods: [
+            BarChartRodData(
+              toY: _incompleteTasks.toDouble(),
+              color: Color.fromARGB(70, 3, 218, 198),
+              width: 20,
+              borderRadius: BorderRadius.circular(6),
+            ),
+          ],
+        ),
+        BarChartGroupData(
+          x: 2,
+          barsSpace: 4,
+          barRods: [
+            BarChartRodData(
+              toY: _completedTasks.toDouble(),
+              color: Color.fromARGB(200, 3, 218, 198),
+              width: 20,
+              borderRadius: BorderRadius.circular(6),
+            ),
+          ],
+        ),
+        BarChartGroupData(
+          x: 3,
+          barsSpace: 4,
+          barRods: [
+            BarChartRodData(
+              toY: _incompleteTasks.toDouble(),
+              color: Color.fromARGB(70, 3, 218, 198),
+              width: 20,
+              borderRadius: BorderRadius.circular(6),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class TaskCard extends StatelessWidget {
+  final String title;
+  final int count;
+
+  TaskCard({required this.title, required this.count});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: const Color.fromARGB(255, 42, 42, 42),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.40,
+        height: 150,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              '$count',
+              style: TextStyle(
+                fontSize: 48,
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 3, 218, 198),
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

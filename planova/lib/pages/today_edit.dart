@@ -435,24 +435,30 @@ class _TodayEditPageState extends State<TodayEditPage> {
 
   Widget _buildDaySelectionSection(BuildContext context) {
     return Container(
+      
       alignment: Alignment.center,
       width: MediaQuery.of(context).size.width * 0.8,
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Wrap(
+
         spacing: 8,
         runSpacing: 8,
         alignment: WrapAlignment.center,
         children: List<Widget>.generate(7, (int index) {
+
           return FilterChip(
             label: Text(
               _getDayName(index + 1),
+              
               style: const TextStyle(
                   color: Color.fromARGB(255, 255, 255, 255), fontSize: 18),
             ),
+            
             selected: selectedDays.contains(index + 1),
             onSelected: null, // Günlerin değiştirilemez olmasını sağlamak için
             backgroundColor: const Color(0XFF607D8B),
             selectedColor: const Color.fromARGB(255, 90, 92, 92),
+            disabledColor: const Color.fromARGB(255, 90, 92, 92),
           );
         }),
       ),

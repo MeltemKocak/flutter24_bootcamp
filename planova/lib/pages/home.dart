@@ -199,40 +199,41 @@ class _NavigationExampleState extends State<NavigationExample> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          switch (currentPageIndex) {
-            case 0:
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                builder: (context) => const TodayAddSubPage(),
-              );
-              break;
-            case 1:
-              print('Button pressed on page 1');
-              break;
-            case 2:
-              // Üçüncü durum için yapılacak işlemler
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                builder: (context) => const JournalAddSubPage(),
-              );
-              break;
-            default:
-          }
-        },
-        backgroundColor: const Color.fromARGB(255, 3, 218, 198),
-        child: const Icon(
-          Icons.add,
-          size: 32,
-          color: Colors.black,
-        ),
+      floatingActionButton: currentPageIndex == 3 
+  ? null 
+  : FloatingActionButton(
+      onPressed: () {
+        switch (currentPageIndex) {
+          case 0:
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              builder: (context) => const TodayAddSubPage(),
+            );
+            break;
+          case 1:
+            print('Button pressed on page 1');
+            break;
+          case 2:
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              builder: (context) => const JournalAddSubPage(),
+            );
+            break;
+          default:
+        }
+      },
+      backgroundColor: const Color.fromARGB(255, 3, 218, 198),
+      child: const Icon(
+        Icons.add,
+        size: 32,
+        color: Colors.black,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
+    ),
+    floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       bottomNavigationBar: NavigationBar(
         backgroundColor: const Color.fromARGB(255, 42, 42, 42),
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,

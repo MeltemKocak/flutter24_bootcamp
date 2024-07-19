@@ -18,6 +18,38 @@ class TodayPage extends StatefulWidget {
 
   @override
   _TodayPageState createState() => _TodayPageState();
+
+  static Future<Map<String, int>> getTaskCounts(DateTime date) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return {'incomplete': 0, 'completed': 0};
+    }
+
+    final formattedDate = DateFormat('yyyy-MM-dd').format(date);
+
+    final snapshot = await FirebaseFirestore.instance
+        .collection('todos')
+        .where('userId', isEqualTo: user.uid)
+        .get();
+
+    int incompleteCount = 0;
+    int completedCount = 0;
+
+    for (var doc in snapshot.docs) {
+      final data = doc.data() as Map<String, dynamic>;
+      if (data['taskTimes'] != null &&
+          data['taskTimes'].containsKey(formattedDate)) {
+        final completionStatus = data['taskCompletionStatus'] as Map<String, dynamic>?;
+        if (completionStatus != null && completionStatus[formattedDate] == true) {
+          completedCount++;
+        } else {
+          incompleteCount++;
+        }
+      }
+    }
+
+    return {'incomplete': incompleteCount, 'completed': completedCount};
+  }
 }
 
 class _TodayPageState extends State<TodayPage> {
@@ -290,6 +322,118 @@ class _TodayPageState extends State<TodayPage> {
           ),
         ],
       ],
+    );
+  }
+
+  void _deleteTask(DocumentSnapshot task, bool deleteAll) {
+    String formattedSelectedDate = DateFormat('yyyy-MM-dd').format(_focusDate!);
+
+    Map<String, bool> taskCompletionStatus =
+        Map<String, bool>.from(task['taskCompletionStatus']);
+    Map<String, String> taskTimes =
+        Map<String, String>.from(task['taskTimes']);
+    List<dynamic> deletedTasks;
+    if ((task.data() as Map).containsKey('deletedTasks')) {
+      deletedTasks = List<dynamic>.from(task['deletedTasks']);
+    } else {
+      deletedTasks = [];
+    }
+
+    if (deleteAll) {
+      // Tüm tekrarlanan görevleri sil
+      taskCompletionStatus.forEach((date, _) {
+        deletedTasks.add(date);
+      });
+      taskCompletionStatus.clear();
+      taskTimes.clear();
+    } else {
+      // Sadece seçili tarihi sil
+      if (taskCompletionStatus.containsKey(formattedSelectedDate)) {
+        taskCompletionStatus.remove(formattedSelectedDate);
+        deletedTasks.add(formattedSelectedDate);
+      }
+      if (taskTimes.containsKey(formattedSelectedDate)) {
+        taskTimes.remove(formattedSelectedDate);
+      }
+    }
+
+    FirebaseFirestore.instance.collection('todos').doc(task.id).update({
+      'taskCompletionStatus': taskCompletionStatus,
+      'taskTimes': taskTimes,
+      'deletedTasks': deletedTasks,
+    }).then((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Görev başarıyla silindi.')),
+      );
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Görev silinirken hata oluştu: $error')),
+      );
+    });
+  }
+
+  void _confirmDeleteTask(DocumentSnapshot task) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: const Color(0XFF1E1E1E),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: const Text(
+            "Görevi Sil",
+            style: TextStyle(
+                color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          content: const Text(
+            "Bu görevi mi yoksa tüm tekrarlanan görevleri mi silmek istiyorsunuz?",
+            style: TextStyle(color: Colors.white70),
+          ),
+          actions: <Widget>[
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _deleteTask(task, false);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0XFF03DAC6),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text(
+                    "Sadece Bu Görev",
+                    style: TextStyle(fontSize: 16, color: Colors.black),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _deleteTask(task, true);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0XFF03DAC6),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text(
+                    "Tüm Tekrarlanan Görevler",
+                    style: TextStyle(fontSize: 16, color: Colors.black),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
     );
   }
 }
