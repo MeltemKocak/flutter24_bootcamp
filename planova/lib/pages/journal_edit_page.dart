@@ -8,29 +8,41 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:intl/intl.dart';
+import 'package:planova/pages/photo_view_page.dart'; // Import the correct path
 import 'package:audioplayers/audioplayers.dart' as ap;
+import 'journal_page.dart'; // Import JournalPage
 
-class JournalAddSubPage extends StatefulWidget {
-  const JournalAddSubPage({super.key});
+class JournalEditPage extends StatefulWidget {
+  final String docId;
+  final Map<String, dynamic> data;
+
+  const JournalEditPage({required this.docId, required this.data, super.key});
 
   @override
-  _JournalAddSubPageState createState() => _JournalAddSubPageState();
+  _JournalEditPageState createState() => _JournalEditPageState();
 }
 
-class _JournalAddSubPageState extends State<JournalAddSubPage> {
-  TextEditingController nameController = TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
-  List<XFile> _images = [];
+class _JournalEditPageState extends State<JournalEditPage> {
+  late TextEditingController nameController;
+  late TextEditingController descriptionController;
+  List<XFile> _newImages = [];
+  late List<String> _existingImageUrls;
   DateTime _dateTime = DateTime.now();
   FlutterSoundRecorder? _soundRecorder;
   FlutterSoundPlayer? _soundPlayer;
   bool _isRecording = false;
   String? _recordedFilePath;
+  String? _existingAudioUrl;
   ap.AudioPlayer _audioPlayer = ap.AudioPlayer();
 
   @override
   void initState() {
     super.initState();
+    nameController = TextEditingController(text: widget.data['name']);
+    descriptionController = TextEditingController(text: widget.data['description']);
+    _existingImageUrls = List<String>.from(widget.data['imageUrls'] ?? []);
+    _dateTime = (widget.data['date'] as Timestamp).toDate();
+    _existingAudioUrl = widget.data['audioUrl'];
     _soundRecorder = FlutterSoundRecorder();
     _soundPlayer = FlutterSoundPlayer();
     _openRecorder();
@@ -97,19 +109,18 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
-    List<String> imageUrls = [];
-    for (XFile image in _images) {
+    List<String> imageUrls = [..._existingImageUrls];
+    for (XFile image in _newImages) {
       String imageUrl = await _uploadImage(image);
       imageUrls.add(imageUrl);
     }
 
-    String? audioUrl;
+    String? audioUrl = _existingAudioUrl;
     if (_recordedFilePath != null) {
       audioUrl = await _uploadAudio(_recordedFilePath!);
     }
 
-    await FirebaseFirestore.instance.collection('journal').add({
-      'userId': user.uid,
+    await FirebaseFirestore.instance.collection('journal').doc(widget.docId).update({
       'name': nameController.text,
       'description': descriptionController.text,
       'date': _dateTime,
@@ -117,7 +128,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
       'audioUrl': audioUrl,
     });
 
-    Navigator.pop(context);
+    Navigator.pop(context); // Use pop instead of pushReplacement
   }
 
   Future<String> _uploadImage(XFile image) async {
@@ -147,27 +158,49 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       setState(() {
-        _images.add(image);
+        _newImages.insert(0, image); // Insert at the beginning
       });
     }
   }
 
-  void _removeImage(int index) {
+  void _removeImage(int index, bool isExisting) {
     setState(() {
-      _images.removeAt(index);
+      if (isExisting) {
+        _existingImageUrls.removeAt(index);
+      } else {
+        _newImages.removeAt(index);
+      }
     });
   }
 
   void _removeAudio() {
     setState(() {
+      _existingAudioUrl = null;
       _recordedFilePath = null;
     });
+  }
+
+  Future<void> _playAudio() async {
+    if (_recordedFilePath != null) {
+      await _audioPlayer.play(ap.UrlSource(_recordedFilePath!));
+    } else if (_existingAudioUrl != null) {
+      await _audioPlayer.play(ap.UrlSource(_existingAudioUrl!));
+    }
+  }
+
+  void _viewPhoto(String imageUrl) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PhotoViewPage(imageUrl: imageUrl),
+      ),
+    );
   }
 
   void _showDatePicker() {
     showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: _dateTime,
       firstDate: DateTime(2000),
       lastDate: DateTime(2050),
     ).then((value) {
@@ -179,10 +212,13 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
     });
   }
 
-  Future<void> _playAudio() async {
-    if (_recordedFilePath != null) {
-      await _audioPlayer.play(ap.UrlSource(_recordedFilePath!));
-    }
+  Future<void> _deleteJournalEntry() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    await FirebaseFirestore.instance.collection('journal').doc(widget.docId).delete();
+
+    Navigator.pop(context); // Use pop instead of pushReplacement
   }
 
   @override
@@ -192,6 +228,12 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
       appBar: AppBar(
         title: Text('Task'),
         backgroundColor: Color(0xFF1E1E1E),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.delete, color: Colors.white),
+            onPressed: _deleteJournalEntry,
+          ),
+        ],
       ),
       backgroundColor: Color(0xFF1E1E1E),
       body: Padding(
@@ -234,35 +276,88 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
               ],
             ),
             SizedBox(height: 10),
-            Row(
-              children: List.generate(5, (index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                  child: GestureDetector(
-                    onTap: _pickImage,
-                    child: Container(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: _images.length > index
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
-                              child: Image.file(
-                                File(_images[index].path),
-                                fit: BoxFit.cover,
-                              ),
-                            )
-                          : Icon(
-                              Icons.add,
-                              color: Colors.white,
+            SizedBox(
+              height: 100,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: _newImages.length + _existingImageUrls.length + 1,
+                itemBuilder: (context, index) {
+                  if (index < _newImages.length) {
+                    return Stack(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: Image.file(
+                              File(_newImages[index].path),
+                              fit: BoxFit.cover,
+                              width: 100,
+                              height: 100,
                             ),
-                    ),
-                  ),
-                );
-              }),
+                          ),
+                        ),
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: IconButton(
+                            icon: Icon(Icons.close, color: Colors.red),
+                            onPressed: () => _removeImage(index, false),
+                          ),
+                        ),
+                      ],
+                    );
+                  } else if (index < _newImages.length + _existingImageUrls.length) {
+                    int existingIndex = index - _newImages.length;
+                    return Stack(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: GestureDetector(
+                            onTap: () => _viewPhoto(_existingImageUrls[existingIndex]),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Image.network(
+                                _existingImageUrls[existingIndex],
+                                fit: BoxFit.cover,
+                                width: 100,
+                                height: 100,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: IconButton(
+                            icon: Icon(Icons.close, color: Colors.red),
+                            onPressed: () => _removeImage(existingIndex, true),
+                          ),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: GestureDetector(
+                        onTap: _pickImage,
+                        child: Container(
+                          width: 100,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: Icon(
+                            Icons.add,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+                },
+              ),
             ),
             SizedBox(height: 10),
             ElevatedButton(
@@ -279,7 +374,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
                 backgroundColor: _isRecording ? Colors.blue : Colors.red,
               ),
             ),
-            if (_recordedFilePath != null) ...[
+            if (_existingAudioUrl != null || _recordedFilePath != null) ...[
               SizedBox(height: 10),
               ElevatedButton(
                 onPressed: _playAudio,
