@@ -54,10 +54,6 @@ class _JournalPageState extends State<JournalPage> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Journal Entries'),
-        backgroundColor: Color(0xFF1E1E1E),
-      ),
       backgroundColor: Color(0xFF1E1E1E),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance

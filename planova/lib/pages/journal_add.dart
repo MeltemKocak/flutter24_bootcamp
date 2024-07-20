@@ -190,7 +190,6 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
     String formattedDate = DateFormat('MM/dd/yyyy').format(_dateTime);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Task'),
         backgroundColor: Color(0xFF1E1E1E),
       ),
       backgroundColor: Color(0xFF1E1E1E),

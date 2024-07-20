@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:planova/pages/bottom_sheet_calendar.dart';
+import 'package:planova/pages/habit_add.dart';
 import 'package:planova/pages/habit_page.dart';
 import 'package:planova/pages/journal_page.dart';
 import 'package:planova/pages/profile_page.dart';
@@ -213,7 +214,12 @@ class _NavigationExampleState extends State<NavigationExample> {
             );
             break;
           case 1:
-            print('Button pressed on page 1');
+             showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              builder: (context) =>  HabitAddPage (),
+            );
             break;
           case 2:
             showModalBottomSheet(

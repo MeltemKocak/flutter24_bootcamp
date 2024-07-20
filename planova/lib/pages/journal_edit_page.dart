@@ -226,7 +226,6 @@ class _JournalEditPageState extends State<JournalEditPage> {
     String formattedDate = DateFormat('MM/dd/yyyy').format(_dateTime);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Task'),
         backgroundColor: Color(0xFF1E1E1E),
         actions: [
           IconButton(
