@@ -388,7 +388,13 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 
 - **Sprint Notes:**
-   * 
+   * Used Firebase Core for Firebase services application integration.
+   * Firebase Authentication was used to authenticate with Firebase.
+   * Used Cloud Firestore to interact with the Firestore database and transfer user data.
+   * Firebase Storage was used to store user data.
+   * Google Sign in option has been added to log in.
+   * Image picker was used for user photos.
+   * Flutter sound was used for audio recording and playback.
  
 - **Expected point completion within Sprint:**
   * 450
@@ -433,7 +439,13 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 
 - **Sprint Notları:**
-   * 
+   * Firebase hizmetleri uygulama entegrasyonu için Firebase Core kullanıldı.
+   * Firebase ile kimlik doğrulama işlemleri gerçekleştirmek için Firebase Authentication kullanıldı.
+   * Firestore veritabanı ile etkileşim kurup kullanıcı verilerini aktarmak için Cloud Firestore kullanıldı.
+   * Kullanıcı verilerini depolamak için Firebase Storage kullanıldı.
+   * Oturum açmak için Google Sign in seçeneği eklenildi.
+   * Kullanıcı fotoğrafları için Image picker kullanıldı.
+   * Ses kaydetme ve oynatma için flutter sound kullanıldı.
  
 - **Sprint İçinde Tamamlanması Beklenen Puan:**
   * 450
