@@ -262,7 +262,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
   * 300 Point
 
 - **Point Completion Logic:**
-  * A total target of 1100 points was set. In the first sprint, 300 points were targeted because the idea was planned and the designs were made, and 300 points were completed. In the second sprint, 450 points are targeted as the focus will be on writing code and adding APIs. In the third sprint, a target of 450 points was set as the remaining tasks would be completed and integration work would be carried out.
+  * A total target of 1200 points was set. In the first sprint, 300 points were targeted because the idea was planned and the designs were made, and 300 points were completed. In the second sprint, 450 points are targeted as the focus will be on writing code and adding APIs. In the third sprint, a target of 450 points was set as the remaining tasks would be completed and integration work would be carried out.
 
 - **Daily Scrum:** [Daily Scrum](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Project_Management_Files/Sprint_1/Sprint1_Daily_Scrum)
 
@@ -314,7 +314,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
   * 300 Puan
 
 - **Puan Tamamlama Mantığı:**
-  * Toplamda 1100 puanlık bir hedef belirlendi. Birinci sprintte, fikir oturması ve tasarımların yapılması planlandığı için 300 puan hedeflenmiştir ve 300 puan tamamlanmıştır. İkinci sprintte, kod yazma ve API ekleme çalışmalarına yoğunlaşılacağı için 450 puan hedeflenmiştir. Üçüncü sprintte ise kalan görevlerin tamamlanması ve entegrasyon çalışmaları yapılacağından 450 puan hedefi konulmuştur.
+  * Toplamda 1200 puanlık bir hedef belirlendi. Birinci sprintte, fikir oturması ve tasarımların yapılması planlandığı için 300 puan hedeflenmiştir ve 300 puan tamamlanmıştır. İkinci sprintte, kod yazma ve API ekleme çalışmalarına yoğunlaşılacağı için 450 puan hedeflenmiştir. Üçüncü sprintte ise kalan görevlerin tamamlanması ve entegrasyon çalışmaları yapılacağından 450 puan hedefi konulmuştur.
 
 - **Sprint Gözden Geçirilmesi:**
    * Melisa Nur Alparslan ve Olgun Baran Atik prototip ve tasarımları yaptı.
@@ -368,14 +368,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 </details>
 
 ---
-  <details>
-    <summary><h2>App Map</h2></summary>
 
-
-   
-  </details>
-
----
   <details>
     <summary><h2>Project Management</h2></summary>
 
@@ -398,24 +391,42 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
    * 
  
 - **Expected point completion within Sprint:**
-  * 
+  * 450
 
 - **Point Completion Logic:**
-  * 
+  * A total target of 1200 points was set. 300 points were completed in the first sprint. In the second sprint, the overall completion of the codes was requested, a target of 450 points was set and 450 points were completed. In the third sprint, a target of 450 points was set as the remaining tasks would be completed and integration work would be carried out.
 
 - **Daily Scrum:** 
 
 - **Product Backlog URL:**  [Asana](https://app.asana.com/0/1207708660563810/1207708543191861)
 
 - **Sprint Review:**
-    * 
+  *  In the second sprint, firstly project skeleton was created by Olgun and Oğuzhan.
+  *  Coding of registration and login pages was done.
+  *  While the home page coding was done by Olgun and Oğuzhan, the diary page coding was simultaneously done by Meltem and Onur, and the habit page inner screen coding was done by Melisa.
+  *  It was decided that the features of adding audio recording and visuals to the diary page would be completed in this sprint and the goal was achieved.
+  *  According to the changes in all pages, coding of the profile page that will provide data analysis has started.
+  * Adding habits and adding buttons for the home screen have been customized.
+  * Settings button coding was done by Olgun and Oğuzhan.
+  * After the diary page was completed, Meltem and Onur researched the API suitable for the application.
+  * Although it was aimed to complete the coding of all pages in the second sprint planning, many features were added to the prototype during coding and the coding goal was achieved except for the target tracking page with a friend.
+  * Flexibility was provided according to the features added in the planning and a good sprint process was achieved.
 
 
 - **Sprint Review Participants:**
     * Melisa Nur Alparslan, Olgun Baran Atik, Meltem Sena Koçak, Oğuzhan Gündüz, Onur Turan
 
 - **Sprint Retrospective:**
-   * 
+   * In the third sprint, it was decided that the habit tracking pages with friends would be created first by Oğuzhan, Olgun and Melisa.
+   * It was decided to make some changes on the habit editing page.
+   * It was decided to make adjustments to the profile screen according to the changes made.
+   * It was decided to make final adjustments to the settings screen.
+   * In line with the application-friendly and free API research conducted in the second sprint, it was decided that Meltem and Onur would integrate artificial intelligence into the application.
+   * It was decided to make visual changes on the main screen of the profile page.
+   * It was decided to add an open theme option to the application.
+   * It was decided to write the User Agreement, Information and Explicit Consent texts and add them to the application.
+   * It was decided to localize the application so that it can offer different language options.
+
 
 <details>
     <summary><h4>Turkish explanation</h4></summary>
@@ -425,20 +436,37 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
    * 
  
 - **Sprint İçinde Tamamlanması Beklenen Puan:**
-  * 
+  * 450
 
 - **Puan Tamamlama Mantığı:**
-  * 
+  * Toplamda 1200 puanlık bir hedef belirlendi. Birinci sprintte 300 puan tamamlanmıştır. İkinci sprintte, kodların genel olarak tamamlanması istenilmiş 450 puan hedefi konulmuş ve 450 puan tamamlanmıştır. Üçüncü sprintte ise kalan görevlerin tamamlanması ve entegrasyon çalışmaları yapılacağından 450 puan hedefi konulmuştur.
 
 - **Sprint Gözden Geçirilmesi:**
-   * 
+   * İkinci sprintte, ilk olarak proje iskeleti oluşturulması Olgun ve Oğuzhan tarafından yapıldı.
+   * Kayıt olma ve giriş sayfalarının kodlaması yapıldı.
+   * Ana sayfa kodlaması Olgun ve Oğuzhan tarafından yapılırken eş zamanlı olarak günlük sayfası kodlaması Meltem ve Onur tarafından, alışkanlık sayfası iç ekranı kodlaması Melisa tarafından yapıldı.
+   * Günlük sayfasına ses kaydı ve görsel ekleme özelliklerinin bu sprintte bitirilmesi kararlaştırıldı ve amaca ulaşıldı.
+   * Tüm sayfalarda olan değişikliklere göre, veri analizi sağlayacak olan profil sayfasının kodlanmasına başlanıldı.
+   * Alışkanlık ekleme ve ana ekran için yapılacak ekleme butonları özelleştirildi.
+   * Ayarlar butonu kodlaması Olgun ve Oğuzhan tarafından yapıldı.
+   * Günlük sayfası bittikten sonra uygulamaya uygun olacak API araştırması Meltem ve Onur tarafından yapıldı.
+   * İkinci sprint planlamasında tüm sayfaların kodlamasının bitirilmesi hedeflense de kodlama esnasında prototipe birçok özellik eklenildi ve arkadaşla hedef takip sayfası hariç kodlama hedefine ulaşıldı.
+   * Planlamada eklenilen özelliklere göre esneklik sağlandı ve iyi bir sprint süreci geçirildi.
      
 
 - **Sprint Gözden Geçirme Katılımcıları:**
     * Melisa Nur Alparslan, Olgun Baran Atik, Meltem Sena Koçak, Oğuzhan Gündüz, Onur Turan
 
 - **Sprint Retrospektifi:**
-   * 
+   * Üçüncü sprintte ilk olarak arkadaşlı alışkanlık takip sayfalarının Oğuzhan, Olgun, Melisa tarafından yapılmasına karar verildi.
+   * Alışkanlık düzenleme sayfasında bazı değişiklikler yapılmasına karar verildi.
+   * Yapılan değişiklere göre profil ekranında düzenlemeler yapılmasına karar verildi.
+   * Ayarlar ekranında son düzenlemeler yapılmasına karar verildi.
+   * İkinci sprintte yapılan uygulamaya uygun ve ücretsiz API araştırmaları doğrultusunda Meltem ve Onur’un uygulamaya yapay zeka entegrasyonu yapmasına karar verildi.
+   * Profil sayfasının ana ekranında görsel değişiklik yapılmasına karar verildi.
+   * Uygulamaya açık tema seçeneğinin eklenilmesine karar verildi.
+   * Kullanıcı sözleşme, Aydınlatma ve Açık Rıza metinlerinin yazılmasına, uygulamaya eklenmesine karar verildi.
+   * Uygulamanın farklı dil seçenekleri sunabilmesi için lokalizasyon yapılmasına karar verildi.
 </details>
 </details>
 
