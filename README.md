@@ -369,11 +369,14 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 ---
 
-  <details>
-    <summary><h2>Project Management</h2></summary>
-
-   
-  </details>
+<details>
+  <summary><h2>Project Management</h2></summary>
+    
+  ![pm_1](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_2/Sprint2_PM/Sprint2_pm_1.png)
+  ![pm_2](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_2/Sprint2_PM/Sprint2_pm_2.png)
+  ![pm_3](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_2/Sprint2_PM/Sprint2_pm_3.png)
+  ![pm_4](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_2/Sprint2_PM/Sprint2_pm_4.png)
+</details>
 
 ---
   <details>
