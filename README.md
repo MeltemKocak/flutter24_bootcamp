@@ -363,6 +363,30 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 <details>
     <summary><h2>App Screenshots</h2></summary>
 
+  ### Login Page
+
+  ![Loginpage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_2/Sprint2_App_ss/Sprint2_Loginpage.png)
+
+---
+### Today(Home)page
+![Homepage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_1/Sprint1_App_ss/Sprint1_Homepage_UI.png)
+
+---
+### Habits Page
+![Habitpage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_1/Sprint1_App_ss/Sprint1_Habitpage_UI.png)
+
+---
+### Journal Page
+![Habitpage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_1/Sprint1_App_ss/Spritn1_Journalpage_UI.png)
+
+---
+### Profile Page
+![Habitpage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_1/Sprint1_App_ss/Sprint1_Profilepage_UI.png)
+
+---
+### Settings Page
+<img src="https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_1/Sprint1_App_ss/Sprint1_settingspage_UI.png" width="500">
+
 
    
 </details>
