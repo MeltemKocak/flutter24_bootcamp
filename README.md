@@ -383,7 +383,6 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 ### Profile Page
 ![Habitpage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_2/Sprint2_App_ss/Sprint2_Profilepage.png)
 
----
 
 
 
@@ -460,6 +459,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
    * It was decided to write the User Agreement, Information and Explicit Consent texts and add them to the application.
    * It was decided to localize the application so that it can offer different language options.
 
+- **Additional Notes:**
 
 <details>
     <summary><h4>Turkish explanation</h4></summary>
