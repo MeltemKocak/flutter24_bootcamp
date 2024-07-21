@@ -402,7 +402,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 - **Point Completion Logic:**
   * A total target of 1200 points was set. 300 points were completed in the first sprint. In the second sprint, the overall completion of the codes was requested, a target of 450 points was set and 450 points were completed. In the third sprint, a target of 450 points was set as the remaining tasks would be completed and integration work would be carried out.
 
-- **Daily Scrum:** 
+- **Daily Scrum:**  [Daily Scrum](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Project_Management_Files/Sprint_2/Sprint2_Daily_Scrum)
 
 - **Product Backlog URL:**  [Asana](https://app.asana.com/0/1207708660563810/1207708543191861)
 
