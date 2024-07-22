@@ -8,9 +8,8 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:intl/intl.dart';
-import 'package:planova/pages/photo_view_page.dart'; // Import the correct path
+import 'package:planova/pages/photo_view_page.dart';
 import 'package:audioplayers/audioplayers.dart' as ap;
-import 'journal_page.dart'; // Import JournalPage
 
 class JournalEditPage extends StatefulWidget {
   final String docId;
@@ -25,7 +24,7 @@ class JournalEditPage extends StatefulWidget {
 class _JournalEditPageState extends State<JournalEditPage> {
   late TextEditingController nameController;
   late TextEditingController descriptionController;
-  List<XFile> _newImages = [];
+  final List<XFile> _newImages = [];
   late List<String> _existingImageUrls;
   DateTime _dateTime = DateTime.now();
   FlutterSoundRecorder? _soundRecorder;
@@ -33,7 +32,11 @@ class _JournalEditPageState extends State<JournalEditPage> {
   bool _isRecording = false;
   String? _recordedFilePath;
   String? _existingAudioUrl;
-  ap.AudioPlayer _audioPlayer = ap.AudioPlayer();
+  final ap.AudioPlayer _audioPlayer = ap.AudioPlayer();
+  double _decibelLevel = 0.0;
+  Duration _recordedDuration = Duration.zero;
+  final List<double> _audioWaveform = [];
+  bool _isPlaying = false;
 
   @override
   void initState() {
@@ -47,6 +50,11 @@ class _JournalEditPageState extends State<JournalEditPage> {
     _soundPlayer = FlutterSoundPlayer();
     _openRecorder();
     _openPlayer();
+    _audioPlayer.onPlayerComplete.listen((_) {
+      setState(() {
+        _isPlaying = false;
+      });
+    });
   }
 
   Future<void> _openRecorder() async {
@@ -56,6 +64,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
       return;
     }
     await _soundRecorder!.openRecorder();
+    _soundRecorder!.setSubscriptionDuration(const Duration(milliseconds: 100));
   }
 
   Future<void> _openPlayer() async {
@@ -78,9 +87,20 @@ class _JournalEditPageState extends State<JournalEditPage> {
         toFile: filePath,
         codec: Codec.aacADTS,
       );
+      _soundRecorder!.onProgress!.listen((event) {
+        setState(() {
+          _decibelLevel = event.decibels ?? 0;
+          _recordedDuration = event.duration;
+          _audioWaveform.add(_decibelLevel);
+          if (_audioWaveform.length > 50) {
+            _audioWaveform.removeAt(0);
+          }
+        });
+      });
       setState(() {
         _recordedFilePath = filePath;
         _isRecording = true;
+        _audioWaveform.clear();
       });
     } catch (e) {
       print('Error starting recording: $e');
@@ -98,10 +118,28 @@ class _JournalEditPageState extends State<JournalEditPage> {
     }
   }
 
+  Future<void> _playAudio() async {
+    if (_recordedFilePath != null) {
+      await _audioPlayer.play(ap.UrlSource(_recordedFilePath!));
+    } else if (_existingAudioUrl != null) {
+      await _audioPlayer.play(ap.UrlSource(_existingAudioUrl!));
+    }
+    setState(() {
+      _isPlaying = true;
+    });
+  }
+
+  Future<void> _stopAudio() async {
+    await _audioPlayer.stop();
+    setState(() {
+      _isPlaying = false;
+    });
+  }
+
   Future<void> _saveJournalEntry() async {
     if (nameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Header cannot be empty')),
+        const SnackBar(content: Text('Header cannot be empty')),
       );
       return;
     }
@@ -128,7 +166,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
       'audioUrl': audioUrl,
     });
 
-    Navigator.pop(context); // Use pop instead of pushReplacement
+    Navigator.pop(context);
   }
 
   Future<String> _uploadImage(XFile image) async {
@@ -154,11 +192,11 @@ class _JournalEditPageState extends State<JournalEditPage> {
   }
 
   Future<void> _pickImage() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       setState(() {
-        _newImages.insert(0, image); // Insert at the beginning
+        _newImages.insert(0, image);
       });
     }
   }
@@ -180,14 +218,6 @@ class _JournalEditPageState extends State<JournalEditPage> {
     });
   }
 
-  Future<void> _playAudio() async {
-    if (_recordedFilePath != null) {
-      await _audioPlayer.play(ap.UrlSource(_recordedFilePath!));
-    } else if (_existingAudioUrl != null) {
-      await _audioPlayer.play(ap.UrlSource(_existingAudioUrl!));
-    }
-  }
-
   void _viewPhoto(String imageUrl) {
     Navigator.push(
       context,
@@ -197,10 +227,24 @@ class _JournalEditPageState extends State<JournalEditPage> {
     );
   }
 
-  void _showDatePicker() {
+ void _showDatePicker() {
     showDatePicker(
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.dark().copyWith(
+            colorScheme: const ColorScheme.dark(
+              primary: Color(0XFF03DAC6),
+              onPrimary: Colors.white,
+              surface: Color(0XFF1E1E1E),
+              onSurface: Colors.white,
+            ),
+            dialogBackgroundColor: const Color(0XFF1E1E1E),
+          ),
+          child: child!,
+        );
+      },
       context: context,
-      initialDate: _dateTime,
+      initialDate: DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2050),
     ).then((value) {
@@ -218,7 +262,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
 
     await FirebaseFirestore.instance.collection('journal').doc(widget.docId).delete();
 
-    Navigator.pop(context); // Use pop instead of pushReplacement
+    Navigator.pop(context);
   }
 
   @override
@@ -226,181 +270,310 @@ class _JournalEditPageState extends State<JournalEditPage> {
     String formattedDate = DateFormat('MM/dd/yyyy').format(_dateTime);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF1E1E1E),
+        backgroundColor: const Color(0xFF1E1E1E),
         actions: [
           IconButton(
-            icon: Icon(Icons.delete, color: Colors.white),
+            icon: const Icon(Icons.delete, color: Colors.white),
             onPressed: _deleteJournalEntry,
           ),
         ],
       ),
-      backgroundColor: Color(0xFF1E1E1E),
+      backgroundColor: const Color(0xFF1E1E1E),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: nameController,
-              decoration: InputDecoration(
-                labelText: 'Header',
-                labelStyle: TextStyle(color: Colors.white),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                ),
-              ),
-              style: TextStyle(color: Colors.white),
-            ),
-            TextField(
-              controller: descriptionController,
-              decoration: InputDecoration(
-                labelText: 'Description',
-                labelStyle: TextStyle(color: Colors.white),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                ),
-              ),
-              style: TextStyle(color: Colors.white),
-            ),
-            SizedBox(height: 10),
-            Row(
-              children: [
-                Text(
-                  formattedDate,
-                  style: TextStyle(color: Colors.white),
-                ),
-                IconButton(
-                  icon: Icon(Icons.calendar_today, color: Colors.white),
-                  onPressed: _showDatePicker,
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            SizedBox(
-              height: 100,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: _newImages.length + _existingImageUrls.length + 1,
-                itemBuilder: (context, index) {
-                  if (index < _newImages.length) {
-                    return Stack(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8.0),
-                            child: Image.file(
-                              File(_newImages[index].path),
-                              fit: BoxFit.cover,
-                              width: 100,
-                              height: 100,
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          right: 0,
-                          top: 0,
-                          child: IconButton(
-                            icon: Icon(Icons.close, color: Colors.red),
-                            onPressed: () => _removeImage(index, false),
-                          ),
-                        ),
-                      ],
-                    );
-                  } else if (index < _newImages.length + _existingImageUrls.length) {
-                    int existingIndex = index - _newImages.length;
-                    return Stack(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: GestureDetector(
-                            onTap: () => _viewPhoto(_existingImageUrls[existingIndex]),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
-                              child: Image.network(
-                                _existingImageUrls[existingIndex],
-                                fit: BoxFit.cover,
-                                width: 100,
-                                height: 100,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          right: 0,
-                          top: 0,
-                          child: IconButton(
-                            icon: Icon(Icons.close, color: Colors.red),
-                            onPressed: () => _removeImage(existingIndex, true),
-                          ),
-                        ),
-                      ],
-                    );
-                  } else {
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: GestureDetector(
-                        onTap: _pickImage,
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.white),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: Icon(
-                            Icons.add,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    );
-                  }
-                },
-              ),
-            ),
-            SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: _isRecording ? _stopRecording : _startRecording,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.mic),
-                  SizedBox(width: 8),
-                  Text(_isRecording ? 'recording' : 'start recording'),
-                ],
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _isRecording ? Colors.blue : Colors.red,
-              ),
-            ),
-            if (_existingAudioUrl != null || _recordedFilePath != null) ...[
-              SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: _playAudio,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.play_arrow),
-                    SizedBox(width: 8),
-                    Text('play'),
-                  ],
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                ),
-              ),
+        padding: const EdgeInsets.all(20.0),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildTextField(nameController, "Header"),
+              const SizedBox(height: 20),
+              _buildTextField(descriptionController, "Description", maxLines: 3),
+              const SizedBox(height: 20),
+              _buildDateField(formattedDate),
+              const SizedBox(height: 20),
+              _buildImageSelection(),
+              const SizedBox(height: 20),
+              _buildAudioRecordingSection(),
+              const SizedBox(height: 30),
+              _buildConfirmButton(),
             ],
-            Spacer(),
-            ElevatedButton(
-              onPressed: _saveJournalEntry,
-              child: Icon(Icons.check),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF03DAC6),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
   }
+
+  Widget _buildTextField(TextEditingController controller, String label, {int maxLines = 1}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w300),
+        ),
+        const SizedBox(height: 2),
+        TextFormField(
+          controller: controller,
+          style: const TextStyle(color: Colors.white),
+          maxLines: maxLines,
+          decoration: InputDecoration(
+            hintText: "Enter $label",
+            hintStyle: const TextStyle(color: Color.fromARGB(150, 255, 255, 255)),
+            filled: true,
+            fillColor: const Color(0X3F607D8B),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide.none,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDateField(String formattedDate) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Date",
+          style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w300),
+        ),
+        const SizedBox(height: 2),
+        GestureDetector(
+          onTap: _showDatePicker,
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            decoration: BoxDecoration(
+              color: const Color(0X3F607D8B),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  formattedDate,
+                  style: const TextStyle(color: Colors.white),
+                ),
+                const Icon(Icons.calendar_today, color: Colors.white),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildImageSelection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Images",
+          style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w300),
+        ),
+        const SizedBox(height: 2),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              ..._newImages.asMap().entries.map((entry) {
+                return _buildImageThumbnail(entry.value.path, () => _removeImage(entry.key, false));
+              }),
+              ..._existingImageUrls.asMap().entries.map((entry) {
+                return _buildImageThumbnail(entry.value, () => _removeImage(entry.key, true), isNetwork: true);
+              }),
+              GestureDetector(
+                onTap: _pickImage,
+                child: Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: const Color(0X3F607D8B),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildImageThumbnail(String path, VoidCallback onRemove, {bool isNetwork = false}) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8.0),
+      child: Stack(
+        children: [
+          GestureDetector(
+            onTap: isNetwork ? () => _viewPhoto(path) : null,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: isNetwork
+                  ? Image.network(
+                      path,
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
+                    )
+                  : Image.file(
+                      File(path),
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
+                    ),
+            ),
+          ),
+          Positioned(
+            right: 0,
+            top: 0,
+            child: GestureDetector(
+              onTap: onRemove,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.close,
+                  size: 18,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAudioRecordingSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Audio",
+          style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w300),
+        ),
+        const SizedBox(height: 10),
+        Container(
+          height: 50,
+          decoration: BoxDecoration(
+            color: const Color(0X3F607D8B),
+            borderRadius: BorderRadius.circular(25),
+          ),
+          child: Row(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  if (_isRecording) {
+                    _stopRecording();
+                  } else if (_isPlaying) {
+                    _stopAudio();
+                  } else if (_recordedFilePath != null || _existingAudioUrl != null) {
+                    _playAudio();
+                  } else {
+                    _startRecording();
+                  }
+                },
+                child: Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _isRecording ? Colors.red : const Color(0XFF03DAC6),
+                  ),
+                  child: Icon(
+                    _isRecording ? Icons.stop :
+                    _isPlaying ? Icons.stop :
+                    (_recordedFilePath != null || _existingAudioUrl != null) ? Icons.play_arrow : 
+                    Icons.mic,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: _isRecording || _recordedFilePath != null || _existingAudioUrl != null
+                    ? CustomPaint(
+                        size: const Size(double.infinity, 30),
+                        painter: WaveformPainter(_audioWaveform),
+                      )
+                    : const Center(
+                        child: Text(
+                          "Tap to record",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+              ),
+              if ((_recordedFilePath != null || _existingAudioUrl != null) && !_isRecording)
+                IconButton(
+                  icon: const Icon(Icons.delete, color: Colors.white),
+                  onPressed: _removeAudio,
+                ),
+            ],
+          ),
+        ),
+        if (_recordedFilePath != null || _existingAudioUrl != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              "Duration: ${_recordedDuration.inMinutes}:${(_recordedDuration.inSeconds % 60).toString().padLeft(2, '0')}",
+              style: const TextStyle(color: Colors.white, fontSize: 12),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildConfirmButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0XFF03DAC6),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        onPressed: _saveJournalEntry,
+        child: const Text("Save Changes"),
+      ),
+    );
+  }
+}
+
+class WaveformPainter extends CustomPainter {
+  final List<double> waveform;
+
+  WaveformPainter(this.waveform);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = const Color(0XFF03DAC6)
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round;
+
+    final maxAmplitude = size.height / 2;
+    final width = size.width;
+    final stepWidth = width / waveform.length;
+
+    for (var i = 0; i < waveform.length; i++) {
+      final x = i * stepWidth;
+      final amplitude = maxAmplitude * (waveform[i] / 100);
+      canvas.drawLine(
+        Offset(x, size.height / 2 - amplitude),
+        Offset(x, size.height / 2 + amplitude),
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

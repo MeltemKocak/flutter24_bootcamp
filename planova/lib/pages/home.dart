@@ -218,7 +218,7 @@ class _NavigationExampleState extends State<NavigationExample> {
               context: context,
               isScrollControlled: true,
               backgroundColor: Colors.transparent,
-              builder: (context) =>  HabitAddPage (),
+              builder: (context) =>  const HabitAddPage (),
             );
             break;
           case 2:

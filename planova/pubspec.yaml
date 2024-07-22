@@ -81,6 +81,7 @@ dependencies:
   intl: any
   table_calendar: ^3.1.2
   syncfusion_flutter_calendar: ^26.1.42
+  rxdart: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

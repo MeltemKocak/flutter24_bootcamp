@@ -12,7 +12,7 @@ class PhotoViewPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.black,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white, size: 30), // Increase the size and change the color
+          icon: const Icon(Icons.arrow_back, color: Colors.white, size: 30), // Increase the size and change the color
           onPressed: () {
             Navigator.pop(context);
           },
@@ -21,7 +21,7 @@ class PhotoViewPage extends StatelessWidget {
       body: Center(
         child: PhotoView(
           imageProvider: NetworkImage(imageUrl),
-          backgroundDecoration: BoxDecoration(color: Colors.black),
+          backgroundDecoration: const BoxDecoration(color: Colors.black),
         ),
       ),
       backgroundColor: Colors.black,

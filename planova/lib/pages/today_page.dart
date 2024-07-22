@@ -42,7 +42,7 @@ class TodayPage extends StatefulWidget {
     int completedCount = 0;
 
     for (var doc in todosSnapshot.docs) {
-      final data = doc.data() as Map<String, dynamic>;
+      final data = doc.data();
       if (data['taskTimes'] != null &&
           data['taskTimes'].containsKey(formattedDate)) {
         final completionStatus = data['taskCompletionStatus']
@@ -57,7 +57,7 @@ class TodayPage extends StatefulWidget {
     }
 
     for (var doc in habitsSnapshot.docs) {
-      final data = doc.data() as Map<String, dynamic>;
+      final data = doc.data();
       if (data['days'] != null && data['days'].containsKey(formattedDate)) {
        
         DateTime focusDateOnly = DateTime(date.year, date.month, date.day);

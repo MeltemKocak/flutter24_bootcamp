@@ -47,7 +47,7 @@ class _HabitAddPageState extends State<HabitAddPage> {
     DateTime startDate = DateFormat('yyyy-MM-dd').parse(_startDateController.text);
     DateTime endDate = DateFormat('yyyy-MM-dd').parse(_endDateController.text);
 
-    for (DateTime date = startDate; date.isBefore(endDate) || date.isAtSameMomentAs(endDate); date = date.add(Duration(days: 1))) {
+    for (DateTime date = startDate; date.isBefore(endDate) || date.isAtSameMomentAs(endDate); date = date.add(const Duration(days: 1))) {
       if (_selectedDays[date.weekday % 7]) {
         habitDays[DateFormat('yyyy-MM-dd').format(date)] = true;
       }
@@ -69,13 +69,13 @@ class _HabitAddPageState extends State<HabitAddPage> {
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.dark().copyWith(
-            colorScheme: ColorScheme.dark(
+            colorScheme: const ColorScheme.dark(
               primary: Color(0XFF03DAC6),
               onPrimary: Colors.white,
               surface: Color(0XFF1E1E1E),
               onSurface: Colors.white,
             ),
-            dialogBackgroundColor: Color(0XFF1E1E1E),
+            dialogBackgroundColor: const Color(0XFF1E1E1E),
           ),
           child: child!,
         );
@@ -94,7 +94,7 @@ class _HabitAddPageState extends State<HabitAddPage> {
       DateTime startDate = DateFormat('yyyy-MM-dd').parse(_startDateController.text);
       DateTime endDate = DateFormat('yyyy-MM-dd').parse(_endDateController.text);
       int count = 0;
-      for (DateTime date = startDate; date.isBefore(endDate) || date.isAtSameMomentAs(endDate); date = date.add(Duration(days: 1))) {
+      for (DateTime date = startDate; date.isBefore(endDate) || date.isAtSameMomentAs(endDate); date = date.add(const Duration(days: 1))) {
         if (_selectedDays[date.weekday % 7]) {
           count++;
         }

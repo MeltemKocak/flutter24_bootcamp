@@ -212,12 +212,12 @@ class _ProfilePageState extends State<ProfilePage> {
                     const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
-            SizedBox(height: 60),
-            Text(
+            const SizedBox(height: 60),
+            const Text(
               "Daily Task Overview",
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 23 ),
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 23 ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -231,12 +231,12 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ],
             ),
-            SizedBox(height: 40),
-            Text(
+            const SizedBox(height: 40),
+            const Text(
               "Daily Task Statistics",
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 23 ),
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 23 ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Container(
               width: MediaQuery.of(context).size.width * 0.85,
               decoration: BoxDecoration(
@@ -280,8 +280,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   BarChartData _getBarChartData() {
     return BarChartData(
-      gridData: FlGridData(show: false),
-      titlesData: FlTitlesData(show: false),
+      gridData: const FlGridData(show: false),
+      titlesData: const FlTitlesData(show: false),
       borderData: FlBorderData(show: false),
       barGroups: [
         BarChartGroupData(
@@ -290,7 +290,7 @@ class _ProfilePageState extends State<ProfilePage> {
           barRods: [
             BarChartRodData(
               toY: _incompleteTasks.toDouble(),
-              color: Color.fromARGB(70, 3, 218, 198),
+              color: const Color.fromARGB(70, 3, 218, 198),
               width: 20,
               borderRadius: BorderRadius.circular(6),
             ),
@@ -302,7 +302,7 @@ class _ProfilePageState extends State<ProfilePage> {
           barRods: [
             BarChartRodData(
               toY: _completedTasks.toDouble(),
-              color: Color.fromARGB(200, 3, 218, 198),
+              color: const Color.fromARGB(200, 3, 218, 198),
               width: 20,
               borderRadius: BorderRadius.circular(6),
             ),
@@ -314,7 +314,7 @@ class _ProfilePageState extends State<ProfilePage> {
           barRods: [
             BarChartRodData(
               toY: _incompleteTasks.toDouble(),
-              color: Color.fromARGB(70, 3, 218, 198),
+              color: const Color.fromARGB(70, 3, 218, 198),
               width: 20,
               borderRadius: BorderRadius.circular(6),
             ),
@@ -326,7 +326,7 @@ class _ProfilePageState extends State<ProfilePage> {
           barRods: [
             BarChartRodData(
               toY: _completedTasks.toDouble(),
-              color: Color.fromARGB(200, 3, 218, 198),
+              color: const Color.fromARGB(200, 3, 218, 198),
               width: 20,
               borderRadius: BorderRadius.circular(6),
             ),
@@ -338,7 +338,7 @@ class _ProfilePageState extends State<ProfilePage> {
           barRods: [
             BarChartRodData(
               toY: _incompleteTasks.toDouble(),
-              color: Color.fromARGB(70, 3, 218, 198),
+              color: const Color.fromARGB(70, 3, 218, 198),
               width: 20,
               borderRadius: BorderRadius.circular(6),
             ),
@@ -353,7 +353,7 @@ class TaskCard extends StatelessWidget {
   final String title;
   final int count;
 
-  TaskCard({required this.title, required this.count});
+  const TaskCard({super.key, required this.title, required this.count});
 
   @override
   Widget build(BuildContext context) {
@@ -362,7 +362,7 @@ class TaskCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
       ),
-      child: Container(
+      child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.40,
         height: 150,
         child: Column(
@@ -370,16 +370,16 @@ class TaskCard extends StatelessWidget {
           children: [
             Text(
               '$count',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 48,
                 fontWeight: FontWeight.bold,
                 color: Color.fromARGB(255, 3, 218, 198),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
               title,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
