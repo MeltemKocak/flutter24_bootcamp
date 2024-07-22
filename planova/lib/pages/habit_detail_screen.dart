@@ -1,9 +1,8 @@
-// habit_detail_page.dart
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'habit_edit_page.dart'; // Yeni sayfayı içe aktarıyoruz
 
 class HabitDetailPage extends StatefulWidget {
   final String habitId;
@@ -25,11 +24,74 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
   }
 
   Future<void> _loadHabitData() async {
+    setState(() {
+      isLoading = true;
+    });
     DocumentSnapshot doc = await FirebaseFirestore.instance.collection('habits').doc(widget.habitId).get();
     setState(() {
       habitData = doc.data() as Map<String, dynamic>?;
       isLoading = false;
     });
+  }
+
+  void _updateCompletionStatus(bool? value, String date) {
+    if (habitData == null) return;
+
+    Map<String, dynamic> completedDates = habitData!['completed_days'] ?? {};
+    completedDates[date] = value ?? false;
+
+    FirebaseFirestore.instance.collection('habits').doc(widget.habitId).update({
+      'completed_days': completedDates,
+    }).then((_) {
+      _loadHabitData();
+    });
+  }
+
+  void _showEditBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return DraggableScrollableSheet(
+          initialChildSize: 0.9, // Tam ekran
+          minChildSize: 0.9, // Tam ekran
+          maxChildSize: 0.9, // Tam ekran
+          builder: (BuildContext context, ScrollController scrollController) {
+            return Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFF1E1E1E),
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                ),
+              ),
+              child: HabitEditPage(habitId: widget.habitId),
+            );
+          },
+        );
+      },
+    ).whenComplete(() => _loadHabitData());
+  }
+
+  void _showAlertDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Warning'),
+          content: const Text('You cannot check this habit today.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -65,9 +127,10 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
     Map<String, dynamic> completedDates = habitData!['completed_days'] ?? {};
     int targetDays = habitData!['target_days'] ?? 0;
     bool isCompleted = completedDates[formattedDate] ?? false;
+    bool isTodayHabitDay = habitData!['days'][formattedDate] ?? false;
 
     return ChangeNotifierProvider(
-      create: (_) => HabitProvider(),
+      create: (_) => HabitProvider(habitData: habitData),
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -112,12 +175,7 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
                             minimumSize: const Size(160, 42), // Button size
                           ),
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const EditHabitPage(),
-                              ),
-                            );
+                            _showEditBottomSheet(context);
                           },
                         ),
                         ElevatedButton.icon(
@@ -144,7 +202,6 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
                     ),
                   ),
                   const SizedBox(height: 15),
-
                   const AllTimeStats(),
                   const SizedBox(height: 10),
                   Row(
@@ -159,26 +216,22 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
                       ),
                       Checkbox(
                         value: isCompleted,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            completedDates[formattedDate] = value ?? false;
-                            FirebaseFirestore.instance
-                                .collection('habits')
-                                .doc(widget.habitId)
-                                .update({
-                              'completed_days': completedDates,
-                            });
-                          });
-                        },
+                        onChanged: isTodayHabitDay
+                            ? (bool? value) {
+                                _updateCompletionStatus(value, formattedDate);
+                              }
+                            : (bool? value) {
+                                _showAlertDialog(context);
+                              },
                         checkColor: Colors.white,
                         activeColor: const Color(0XFF03DAC6),
                       ),
                     ],
                   ),
                   const SizedBox(height: 16),
-                  TwoWeekProgress(habitId: widget.habitId, targetDays: targetDays),
+                  TwoWeekProgress(habitId: widget.habitId, targetDays: targetDays, completedDates: completedDates),
                   const SizedBox(height: 16),
-                  MonthlyStats(habitId:  widget.habitId,),
+                  MonthlyStats(habitId: widget.habitId, completedDates: completedDates),
                   const SizedBox(height: 16),
                   const YearProgress(),
                 ],
@@ -194,8 +247,14 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
 class TwoWeekProgress extends StatelessWidget {
   final String habitId;
   final int targetDays;
+  final Map<String, dynamic> completedDates;
 
-  const TwoWeekProgress({super.key, required this.habitId, required this.targetDays});
+  const TwoWeekProgress({
+    super.key,
+    required this.habitId,
+    required this.targetDays,
+    required this.completedDates,
+  });
 
   Future<List<bool>> _fetchTwoWeekProgress() async {
     DocumentSnapshot doc = await FirebaseFirestore.instance.collection('habits').doc(habitId).get();
@@ -229,6 +288,7 @@ class TwoWeekProgress extends StatelessWidget {
           );
         }
         List<bool> twoWeekProgress = snapshot.data ?? [];
+        int daysToShow = targetDays < 14 ? targetDays : 14;
 
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 6.0),
@@ -286,7 +346,7 @@ class TwoWeekProgress extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '${twoWeekProgress.where((day) => day).length}/$targetDays days (last $targetDays days stats)',
+                    'Last $daysToShow days: ${twoWeekProgress.where((day) => day).length}/$daysToShow days',
                     style: const TextStyle(
                       color: Colors.white,
                       fontFamily: 'Roboto Flex',
@@ -295,7 +355,7 @@ class TwoWeekProgress extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '${(twoWeekProgress.where((day) => day).length / targetDays * 100).toStringAsFixed(2)}%',
+                    '${(twoWeekProgress.where((day) => day).length / daysToShow * 100).toStringAsFixed(2)}%',
                     style: const TextStyle(
                       color: Colors.white,
                       fontFamily: 'Roboto Flex',
@@ -314,7 +374,9 @@ class TwoWeekProgress extends StatelessWidget {
 }
 
 class HabitProvider with ChangeNotifier {
-      final habitData = _HabitDetailPageState.habitData;
+  final Map<String, dynamic>? habitData;
+
+  HabitProvider({required this.habitData});
 
   DateTime startDate = DateTime.now();
   List<bool> twoWeekProgress = List<bool>.filled(14, false);
@@ -365,52 +427,66 @@ class HabitProvider with ChangeNotifier {
   }
 
   int get currentStreak {
-  List<bool> yearProgress = _getYearProgress();
-  int streak = 0;
-  for (int i = 0; i < yearProgress.length; i++) {
-    if (yearProgress[i]) {
-      streak++;
-    } else {
-         streak = 0;
-
-      break;
-    }
-  }
-  return streak;
-}
-
-int get longestStreak {
-  List<bool> yearProgress = _getYearProgress();
-  int streak = 0;
-  int longest = 0;
-  for (int i = 0; i < yearProgress.length; i++) {
-    if (yearProgress[i]) {
-      streak++;
-      if (streak > longest) {
-        longest = streak;
+    List<bool> yearProgress = _getStreakProgress();
+    int streak = 0;
+    for (int i = yearProgress.length - 1; i >= 0; i--) {
+      if (yearProgress[i]) {
+        streak++;
+      } else {
+        break;
       }
-    } else {
-      streak = 0;
     }
-  }
-  return longest;
-}
-
-List<bool> _getYearProgress() {
-  List<bool> yearProgress = [];
-  DateTime startDate = (habitData!['start_date'] as Timestamp).toDate();
-  DateTime endDate = (habitData!['end_date'] as Timestamp).toDate();
-  Map<String, dynamic> completedDays = habitData!['completed_days'];
-
-  for (DateTime date = startDate;
-      date.isBefore(endDate) || date.isAtSameMomentAs(endDate);
-      date = date.add(const Duration(days: 1))) {
-    String formattedDate = DateFormat('yyyy-MM-dd').format(date);
-    yearProgress.add(completedDays[formattedDate] ?? false);
+    return streak;
   }
 
-  return yearProgress;
-}
+  int get longestStreak {
+    List<bool> yearProgress = _getYearProgress();
+    int streak = 0;
+    int longest = 0;
+    for (int i = 0; i < yearProgress.length; i++) {
+      if (yearProgress[i]) {
+        streak++;
+        if (streak > longest) {
+          longest = streak;
+        }
+      } else {
+        streak = 0;
+      }
+    }
+    return longest;
+  }
+
+  List<bool> _getStreakProgress() {
+    List<bool> yearProgress = [];
+    DateTime startDate = (habitData!['start_date'] as Timestamp).toDate();
+    DateTime endDate = DateTime.now();
+    Map<String, dynamic> completedDays = habitData!['completed_days'];
+
+    for (DateTime date = startDate;
+        date.isBefore(endDate) || date.isAtSameMomentAs(endDate);
+        date = date.add(const Duration(days: 1))) {
+      String formattedDate = DateFormat('yyyy-MM-dd').format(date);
+      yearProgress.add(completedDays[formattedDate] ?? false);
+    }
+
+    return yearProgress;
+  }
+
+  List<bool> _getYearProgress() {
+    List<bool> yearProgress = [];
+    DateTime startDate = (habitData!['start_date'] as Timestamp).toDate();
+    DateTime endDate = (habitData!['end_date'] as Timestamp).toDate();
+    Map<String, dynamic> completedDays = habitData!['completed_days'];
+
+    for (DateTime date = startDate;
+        date.isBefore(endDate) || date.isAtSameMomentAs(endDate);
+        date = date.add(const Duration(days: 1))) {
+      String formattedDate = DateFormat('yyyy-MM-dd').format(date);
+      yearProgress.add(completedDays[formattedDate] ?? false);
+    }
+
+    return yearProgress;
+  }
 
   double get completion {
     int completedDays = yearProgress.where((day) => day).length;
@@ -426,7 +502,6 @@ List<bool> _getYearProgress() {
 class AllTimeStats extends StatelessWidget {
   const AllTimeStats({super.key});
 
-          
   @override
   Widget build(BuildContext context) {
     final habitProvider = Provider.of<HabitProvider>(context);
@@ -435,11 +510,9 @@ class AllTimeStats extends StatelessWidget {
     Map<String, dynamic> completedDates = habitData!['completed_days'] ?? {};
     int targetDays = habitData['target_days'] ?? 0;
 
-
     int completedCount = completedDates.values.where((value) => value == true).length;
     double completionDouble = completedCount / targetDays * 100;
     int completion = completionDouble.isNaN ? 0 : completionDouble.toInt();
-
 
     return Card(
       color: const Color.fromRGBO(96, 125, 139, 0.25), // Update the card background color
@@ -533,18 +606,15 @@ class AllTimeStats extends StatelessWidget {
   }
 }
 
-
-
-
-
-
-
-
-
 class MonthlyStats extends StatefulWidget {
   final String habitId;
+  final Map<String, dynamic> completedDates;
 
-  const MonthlyStats({super.key, required this.habitId});
+  const MonthlyStats({
+    super.key,
+    required this.habitId,
+    required this.completedDates,
+  });
 
   @override
   _MonthlyStatsState createState() => _MonthlyStatsState();
@@ -553,12 +623,11 @@ class MonthlyStats extends StatefulWidget {
 class _MonthlyStatsState extends State<MonthlyStats> {
   int year = DateTime.now().year;
   Map<String, bool> days = {};
-  Map<String, bool> completedDays = {};
 
   // Renk paleti
   final Color backgroundColor = const Color.fromARGB(40, 96, 125, 139);
   final Color primaryColor = const Color.fromARGB(255, 96, 125, 139);
-  final Color secondaryColor = const Color.fromARGB(135 , 96, 125, 139);
+  final Color secondaryColor = const Color.fromARGB(135, 96, 125, 139);
   final Color textColor = Colors.white;
 
   @override
@@ -573,7 +642,6 @@ class _MonthlyStatsState extends State<MonthlyStats> {
       Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
       setState(() {
         days = Map<String, bool>.from(data['days'] ?? {});
-        completedDays = Map<String, bool>.from(data['completed_days'] ?? {});
       });
     }
   }
@@ -672,12 +740,12 @@ class _MonthlyStatsState extends State<MonthlyStats> {
       DateTime currentDate = DateTime(year, monthIndex + 1, i);
       String formattedDate = DateFormat('yyyy-MM-dd').format(currentDate);
       bool isHabitDay = days[formattedDate] ?? false;
-      bool isCompletedDay = completedDays[formattedDate] ?? false;
-      
+      bool isCompletedDay = widget.completedDates[formattedDate] ?? false;
+
       Color dayColor;
       if (isHabitDay) {
         if (currentDate.isAfter(now)) {
-          dayColor =  primaryColor ; // Future habit day
+          dayColor = primaryColor; // Future habit day
         } else if (currentDate.isBefore(now)) {
           dayColor = isCompletedDay ? const Color.fromARGB(255, 3, 218, 198) : const Color.fromARGB(80, 3, 218, 198); // Completed or missed past habit day
         } else {
@@ -765,18 +833,13 @@ class YearProgress extends StatelessWidget {
 }
 
 class EditHabitPage extends StatelessWidget {
-  const EditHabitPage({super.key});
+  const EditHabitPage({super.key, required this.habitId});
+
+  final String habitId;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Edit Habit'),
-      ),
-      body: const Center(
-        child: Text('Edit Habit Page'),
-      ),
-    );
+    return HabitEditPage(habitId: habitId);
   }
 }
 

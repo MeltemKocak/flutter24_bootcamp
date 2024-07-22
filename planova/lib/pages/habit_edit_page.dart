@@ -2,24 +2,64 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
+import 'package:planova/pages/home.dart';
+import 'habit_page.dart'; // HabitPage'i içe aktarıyoruz
 
-class HabitAddPage extends StatefulWidget {
-  const HabitAddPage({super.key});
+class HabitEditPage extends StatefulWidget {
+  final String habitId;
+
+  const HabitEditPage({super.key, required this.habitId});
 
   @override
-  _HabitAddPageState createState() => _HabitAddPageState();
+  _HabitEditPageState createState() => _HabitEditPageState();
 }
 
-class _HabitAddPageState extends State<HabitAddPage> {
+class _HabitEditPageState extends State<HabitEditPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _startDateController = TextEditingController();
   final TextEditingController _endDateController = TextEditingController();
   final List<bool> _selectedDays = List.generate(7, (_) => true);
   int _targetDays = 0;
+  bool isLoading = true;
   bool _isNameEmpty = false;
 
-  void _addHabit() async {
+  @override
+  void initState() {
+    super.initState();
+    _loadHabitData();
+  }
+
+  Future<void> _loadHabitData() async {
+    DocumentSnapshot doc = await FirebaseFirestore.instance
+        .collection('habits')
+        .doc(widget.habitId)
+        .get();
+    Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
+
+    if (data != null) {
+      setState(() {
+        _nameController.text = data['name'] ?? '';
+        _descriptionController.text = data['description'] ?? '';
+        _startDateController.text = (data['start_date'] as Timestamp)
+            .toDate()
+            .toString()
+            .substring(0, 10);
+        _endDateController.text = (data['end_date'] as Timestamp)
+            .toDate()
+            .toString()
+            .substring(0, 10);
+        _selectedDays.setAll(
+            0,
+            List<bool>.from(
+                data['recurring_days'] ?? List.generate(7, (_) => true)));
+        _targetDays = data['target_days'] ?? 0;
+        isLoading = false;
+      });
+    }
+  }
+
+  void _editHabit() async {
     if (_nameController.text.isEmpty) {
       setState(() {
         _isNameEmpty = true;
@@ -39,20 +79,35 @@ class _HabitAddPageState extends State<HabitAddPage> {
             DateFormat('yyyy-MM-dd').parse(_endDateController.text)),
         'target_days': _targetDays,
         'recurring_days': _selectedDays,
-        'user_id': user.uid,
         'days': _generateHabitDays(),
-        'completed_days': {},
       };
 
       FirebaseFirestore.instance
           .collection('habits')
-          .add(habitData)
+          .doc(widget.habitId)
+          .update(habitData)
           .then((value) {
         Navigator.pop(context);
       }).catchError((error) {
         // Hata işleme kodları
       });
     }
+  }
+
+  void _deleteHabit() async {
+    FirebaseFirestore.instance
+        .collection('habits')
+        .doc(widget.habitId)
+        .delete()
+        .then((value) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const Homes()),
+        (Route<dynamic> route) => false,
+      );
+    }).catchError((error) {
+      // Hata işleme kodları
+    });
   }
 
   Map<String, bool> _generateHabitDays() {
@@ -130,48 +185,82 @@ class _HabitAddPageState extends State<HabitAddPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20.0),
-      decoration: const BoxDecoration(
-        color: Color(0XFF1E1E1E),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildTextField(_nameController, "Habit Name", _isNameEmpty),
-            const SizedBox(height: 20),
-            _buildTextField(_descriptionController, "Description", false,
-                maxLines: 3),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                    child: _buildDateField(_startDateController, "Start Date")),
-                const SizedBox(width: 20),
-                Expanded(
-                    child: _buildDateField(_endDateController, "End Date")),
-              ],
+    return Card(
+      child: isLoading
+          ? const Center(
+              child: CircularProgressIndicator(color: Color(0XFF03DAC6)),
+            )
+          : Container(
+              padding: const EdgeInsets.all(20.0),
+              decoration: const BoxDecoration(
+                color: Color(0XFF1E1E1E),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildTextField(
+                        _nameController, _isNameEmpty, "Habit Name"),
+                    const SizedBox(height: 20),
+                    _buildTextField(
+                        _descriptionController, false, "Description",
+                        maxLines: 3),
+                    const SizedBox(height: 20),
+                    Row(
+                      children: [
+                        Expanded(
+                            child: _buildDateField(
+                                _startDateController, "Start Date")),
+                        const SizedBox(width: 20),
+                        Expanded(
+                            child: _buildDateField(
+                                _endDateController, "End Date")),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      "Target Days: $_targetDays",
+                      style: const TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                    const SizedBox(height: 20),
+                    _buildDaySelectionSection(),
+                    const SizedBox(height: 30),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: _deleteHabit,
+                          child: const Text("Delete Habit"),
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0XFF03DAC6),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: _editHabit,
+                          child: const Text("Update Habit"),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
-            const SizedBox(height: 20),
-            Text(
-              "Target Days: $_targetDays",
-              style: const TextStyle(color: Colors.white, fontSize: 16),
-            ),
-            const SizedBox(height: 20),
-            _buildDaySelectionSection(),
-            const SizedBox(height: 30),
-            _buildConfirmButton(),
-          ],
-        ),
-      ),
     );
   }
 
   Widget _buildTextField(
-      TextEditingController controller, String label, bool isEmpty,
+      TextEditingController controller, bool _isNameEmpty, String label,
       {int maxLines = 1}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -194,19 +283,19 @@ class _HabitAddPageState extends State<HabitAddPage> {
             fillColor: const Color(0X3F607D8B),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20),
-              borderSide: isEmpty
+              borderSide: _isNameEmpty
                   ? const BorderSide(color: Colors.red)
                   : BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20),
-              borderSide: isEmpty
+              borderSide: _isNameEmpty
                   ? const BorderSide(color: Colors.red)
                   : BorderSide.none,
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20),
-              borderSide: isEmpty
+              borderSide: _isNameEmpty
                   ? const BorderSide(color: Colors.red)
                   : BorderSide.none,
             ),
@@ -270,22 +359,6 @@ class _HabitAddPageState extends State<HabitAddPage> {
           selectedColor: const Color(0XFF03DAC6),
         );
       }),
-    );
-  }
-
-  Widget _buildConfirmButton() {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0XFF03DAC6),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-        onPressed: _addHabit,
-        child: const Text("Confirm Habit"),
-      ),
     );
   }
 }

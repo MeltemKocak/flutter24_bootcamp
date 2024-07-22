@@ -355,7 +355,21 @@ class _TodayPageState extends State<TodayPage> {
                   side: const BorderSide(
                       color: Color.fromARGB(200, 3, 218, 198)),
                   value: taskCompletionStatus,
-                  onChanged: isToday
+                  onChanged: !isHabit ? (bool? value) {
+                          if (value != null) {
+                            Map<String, bool> completionStatus =
+                                Map<String, bool>.from(
+                                    data[completionStatusKey] ?? {});
+                            completionStatus[DateFormat('yyyy-MM-dd')
+                                .format(_focusDate!)] = value;
+                            FirebaseFirestore.instance
+                                .collection(isHabit ? 'habits' : 'todos')
+                                .doc(task.id)
+                                .update({
+                              completionStatusKey: completionStatus,
+                            });
+                          }
+                        } : isToday
                       ? (bool? value) {
                           if (value != null) {
                             Map<String, bool> completionStatus =
