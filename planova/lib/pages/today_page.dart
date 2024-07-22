@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:planova/pages/habit_detail_screen.dart';
 import 'package:planova/pages/today_edit.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -326,6 +327,15 @@ class _TodayPageState extends State<TodayPage> {
               builder: (context) =>
                   TodayEditPage(task: task, selectedDate: _focusDate!),
             );
+          }
+
+          if (isHabit) {
+            Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HabitDetailPage(habitId: task.id),
+                    ),
+                  );
           }
         },
         child: Card(
