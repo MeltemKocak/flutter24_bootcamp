@@ -15,6 +15,7 @@ class _HabitAddPageState extends State<HabitAddPage> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _startDateController = TextEditingController();
   final TextEditingController _endDateController = TextEditingController();
+  final TextEditingController _friendEmailController = TextEditingController();
   final List<bool> _selectedDays = List.generate(7, (_) => true);
   int _targetDays = 0;
   bool _isNameEmpty = false;
@@ -42,7 +43,32 @@ class _HabitAddPageState extends State<HabitAddPage> {
         'user_id': user.uid,
         'days': _generateHabitDays(),
         'completed_days': {},
+        'friends': [],
+        'isPending': false,
       };
+
+      if (_friendEmailController.text.isNotEmpty) {
+        String friendEmail = _friendEmailController.text;
+        DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .where('userEmail', isEqualTo: friendEmail)
+            .limit(1)
+            .get()
+            .then((snapshot) => snapshot.docs.first);
+
+        if (userSnapshot.exists) {
+          String friendId = userSnapshot.id;
+          habitData['friends'].add(friendId);
+          _sendNotificationToFriend(friendId);
+          // Arkadaşın hesabına da aynı alışkanlığı ekle, ancak isPending true olarak
+          FirebaseFirestore.instance.collection('habits').add({
+            ...habitData,
+            'user_id': friendId,
+            'friends': [user.uid], // X kişisinin id'si friends alanına eklenir
+            'isPending': true,
+          });
+        }
+      }
 
       FirebaseFirestore.instance
           .collection('habits')
@@ -53,6 +79,14 @@ class _HabitAddPageState extends State<HabitAddPage> {
         // Hata işleme kodları
       });
     }
+  }
+
+  Future<void> _sendNotificationToFriend(String friendId) async {
+    FirebaseFirestore.instance.collection('notifications').add({
+      'toUserId': friendId,
+      'message': 'You have been invited to join a habit!',
+      'timestamp': FieldValue.serverTimestamp(),
+    });
   }
 
   Map<String, bool> _generateHabitDays() {
@@ -145,6 +179,8 @@ class _HabitAddPageState extends State<HabitAddPage> {
             const SizedBox(height: 20),
             _buildTextField(_descriptionController, "Description", false,
                 maxLines: 3),
+            const SizedBox(height: 20),
+            _buildTextField(_friendEmailController, "Friend's Email", false),
             const SizedBox(height: 20),
             Row(
               children: [

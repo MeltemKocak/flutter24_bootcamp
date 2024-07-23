@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:planova/pages/habit_detail_screen.dart';
+import 'package:planova/pages/incoming_request_page.dart';
 
 class HabitPage extends StatefulWidget {
   const HabitPage({super.key});
@@ -23,7 +24,10 @@ class _HabitPageState extends State<HabitPage> {
 
   Future<void> _loadUserProfileImage() async {
     if (user != null) {
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(user!.uid).get();
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user!.uid)
+          .get();
       setState(() {
         userProfileImageUrl = userDoc['imageUrl'] ?? '';
       });
@@ -73,6 +77,12 @@ class _HabitPageState extends State<HabitPage> {
     return nearestDate;
   }
 
+  Future<String?> _getUserProfileImage(String userId) async {
+    DocumentSnapshot userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    return userDoc['imageUrl'] ?? '';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -80,34 +90,44 @@ class _HabitPageState extends State<HabitPage> {
       shadowColor: Colors.transparent,
       margin: const EdgeInsets.only(right: 18),
       child: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('habits')
+        stream: FirebaseFirestore.instance
+            .collection('habits')
             .where('user_id', isEqualTo: user?.uid)
+            .where('isPending', isEqualTo: false)
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
-            return const Center(child: Text('Something went wrong', style: TextStyle(color: Colors.white)));
+            return const Center(
+                child: Text('Something went wrong',
+                    style: TextStyle(color: Colors.white)));
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator(color: Color(0XFF03DAC6)));
+            return const Center(
+                child: CircularProgressIndicator(color: Color(0XFF03DAC6)));
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('No habits available', style: TextStyle(color: Colors.white)));
+            return const Center(
+                child: Text('No habits available',
+                    style: TextStyle(color: Colors.white)));
           }
 
           return ListView(
             padding: const EdgeInsets.all(16),
             children: snapshot.data!.docs.map((DocumentSnapshot document) {
-              Map<String, dynamic>? data = document.data() as Map<String, dynamic>?;
+              Map<String, dynamic>? data =
+                  document.data() as Map<String, dynamic>?;
 
               if (data == null) {
                 return const SizedBox.shrink();
               }
 
               int targetDays = data['target_days'] ?? 0;
-              Map<String, dynamic> completedDates = data['completed_days'] ?? {};
-              int completedCount = completedDates.values.where((value) => value == true).length;
+              Map<String, dynamic> completedDates =
+                  data['completed_days'] ?? {};
+              int completedCount =
+                  completedDates.values.where((value) => value == true).length;
               DateTime today = DateTime.now();
               String formattedDate = DateFormat('yyyy-MM-dd').format(today);
               bool isTodayHabitDay = data['days'][formattedDate] ?? false;
@@ -122,7 +142,8 @@ class _HabitPageState extends State<HabitPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => HabitDetailPage(habitId: document.id),
+                      builder: (context) =>
+                          HabitDetailPage(habitId: document.id),
                     ),
                   );
                 },
@@ -166,7 +187,8 @@ class _HabitPageState extends State<HabitPage> {
                               onChanged: isTodayHabitDay
                                   ? (bool? value) {
                                       setState(() {
-                                        completedDates[formattedDate] = value ?? false;
+                                        completedDates[formattedDate] =
+                                            value ?? false;
                                         FirebaseFirestore.instance
                                             .collection('habits')
                                             .doc(document.id)
@@ -186,7 +208,8 @@ class _HabitPageState extends State<HabitPage> {
                         const SizedBox(height: 10),
                         Row(
                           children: [
-                            const Icon(Icons.list, color: Colors.grey, size: 18),
+                            const Icon(Icons.list,
+                                color: Colors.grey, size: 18),
                             const SizedBox(width: 5),
                             Text(
                               'Progress',
@@ -207,32 +230,40 @@ class _HabitPageState extends State<HabitPage> {
                         ),
                         const SizedBox(height: 5),
                         LinearProgressIndicator(
-                          value: targetDays > 0 ? completedCount / targetDays : 0,
+                          value:
+                              targetDays > 0 ? completedCount / targetDays : 0,
                           backgroundColor: const Color(0XFF1E1E1E),
-                          valueColor: const AlwaysStoppedAnimation<Color>(Color(0XFF03DAC6)),
+                          valueColor: const AlwaysStoppedAnimation<Color>(
+                              Color(0XFF03DAC6)),
                         ),
                         const SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 4),
                               decoration: BoxDecoration(
                                 color: const Color.fromRGBO(60, 63, 65, 1),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
-                                isActiveDay ? 'Aktif Gün' : DateFormat('dd MMM yyyy').format(DateTime.parse(displayDate)),
+                                isActiveDay
+                                    ? 'Aktif Gün'
+                                    : DateFormat('dd MMM yyyy')
+                                        .format(DateTime.parse(displayDate)),
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
                                 ),
                               ),
                             ),
-                            if (userProfileImageUrl != null && userProfileImageUrl!.isNotEmpty)
+                            if (userProfileImageUrl != null &&
+                                userProfileImageUrl!.isNotEmpty)
                               CircleAvatar(
                                 radius: 14,
-                                backgroundImage: NetworkImage(userProfileImageUrl!),
+                                backgroundImage:
+                                    NetworkImage(userProfileImageUrl!),
                               )
                             else
                               const CircleAvatar(
@@ -241,6 +272,42 @@ class _HabitPageState extends State<HabitPage> {
                               ),
                           ],
                         ),
+                        const SizedBox(height: 10),
+                        if (data.containsKey('friends') &&
+                            (data['friends'] as List).isNotEmpty)
+                          FutureBuilder<List<Widget>>(
+                            future: Future.wait((data['friends'] as List)
+                                .map<Future<Widget>>((friendId) async {
+                              String? friendImageUrl =
+                                  await _getUserProfileImage(friendId);
+                              if (friendImageUrl != null &&
+                                  friendImageUrl.isNotEmpty) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: CircleAvatar(
+                                    radius: 14,
+                                    backgroundImage:
+                                        NetworkImage(friendImageUrl),
+                                  ),
+                                );
+                              } else {
+                                return const SizedBox.shrink();
+                              }
+                            }).toList()),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const CircularProgressIndicator(
+                                    color: Color(0XFF03DAC6));
+                              }
+                              if (snapshot.hasError) {
+                                return const SizedBox.shrink();
+                              }
+                              return Row(
+                                children: snapshot.data ?? [],
+                              );
+                            },
+                          ),
                       ],
                     ),
                   ),

@@ -70,6 +70,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void saveProfile() async {
     String name = nameController.text;
     String bio = bioController.text;
+    String email =  user?.email ?? 'Anonymous User';
     if (_image != null) {
       imageUrl = await _uploadImageToStorage(_image!);
     }
@@ -79,6 +80,7 @@ class _ProfilePageState extends State<ProfilePage> {
       'bio': bio,
       'imageUrl': imageUrl,
       'userId': user!.uid,
+      'userEmail' : email,
     });
 
     setState(() {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:planova/pages/bottom_sheet_calendar.dart';
 import 'package:planova/pages/habit_add.dart';
 import 'package:planova/pages/habit_page.dart';
+import 'package:planova/pages/incoming_request_page.dart';
 import 'package:planova/pages/journal_page.dart';
 import 'package:planova/pages/profile_page.dart';
 import 'package:planova/pages/today_add.dart';
@@ -11,6 +12,7 @@ import 'package:planova/pages/today_trash.dart';
 import 'package:planova/pages/welcome_screen.dart';
 import 'package:planova/pages/journal_add.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
+ // IncomingRequestsPage'i içe aktar
 
 class Homes extends StatelessWidget {
   const Homes({super.key});
@@ -98,13 +100,21 @@ class _NavigationExampleState extends State<NavigationExample> {
               // Implement your search action here
             },
           ),
-
           if (currentPageIndex == 0)
             IconButton(
               icon: const Icon(Icons.calendar_today, color: Colors.white),
               onPressed:
                   _openCalendarBottomSheet, // Takvim butonuna basıldığında açılır
             ),
+          IconButton(
+            icon: const Icon(Icons.inbox, color: Colors.white),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => IncomingRequestsPage()),
+              );
+            },
+          ),
         ],
       ),
       drawer: Drawer(
@@ -163,10 +173,9 @@ class _NavigationExampleState extends State<NavigationExample> {
               title: const Text('Important Task',
                   style: TextStyle(color: Colors.white)),
               onTap: () {
-                setState() {
+                setState(() {
                   currentPageIndex = 2;
-                }
-
+                });
                 Navigator.of(context).pop();
               },
             ),

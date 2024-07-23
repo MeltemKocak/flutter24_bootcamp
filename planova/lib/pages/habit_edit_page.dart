@@ -19,6 +19,7 @@ class _HabitEditPageState extends State<HabitEditPage> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _startDateController = TextEditingController();
   final TextEditingController _endDateController = TextEditingController();
+  final TextEditingController _friendEmailController = TextEditingController();
   final List<bool> _selectedDays = List.generate(7, (_) => true);
   int _targetDays = 0;
   bool isLoading = true;
@@ -80,7 +81,24 @@ class _HabitEditPageState extends State<HabitEditPage> {
         'target_days': _targetDays,
         'recurring_days': _selectedDays,
         'days': _generateHabitDays(),
+        'friends': [], // Arkadaşların email listesi
       };
+
+      if (_friendEmailController.text.isNotEmpty) {
+        String friendEmail = _friendEmailController.text;
+        DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .where('userEmail', isEqualTo: friendEmail)
+            .limit(1)
+            .get()
+            .then((snapshot) => snapshot.docs.first);
+
+        if (userSnapshot.exists) {
+          String friendId = userSnapshot.id;
+          habitData['friends'].add(friendId);
+          _sendNotificationToFriend(friendId);
+        }
+      }
 
       FirebaseFirestore.instance
           .collection('habits')
@@ -107,6 +125,16 @@ class _HabitEditPageState extends State<HabitEditPage> {
       );
     }).catchError((error) {
       // Hata işleme kodları
+    });
+  }
+
+  Future<void> _sendNotificationToFriend(String friendId) async {
+    // Bildirim gönderme kodları burada yer alacak
+    FirebaseFirestore.instance.collection('notifications').add({
+      'toUserId': friendId,
+      'message': 'You have been invited to join a habit!',
+      'habitId': widget.habitId,
+      'timestamp': FieldValue.serverTimestamp(),
     });
   }
 
@@ -207,6 +235,9 @@ class _HabitEditPageState extends State<HabitEditPage> {
                     _buildTextField(
                         _descriptionController, false, "Description",
                         maxLines: 3),
+                    const SizedBox(height: 20),
+                    _buildTextField(
+                        _friendEmailController, false, "Friend's Email"),
                     const SizedBox(height: 20),
                     Row(
                       children: [
