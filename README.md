@@ -266,7 +266,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 - **Daily Scrum:** [Daily Scrum](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Project_Management_Files/Sprint_1/Sprint1_Daily_Scrum)
 
-- **Product Backlog URL:**  [Asana](https://app.asana.com/0/1207708660563810/1207708543191861)
+- **Product Backlog URL:** 
 
 - **Sprint Review:**
     * Melisa Nur Alparslan and Olgun Baran Atik made the prototypes and designs.
@@ -430,7 +430,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 - **Daily Scrum:**  [Daily Scrum](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Project_Management_Files/Sprint_2/Sprint2_Daily_Scrum)
 
-- **Product Backlog URL:**  [Asana](https://app.asana.com/0/1207708660563810/1207708543191861)
+- **Product Backlog URL:** 
 
 - **Sprint Review:**
   *  In the second sprint, firstly project skeleton was created by Olgun and Oğuzhan.
