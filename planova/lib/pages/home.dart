@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:planova/pages/bottom_sheet_calendar.dart';
@@ -42,6 +43,36 @@ class NavigationExample extends StatefulWidget {
 }
 
 class _NavigationExampleState extends State<NavigationExample> {
+
+    User? user = FirebaseAuth.instance.currentUser;
+    late String userId = user!.uid;
+  String? userProfileImageUrl;
+  String userName = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserProfileImage();
+  }
+
+
+
+  Future<void> _loadUserProfileImage() async {
+    userName = await _getUserName(user?.uid ?? '');
+
+    if (user != null) {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user!.uid)
+          .get();
+      setState(() {
+        userProfileImageUrl = userDoc['imageUrl'] ?? '';
+      });
+    }
+  }
+
+
+  
   static int currentPageIndex = 0;
   final List<String> appBarTitles = ['Today', 'Habits', 'Journal', 'Profile'];
 
@@ -68,7 +99,6 @@ class _NavigationExampleState extends State<NavigationExample> {
   @override
   Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
-    final ThemeData theme = Theme.of(context);
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 30, 30, 30),
@@ -106,6 +136,7 @@ class _NavigationExampleState extends State<NavigationExample> {
               onPressed:
                   _openCalendarBottomSheet, // Takvim butonuna basıldığında açılır
             ),
+          if (currentPageIndex == 1)
           IconButton(
             icon: const Icon(Icons.inbox, color: Colors.white),
             onPressed: () {
@@ -128,22 +159,50 @@ class _NavigationExampleState extends State<NavigationExample> {
               ),
               child: Row(
                 children: [
-                  const CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.white,
-                    child: Icon(Icons.person, color: Colors.grey),
+                  FutureBuilder(
+                    future: _getUserProfileImage(userId),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return CircleAvatar(
+                          radius: 30,
+                          backgroundImage: NetworkImage(snapshot.data!),
+                        );
+                      } else {
+                        return CircleAvatar(
+                          radius: 30,
+                          backgroundImage: const AssetImage('assets/images/default_profile.png'),
+                        );
+                      }
+                    },
+                    
                   ),
                   const SizedBox(width: 16),
                   Expanded(
-                    child: Text(
-                      user?.email ?? 'Anonymous User',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ),
+      child: FutureBuilder<String>(
+        future: _getUserName(userId),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Text(
+              snapshot.data!,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                overflow: TextOverflow.ellipsis,
+              ),
+            );
+          } else {
+            return  Text(
+              (user?.email) ?? 'Anonymous User',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                overflow: TextOverflow.ellipsis,
+              ),
+            );
+          }
+        },
+      ),
+    ),
                 ],
               ),
             ),
@@ -329,6 +388,19 @@ class _NavigationExampleState extends State<NavigationExample> {
       ][currentPageIndex],
     );
   }
+
+     Future<String?> _getUserProfileImage(String userId) async {
+    DocumentSnapshot userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    return userDoc['imageUrl'] ?? '';
+  }
+
+  Future<String> _getUserName(String userId) async {
+    DocumentSnapshot userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    return userDoc['name'] ?? '';
+  }
+
 }
 
 class Auth {
@@ -339,4 +411,6 @@ class Auth {
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) => const WelcomeScreen()));
   }
+
+  
 }

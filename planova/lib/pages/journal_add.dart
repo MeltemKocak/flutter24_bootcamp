@@ -155,7 +155,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
     if (user == null) return '';
 
     File file = File(image.path);
-    String fileName = '${user.uid}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+    String fileName = 'journalPics/${user.uid}/${DateTime.now().millisecondsSinceEpoch}.jpg';
     UploadTask task = FirebaseStorage.instance.ref().child(fileName).putFile(file);
     TaskSnapshot snapshot = await task;
     return await snapshot.ref.getDownloadURL();
@@ -166,7 +166,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
     if (user == null) return '';
 
     File file = File(filePath);
-    String fileName = '${user.uid}/${DateTime.now().millisecondsSinceEpoch}.aac';
+    String fileName = 'journalPics/${user.uid}/${DateTime.now().millisecondsSinceEpoch}.aac';
     UploadTask task = FirebaseStorage.instance.ref().child(fileName).putFile(file);
     TaskSnapshot snapshot = await task;
     return await snapshot.ref.getDownloadURL();

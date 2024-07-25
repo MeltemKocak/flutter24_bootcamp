@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'habit_edit_page.dart'; // Yeni sayfayı içe aktarıyoruz
+import 'habit_edit_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HabitDetailPage extends StatefulWidget {
   final String habitId;
@@ -14,7 +15,7 @@ class HabitDetailPage extends StatefulWidget {
 }
 
 class _HabitDetailPageState extends State<HabitDetailPage> {
-  static Map<String, dynamic>? habitData;
+  Map<String, dynamic>? habitData;
   bool isLoading = true;
 
   @override
@@ -34,17 +35,53 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
     });
   }
 
-  void _updateCompletionStatus(bool? value, String date) {
+  Future<void> _updateCompletionStatus(bool? value, String date) async {
     if (habitData == null) return;
 
-    Map<String, dynamic> completedDates = habitData!['completed_days'] ?? {};
-    completedDates[date] = value ?? false;
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    Map<String, dynamic> completedDays = (habitData!['completed_days'] ?? {}).cast<String, dynamic>();
 
-    FirebaseFirestore.instance.collection('habits').doc(widget.habitId).update({
-      'completed_days': completedDates,
-    }).then((_) {
-      _loadHabitData();
+    if (!completedDays.containsKey(userId)) {
+      completedDays[userId] = {};
+    }
+
+    completedDays[userId][date] = value ?? false;
+
+    await FirebaseFirestore.instance.collection('habits').doc(widget.habitId).update({
+      'completed_days': completedDays,
     });
+
+    // Eğer arkadaş listesi boş değilse, arkadaşların hesabında da güncelle
+    List<dynamic> friends = habitData!['friends'] ?? [];
+    if (friends.isNotEmpty) {
+      for (String friendId in friends.cast<String>()) {
+        QuerySnapshot friendHabits = await FirebaseFirestore.instance
+            .collection('habits')
+            .where('user_id', isEqualTo: friendId)
+            .where('name', isEqualTo: habitData!['name'])
+            .get();
+
+        for (var habit in friendHabits.docs) {
+          Map<String, dynamic> friendCompletedDays = (habit['completed_days'] ?? {}).cast<String, dynamic>();
+
+          if (!friendCompletedDays.containsKey(userId)) {
+            friendCompletedDays[userId] = {};
+          }
+
+          friendCompletedDays[userId][date] = value ?? false;
+
+          await FirebaseFirestore.instance.collection('habits').doc(habit.id).update({
+            'completed_days': friendCompletedDays,
+          });
+        }
+      }
+    }
+
+    setState(() {
+      habitData!['completed_days'] = completedDays;
+    });
+
+    Provider.of<HabitProvider>(context, listen: false).setHabitData(habitData!);
   }
 
   void _showEditBottomSheet(BuildContext context) {
@@ -54,9 +91,9 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
       backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
         return DraggableScrollableSheet(
-          initialChildSize: 0.9, // Tam ekran
-          minChildSize: 0.9, // Tam ekran
-          maxChildSize: 0.9, // Tam ekran
+          initialChildSize: 0.9,
+          minChildSize: 0.9,
+          maxChildSize: 0.9,
           builder: (BuildContext context, ScrollController scrollController) {
             return Container(
               decoration: BoxDecoration(
@@ -124,121 +161,140 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
 
     DateTime today = DateTime.now();
     String formattedDate = DateFormat('yyyy-MM-dd').format(today);
-    Map<String, dynamic> completedDates = habitData!['completed_days'] ?? {};
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    Map<String, dynamic> completedDays = (habitData!['completed_days'] ?? {}).cast<String, dynamic>();
+    Map<String, dynamic> userCompletedDays = (completedDays[userId] ?? {}).cast<String, dynamic>();
     int targetDays = habitData!['target_days'] ?? 0;
-    bool isCompleted = completedDates[formattedDate] ?? false;
+    bool isCompleted = userCompletedDays[formattedDate] ?? false;
     bool isTodayHabitDay = habitData!['days'][formattedDate] ?? false;
+    bool hasFriends = (habitData!['friends'] ?? []).isNotEmpty;
 
     return ChangeNotifierProvider(
-      create: (_) => HabitProvider(habitData: habitData),
-      child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text(
-            habitData!['name'] ?? 'Habit Details',
-            style: const TextStyle(
-              color: Color.fromRGBO(255, 255, 255, 1),
-              fontFamily: 'Roboto',
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
+      create: (_) => HabitProvider(habitData: habitData!),
+      child: Consumer<HabitProvider>(
+        builder: (context, provider, child) {
+          return Scaffold(
+            appBar: AppBar(
+              centerTitle: true,
+              title: Text(
+                provider.habitData['name'] ?? 'Habit Details',
+                style: const TextStyle(
+                  color: Color.fromRGBO(255, 255, 255, 1),
+                  fontFamily: 'Roboto',
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              backgroundColor: const Color(0xFF1E1E1E),
             ),
-          ),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          backgroundColor: const Color(0xFF1E1E1E),
-        ),
-        body: Container(
-          color: const Color(0xFF1E1E1E),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ElevatedButton.icon(
-                          icon: const Icon(Icons.edit),
-                          label: const Text('Edit'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey[800], // Button background color
-                            foregroundColor: Colors.white, // Text color
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            minimumSize: const Size(160, 42), // Button size
-                          ),
-                          onPressed: () {
-                            _showEditBottomSheet(context);
-                          },
-                        ),
-                        ElevatedButton.icon(
-                          icon: const Icon(Icons.notifications),
-                          label: const Text('Reminder'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey[800], // Button background color
-                            foregroundColor: Colors.white, // Text color
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            minimumSize: const Size(160, 42), // Button size
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const ReminderPage(),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  const AllTimeStats(),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            body: Container(
+              color: const Color(0xFF1E1E1E),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        formattedDate,
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 14,
+                      Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ElevatedButton.icon(
+                              icon: const Icon(Icons.edit),
+                              label: const Text('Edit'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.grey[800],
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                minimumSize: const Size(160, 42),
+                              ),
+                              onPressed: () {
+                                _showEditBottomSheet(context);
+                              },
+                            ),
+                            ElevatedButton.icon(
+                              icon: const Icon(Icons.notifications),
+                              label: const Text('Reminder'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.grey[800],
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                minimumSize: const Size(160, 42),
+                              ),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const ReminderPage(),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
                         ),
                       ),
-                      Checkbox(
-                        value: isCompleted,
-                        onChanged: isTodayHabitDay
-                            ? (bool? value) {
-                                _updateCompletionStatus(value, formattedDate);
-                              }
-                            : (bool? value) {
-                                _showAlertDialog(context);
-                              },
-                        checkColor: Colors.white,
-                        activeColor: const Color(0XFF03DAC6),
+                      const SizedBox(height: 15),
+                      const AllTimeStats(),
+                      Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      formattedDate,
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14,
                       ),
+                    ),
+                    Checkbox(
+                      value: isCompleted,
+                      onChanged: isTodayHabitDay
+                          ? (bool? value) {
+                               _updateCompletionStatus(value, formattedDate);
+                              Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => super.widget));
+                            }
+                          : (bool? value) {
+                              _showAlertDialog(context);
+                            },
+                      checkColor: Colors.white,
+                      activeColor: const Color(0XFF03DAC6),
+                    ),
+                  ],
+                ),
+
+                      const SizedBox(height:15),
+                      TwoWeekProgress(
+                        habitId: widget.habitId,
+                        targetDays: targetDays,
+                        completedDays: completedDays,
+                        hasFriends: hasFriends,
+                      ),
+                      const SizedBox(height: 16),
+                      MonthlyStats(
+                        habitId: widget.habitId,
+                        completedDates: provider.habitData['completed_days'] ?? {},
+                        hasFriends: hasFriends,
+                      ),
+                      const SizedBox(height: 16),
                     ],
                   ),
-                  const SizedBox(height: 16),
-                  TwoWeekProgress(habitId: widget.habitId, targetDays: targetDays, completedDates: completedDates),
-                  const SizedBox(height: 16),
-                  MonthlyStats(habitId: widget.habitId, completedDates: completedDates),
-                  const SizedBox(height: 16),
-                  const YearProgress(),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
@@ -246,27 +302,39 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
 
 class TwoWeekProgress extends StatelessWidget {
   final String habitId;
+  static String? firstFriend;
   final int targetDays;
-  final Map<String, dynamic> completedDates;
+  final Map<String, dynamic> completedDays;
+  final bool hasFriends;
 
   const TwoWeekProgress({
     super.key,
     required this.habitId,
     required this.targetDays,
-    required this.completedDates,
+    required this.completedDays,
+    required this.hasFriends,
   });
 
-  Future<List<bool>> _fetchTwoWeekProgress() async {
+  Future<List<Map<String, bool>>> _fetchTwoWeekProgress() async {
     DocumentSnapshot doc = await FirebaseFirestore.instance.collection('habits').doc(habitId).get();
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    Map<String, dynamic> completedDays = data['completed_days'] ?? {};
+    Map<String, dynamic> completedDays = (data['completed_days'] ?? {}).cast<String, dynamic>();
+    List<String> friends = List<String>.from(data['friends'] ?? []);
+    firstFriend = friends.isNotEmpty ? friends.first : '';
+
     DateTime today = DateTime.now();
 
-    List<bool> twoWeekProgress = [];
+    List<Map<String, bool>> twoWeekProgress = [];
     int daysToFetch = targetDays < 14 ? targetDays : 14;
     for (int i = 0; i < daysToFetch; i++) {
       String day = DateFormat('yyyy-MM-dd').format(today.subtract(Duration(days: i)));
-      twoWeekProgress.add(completedDays[day] ?? false);
+      Map<String, bool> dailyProgress = {};
+
+      completedDays.forEach((userId, userCompletedDays) {
+        dailyProgress[userId] = (userCompletedDays as Map<String, dynamic>)[day] ?? false;
+      });
+
+      twoWeekProgress.add(dailyProgress);
     }
 
     return twoWeekProgress;
@@ -274,9 +342,9 @@ class TwoWeekProgress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<bool>>(
+    return FutureBuilder<List<Map<String, bool>>>(
       future: _fetchTwoWeekProgress(),
-      builder: (BuildContext context, AsyncSnapshot<List<bool>> snapshot) {
+      builder: (BuildContext context, AsyncSnapshot<List<Map<String, bool>>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
             child: CircularProgressIndicator(color: Color(0XFF03DAC6)),
@@ -287,7 +355,7 @@ class TwoWeekProgress extends StatelessWidget {
             child: Text('Error loading progress', style: TextStyle(color: Colors.white)),
           );
         }
-        List<bool> twoWeekProgress = snapshot.data ?? [];
+        List<Map<String, bool>> twoWeekProgress = snapshot.data ?? [];
         int daysToShow = targetDays < 14 ? targetDays : 14;
 
         return Container(
@@ -318,27 +386,20 @@ class TwoWeekProgress extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: twoWeekProgress
-                          .asMap()
-                          .map((index, value) => MapEntry(
-                              index,
-                              Container(
-                                width: 20,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  color: value
-                                      ? const Color.fromRGBO(3, 218, 198, 1)
-                                      : const Color.fromRGBO(3, 218, 198, 0.2),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              )))
-                          .values
-                          .toList(),
+                  for (var value in twoWeekProgress)
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        width: 20,
+                        height: 50,
+                        child: CustomPaint(
+                          painter: ProgressPainter(
+                            value[FirebaseAuth.instance.currentUser!.uid] ?? false,
+                            hasFriends ? (value[firstFriend] ?? false) : null,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
                 ],
               ),
               const SizedBox(height: 8),
@@ -346,7 +407,7 @@ class TwoWeekProgress extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Last $daysToShow days: ${twoWeekProgress.where((day) => day).length}/$daysToShow days',
+                    'Last $daysToShow days: ${twoWeekProgress.where((day) => day.values.contains(true)).length}/$daysToShow days',
                     style: const TextStyle(
                       color: Colors.white,
                       fontFamily: 'Roboto Flex',
@@ -355,7 +416,7 @@ class TwoWeekProgress extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '${(twoWeekProgress.where((day) => day).length / daysToShow * 100).toStringAsFixed(2)}%',
+                    '${(twoWeekProgress.where((day) => day.values.contains(true)).length / daysToShow * 100).toStringAsFixed(2)}%',
                     style: const TextStyle(
                       color: Colors.white,
                       fontFamily: 'Roboto Flex',
@@ -373,10 +434,54 @@ class TwoWeekProgress extends StatelessWidget {
   }
 }
 
+class ProgressPainter extends CustomPainter {
+  final bool user1Completed;
+  final bool? user2Completed;
+
+  ProgressPainter(this.user1Completed, this.user2Completed);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint();
+
+    if (user2Completed == null) {
+      // Arkadaş yoksa tamamen doldur
+      paint.color = user1Completed ? const Color.fromRGBO(3, 218, 198, 1) : const Color.fromRGBO(3, 218, 198, 0.2);
+      canvas.drawRect(Rect.fromLTRB(0, 0, size.width, size.height), paint);
+    } else {
+      if (user1Completed) {
+        paint.color = const Color.fromRGBO(3, 218, 198, 1);
+        canvas.drawRect(Rect.fromLTRB(0, 0, size.width, size.height / 2), paint);
+      } else {
+        paint.color = const Color.fromRGBO(3, 218, 198, 0.2);
+        canvas.drawRect(Rect.fromLTRB(0, 0, size.width, size.height / 2), paint);
+      }
+
+      if (user2Completed != null && user2Completed!) {
+        paint.color = Colors.white;
+        canvas.drawRect(Rect.fromLTRB(0, size.height / 2, size.width, size.height), paint);
+      } else {
+        paint.color = const Color.fromRGBO(3, 218, 198, 0.1);
+        canvas.drawRect(Rect.fromLTRB(0, size.height / 2, size.width, size.height), paint);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
 class HabitProvider with ChangeNotifier {
-  final Map<String, dynamic>? habitData;
+  Map<String, dynamic> habitData;
 
   HabitProvider({required this.habitData});
+
+  void setHabitData(Map<String, dynamic> newHabitData) {
+    habitData = newHabitData;
+    notifyListeners();
+  }
 
   DateTime startDate = DateTime.now();
   List<bool> twoWeekProgress = List<bool>.filled(14, false);
@@ -458,15 +563,16 @@ class HabitProvider with ChangeNotifier {
 
   List<bool> _getStreakProgress() {
     List<bool> yearProgress = [];
-    DateTime startDate = (habitData!['start_date'] as Timestamp).toDate();
+    DateTime startDate = (habitData['start_date'] as Timestamp).toDate();
     DateTime endDate = DateTime.now();
-    Map<String, dynamic> completedDays = habitData!['completed_days'];
+    Map<String, dynamic> completedDays = (habitData['completed_days'] ?? {}).cast<String, dynamic>();
 
     for (DateTime date = startDate;
         date.isBefore(endDate) || date.isAtSameMomentAs(endDate);
         date = date.add(const Duration(days: 1))) {
       String formattedDate = DateFormat('yyyy-MM-dd').format(date);
-      yearProgress.add(completedDays[formattedDate] ?? false);
+      Map<String, dynamic> userCompletedDays = (completedDays[FirebaseAuth.instance.currentUser!.uid] ?? {}).cast<String, dynamic>();
+      yearProgress.add(userCompletedDays[formattedDate] ?? false);
     }
 
     return yearProgress;
@@ -474,15 +580,16 @@ class HabitProvider with ChangeNotifier {
 
   List<bool> _getYearProgress() {
     List<bool> yearProgress = [];
-    DateTime startDate = (habitData!['start_date'] as Timestamp).toDate();
-    DateTime endDate = (habitData!['end_date'] as Timestamp).toDate();
-    Map<String, dynamic> completedDays = habitData!['completed_days'];
+    DateTime startDate = (habitData['start_date'] as Timestamp).toDate();
+    DateTime endDate = (habitData['end_date'] as Timestamp).toDate();
+    Map<String, dynamic> completedDays = (habitData['completed_days'] ?? {}).cast<String, dynamic>();
 
     for (DateTime date = startDate;
         date.isBefore(endDate) || date.isAtSameMomentAs(endDate);
         date = date.add(const Duration(days: 1))) {
       String formattedDate = DateFormat('yyyy-MM-dd').format(date);
-      yearProgress.add(completedDays[formattedDate] ?? false);
+      Map<String, dynamic> userCompletedDays = (completedDays[FirebaseAuth.instance.currentUser!.uid] ?? {}).cast<String, dynamic>();
+      yearProgress.add(userCompletedDays[formattedDate] ?? false);
     }
 
     return yearProgress;
@@ -505,17 +612,16 @@ class AllTimeStats extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final habitProvider = Provider.of<HabitProvider>(context);
-    //get habitData from main class
-    final habitData = _HabitDetailPageState.habitData;
-    Map<String, dynamic> completedDates = habitData!['completed_days'] ?? {};
+    final habitData = habitProvider.habitData;
+    Map<String, dynamic> completedDates = (habitData['completed_days'] ?? {}).cast<String, dynamic>();
     int targetDays = habitData['target_days'] ?? 0;
 
-    int completedCount = completedDates.values.where((value) => value == true).length;
+    int completedCount = habitProvider.yearProgress.where((value) => value == true).length;
     double completionDouble = completedCount / targetDays * 100;
     int completion = completionDouble.isNaN ? 0 : completionDouble.toInt();
 
     return Card(
-      color: const Color.fromRGBO(96, 125, 139, 0.25), // Update the card background color
+      color: const Color.fromRGBO(96, 125, 139, 0.25),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -526,7 +632,7 @@ class AllTimeStats extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.white, // Update the text color
+                color: Colors.white,
               ),
             ),
             const SizedBox(height: 16),
@@ -609,11 +715,13 @@ class AllTimeStats extends StatelessWidget {
 class MonthlyStats extends StatefulWidget {
   final String habitId;
   final Map<String, dynamic> completedDates;
+  final bool hasFriends;
 
   const MonthlyStats({
     super.key,
     required this.habitId,
     required this.completedDates,
+    required this.hasFriends,
   });
 
   @override
@@ -623,8 +731,10 @@ class MonthlyStats extends StatefulWidget {
 class _MonthlyStatsState extends State<MonthlyStats> {
   int year = DateTime.now().year;
   Map<String, bool> days = {};
+  late Future<void> _dataFuture;
 
-  // Renk paleti
+  String? firstFriendId;
+
   final Color backgroundColor = const Color.fromARGB(40, 96, 125, 139);
   final Color primaryColor = const Color.fromARGB(255, 96, 125, 139);
   final Color secondaryColor = const Color.fromARGB(135, 96, 125, 139);
@@ -634,148 +744,169 @@ class _MonthlyStatsState extends State<MonthlyStats> {
   void initState() {
     super.initState();
     _loadHabitData();
+    _dataFuture = _loadHabitData();
+
+    
   }
 
   Future<void> _loadHabitData() async {
     DocumentSnapshot doc = await FirebaseFirestore.instance.collection('habits').doc(widget.habitId).get();
     if (doc.exists) {
       Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      List<String> friends = List<String>.from(data['friends'] ?? []);
       setState(() {
         days = Map<String, bool>.from(data['days'] ?? {});
+        firstFriendId = friends.isNotEmpty ? friends.first : null;
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            DropdownButton<int>(
-              value: year,
-              dropdownColor: secondaryColor,
-              icon: Icon(Icons.arrow_drop_down, color: textColor),
-              style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.bold),
-              underline: Container(
-                height: 2,
-                color: primaryColor,
+    return FutureBuilder(
+       future: _dataFuture,
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return const Center(child: CircularProgressIndicator());
+      } else if (snapshot.hasError) {
+        return Center(child: Text('Error: ${snapshot.error}'));
+      } else {
+        return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              DropdownButton<int>(
+                value: year,
+                dropdownColor: secondaryColor,
+                icon: Icon(Icons.arrow_drop_down, color: textColor),
+                style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.bold),
+                underline: Container(
+                  height: 2,
+                  color: primaryColor,
+                ),
+                onChanged: (int? newValue) {
+                  setState(() {
+                    year = newValue!;
+                  });
+                },
+                items: [DateTime.now().year - 1, DateTime.now().year, DateTime.now().year + 1]
+                    .map<DropdownMenuItem<int>>((int value) {
+                  return DropdownMenuItem<int>(
+                    value: value,
+                    child: Text('$value Stats'),
+                  );
+                }).toList(),
               ),
-              onChanged: (int? newValue) {
-                setState(() {
-                  year = newValue!;
-                });
-              },
-              items: [DateTime.now().year - 1, DateTime.now().year, DateTime.now().year + 1]
-                  .map<DropdownMenuItem<int>>((int value) {
-                return DropdownMenuItem<int>(
-                  value: value,
-                  child: Text('$value Stats'),
+            ],
+          ),
+          GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 1,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+              ),
+              itemCount: 12,
+              itemBuilder: (context, index) {
+                return FutureBuilder<List<Widget>>(
+                  future: buildMonthGrid(year, index),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else {
+                      return Card(
+                        color: secondaryColor.withOpacity(0.25),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Text(
+                                monthName(index),
+                                style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
+                              ),
+                              const SizedBox(height: 4),
+                              Expanded(
+                                child: GridView.count(
+                                  crossAxisCount: 7,
+                                  crossAxisSpacing: 3,
+                                  mainAxisSpacing: 3,
+                                  children: snapshot.data!,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+                  },
                 );
-              }).toList(),
+              },
             ),
           ],
-        ),
-        const SizedBox(height: 16),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 1,
-            crossAxisSpacing: 8,
-            mainAxisSpacing: 8,
-          ),
-          itemCount: 12,
-          itemBuilder: (context, index) {
-            return Card(
-              color: secondaryColor.withOpacity(0.25),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    Text(
-                      monthName(index),
-                      style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
-                    ),
-                    const SizedBox(height: 4),
-                    Expanded(
-                      child: GridView.count(
-                        crossAxisCount: 7,
-                        crossAxisSpacing: 3,
-                        mainAxisSpacing: 3,
-                        children: buildMonthGrid(year, index),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      ],
-    );
-  }
-
-  List<Widget> buildMonthGrid(int year, int monthIndex) {
-    List<Widget> dayWidgets = [];
-    DateTime firstDayOfMonth = DateTime(year, monthIndex + 1, 1);
-    int daysInMonth = DateTime(year, monthIndex + 2, 0).day;
-    DateTime now = DateTime.now();
-
-    // Add black containers for days before the first day of the month
-    for (int i = 0; i < firstDayOfMonth.weekday % 7; i++) {
-      dayWidgets.add(Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
-          color: backgroundColor,
-        ),
-      ));
-    }
-
-    // Add containers for each day of the month
-    for (int i = 1; i <= daysInMonth; i++) {
-      DateTime currentDate = DateTime(year, monthIndex + 1, i);
-      String formattedDate = DateFormat('yyyy-MM-dd').format(currentDate);
-      bool isHabitDay = days[formattedDate] ?? false;
-      bool isCompletedDay = widget.completedDates[formattedDate] ?? false;
-
-      Color dayColor;
-      if (isHabitDay) {
-        if (currentDate.isAfter(now)) {
-          dayColor = primaryColor; // Future habit day
-        } else if (currentDate.isBefore(now)) {
-          dayColor = isCompletedDay ? const Color.fromARGB(255, 3, 218, 198) : const Color.fromARGB(80, 3, 218, 198); // Completed or missed past habit day
-        } else {
-          dayColor = isCompletedDay ? const Color.fromARGB(255, 127, 76, 175) : primaryColor; // Today's habit day
-        }
-      } else {
-        dayColor = secondaryColor; // Not a habit day
+        );
       }
+    },
+  );
+}
 
-      dayWidgets.add(Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
-          color: dayColor,
-        ),
-      ));
-    }
+  Future<List<Widget>> buildMonthGrid(int year, int monthIndex) async {
+  List<Widget> dayWidgets = [];
+  DateTime firstDayOfMonth = DateTime(year, monthIndex + 1, 1);
+  int daysInMonth = DateTime(year, monthIndex + 2, 0).day;
+  DateTime now = DateTime.now();
+  String userId = FirebaseAuth.instance.currentUser!.uid;
 
-    // Fill the remaining grid with black containers
-    while (dayWidgets.length < 42) {
-      dayWidgets.add(Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
-          color: backgroundColor,
-        ),
-      ));
-    }
-
-    return dayWidgets;
+  for (int i = 0; i < firstDayOfMonth.weekday % 7; i++) {
+    dayWidgets.add(Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(4),
+        color: backgroundColor,
+      ),
+    ));
   }
 
+  for (int i = 1; i <= daysInMonth; i++) {
+    DateTime currentDate = DateTime(year, monthIndex + 1, i);
+    String formattedDate = DateFormat('yyyy-MM-dd').format(currentDate);
+    bool isHabitDay = days[formattedDate] ?? false;
+
+    bool userCompleted = (widget.completedDates[userId] ?? {})[formattedDate] ?? false;
+    bool friendCompleted = widget.hasFriends && firstFriendId != null 
+      ? (widget.completedDates[firstFriendId] ?? {})[formattedDate] ?? false 
+      : false;
+
+    dayWidgets.add(ClipRRect(
+      borderRadius: BorderRadius.circular(4),
+      child: CustomPaint(
+        size: const Size(14, 14),
+        painter: DayPainter(
+          isHabitDay: isHabitDay,
+          userCompleted: userCompleted,
+          friendCompleted: widget.hasFriends ? friendCompleted : null,
+          isPastDate: currentDate.isBefore(now),
+          isFutureDate: currentDate.isAfter(now),
+        ),
+      ),
+    ));
+  }
+
+  while (dayWidgets.length < 42) {
+    dayWidgets.add(Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(4),
+        color: backgroundColor,
+      ),
+    ));
+  }
+
+  return dayWidgets;
+}
   String monthName(int index) {
     const months = [
       'January', 'February', 'March', 'April', 'May', 'June',
@@ -785,50 +916,102 @@ class _MonthlyStatsState extends State<MonthlyStats> {
   }
 }
 
-class YearProgress extends StatelessWidget {
-  const YearProgress({super.key});
+class DayPainter extends CustomPainter {
+  final bool isHabitDay;
+  final bool userCompleted;
+  final bool? friendCompleted;
+  final bool isPastDate;
+  final bool isFutureDate;
+
+  DayPainter({
+    required this.isHabitDay,
+    required this.userCompleted,
+    required this.friendCompleted,
+    required this.isPastDate,
+    required this.isFutureDate,
+  });
 
   @override
-  Widget build(BuildContext context) {
-    final habitProvider = Provider.of<HabitProvider>(context);
+  void paint(Canvas canvas, Size size) {
+    final Paint paint = Paint();
+    final double halfHeight = size.height / 2;
 
-    return Card(
-      color: const Color.fromRGBO(96, 125, 139, 0.25), // Update the card background color
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Last 365 Day Graph Stats',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white, // Update the text color
-              ),
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 4, // Adjust the spacing between circles
-              runSpacing: 4, // Adjust the spacing between rows
-              children: List.generate(
-                habitProvider.yearProgress.length,
-                (index) => Container(
-                  width: 14, // Increased width of each circle
-                  height: 14, // Increased height of each circle
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: habitProvider.yearProgress[index]
-                        ? const Color.fromRGBO(3, 218, 198, 1)
-                        : const Color.fromRGBO(255, 255, 255, 0.4), // Update the colors
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+    if (isHabitDay) {
+      if (friendCompleted == null) {
+        // Arkadaş yoksa tamamen doldur
+        paint.color = userCompleted ? const Color.fromARGB(255, 3, 218, 198) : const Color.fromARGB(80, 3, 218, 198);
+        canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
+      } else {
+        if (isFutureDate) {
+          paint.color = const Color.fromARGB(255, 96, 125, 139);
+          canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
+        } else if (isPastDate) {
+          // Kullanıcının yarısı
+          paint.color = userCompleted ? const Color.fromARGB(255, 3, 218, 198) : const Color.fromARGB(80, 3, 218, 198);
+          canvas.drawRect(Rect.fromLTWH(0, 0, size.width, halfHeight), paint);
+
+          // Arkadaşın yarısı
+          paint.color = friendCompleted! ? Colors.white : const Color.fromRGBO(3, 218, 198, 0.2);
+          canvas.drawRect(Rect.fromLTWH(0, halfHeight, size.width, halfHeight), paint);
+        } else {
+          // Bugün
+          paint.color = userCompleted ? const Color.fromARGB(255, 127, 76, 175) : const Color.fromARGB(255, 96, 125, 139);
+          canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
+        }
+      }
+    } else {
+      paint.color = const Color.fromARGB(135, 96, 125, 139);
+      canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// Asenkron veri hazırlama fonksiyonu
+Future<Map<String, dynamic>> prepareData() async {
+  // Asenkron işlemler (örneğin, ağ çağrıları)
+  await Future.delayed(Duration(seconds: 2)); // Örnek gecikme
+
+  // Örnek veri
+  return {
+    'isHabitDay': true,
+    'userCompleted': true,
+    'friendCompleted': true,
+    'isPastDate': false,
+    'isFutureDate': false,
+  };
+}
+
+// StatefulWidget ile kullanımı
+class MyPainterWidget extends StatefulWidget {
+  @override
+  _MyPainterWidgetState createState() => _MyPainterWidgetState();
+}
+
+class _MyPainterWidgetState extends State<MyPainterWidget> {
+  Map<String, dynamic>? data;
+
+  @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    var result = await prepareData();
+    setState(() {
+      data = result;
+    });
+  }
+
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
   }
 }
 

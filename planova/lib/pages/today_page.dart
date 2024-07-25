@@ -12,11 +12,12 @@ class TodayPage extends StatefulWidget {
   final DateTime? focusDate;
   final Function(DateTime) onDateChange;
 
-  const TodayPage(
-      {super.key,
-      required this.controller,
-      required this.focusDate,
-      required this.onDateChange});
+  const TodayPage({
+    super.key,
+    required this.controller,
+    required this.focusDate,
+    required this.onDateChange
+  });
 
   @override
   _TodayPageState createState() => _TodayPageState();
@@ -46,10 +47,8 @@ class TodayPage extends StatefulWidget {
       final data = doc.data();
       if (data['taskTimes'] != null &&
           data['taskTimes'].containsKey(formattedDate)) {
-        final completionStatus = data['taskCompletionStatus']
-            as Map<String, dynamic>?;
-        if (completionStatus != null &&
-            completionStatus[formattedDate] == true) {
+        final completionStatus = data['taskCompletionStatus'] as Map<String, dynamic>?;
+        if (completionStatus != null && completionStatus[formattedDate] == true) {
           completedCount++;
         } else {
           incompleteCount++;
@@ -60,18 +59,15 @@ class TodayPage extends StatefulWidget {
     for (var doc in habitsSnapshot.docs) {
       final data = doc.data();
       if (data['days'] != null && data['days'].containsKey(formattedDate)) {
-       
         DateTime focusDateOnly = DateTime(date.year, date.month, date.day);
         DateTime now = DateTime.now();
         DateTime nowDate = DateTime(now.year, now.month, now.day);
 
-       
-
         if (nowDate == focusDateOnly) {
-          final completionStatus = data['completed_days']
-              as Map<String, dynamic>?;
-          if (completionStatus != null &&
-              completionStatus[formattedDate] == true) {
+          final completedDays = data['completed_days'] as Map<String, dynamic>?;
+          if (completedDays != null && 
+              completedDays[user.uid] is Map &&
+              completedDays[user.uid][formattedDate] == true) {
             completedCount++;
           } else {
             incompleteCount++;
@@ -98,7 +94,8 @@ class _TodayPageState extends State<TodayPage> {
       });
     });
   }
-    DateTime? get _focusDate => widget.focusDate;
+
+  DateTime? get _focusDate => widget.focusDate;
 
   bool _showIncomplete = true;
   bool _showCompleted = true;
@@ -122,8 +119,7 @@ class _TodayPageState extends State<TodayPage> {
               lastDate: DateTime(2024, 12, 31),
               onDateChange: (date) {
                 widget.onDateChange(date);
-                setState(() {
-                });
+                setState(() {});
               },
               activeColor: const Color.fromARGB(255, 3, 218, 75),
               dayProps: const EasyDayProps(
@@ -175,26 +171,20 @@ class _TodayPageState extends State<TodayPage> {
                 }
 
                 List<DocumentSnapshot> tasksForToday = [];
-                String formattedFocusDate =
-                    DateFormat('yyyy-MM-dd').format(_focusDate!);
+                String formattedFocusDate = DateFormat('yyyy-MM-dd').format(_focusDate!);
 
-                // Combine todos and habits into tasksForToday
                 for (var snapshot in snapshots.data!) {
                   for (var doc in snapshot.docs) {
-                    Map<String, dynamic> data =
-                        doc.data() as Map<String, dynamic>;
+                    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
                     if (data['taskTimes'] != null &&
                         data['taskTimes'].containsKey(formattedFocusDate)) {
                       tasksForToday.add(doc);
                     } else if (data['days'] != null &&
                         data['days'].containsKey(formattedFocusDate)) {
-                      DateTime endDate =
-                          (data['end_date'] as Timestamp).toDate();
-                      DateTime startDate =
-                          (data['start_date'] as Timestamp).toDate();
+                      DateTime endDate = (data['end_date'] as Timestamp).toDate();
+                      DateTime startDate = (data['start_date'] as Timestamp).toDate();
 
-                      // Yalnızca tarih (gün, ay, yıl) bileşenleriyle karşılaştırma yapalım
                       DateTime focusDateOnly = DateTime(
                         _focusDate!.year,
                         _focusDate!.month,
@@ -214,8 +204,7 @@ class _TodayPageState extends State<TodayPage> {
                       );
 
                       if (focusDateOnly.isAfter(startDateOnly) &&
-                          focusDateOnly.isBefore(
-                              endDateOnly.add(const Duration(days: 1)))) {
+                          focusDateOnly.isBefore(endDateOnly.add(const Duration(days: 1)))) {
                         tasksForToday.add(doc);
                       } else if (focusDateOnly.isAtSameMomentAs(startDateOnly) ||
                           focusDateOnly.isAtSameMomentAs(endDateOnly)) {
@@ -225,30 +214,17 @@ class _TodayPageState extends State<TodayPage> {
                   }
                 }
 
-                Map<String, bool> getCompletionStatus(DocumentSnapshot doc) {
-                  final data = doc.data() as Map<String, dynamic>;
-                  return data[data.containsKey('completed_days')
-                      ? 'completed_days'
-                      : 'taskCompletionStatus']
-                      ?.cast<String, bool>() ?? {};
-                }
-
                 List<DocumentSnapshot> incompleteTasks = tasksForToday
-                    .where((task) =>
-                        !(getCompletionStatus(task)[formattedFocusDate] ??
-                            false))
+                    .where((task) => !_isTaskCompleted(task, formattedFocusDate))
                     .toList();
                 List<DocumentSnapshot> completedTasks = tasksForToday
-                    .where((task) =>
-                        getCompletionStatus(task)[formattedFocusDate] ?? false)
+                    .where((task) => _isTaskCompleted(task, formattedFocusDate))
                     .toList();
 
                 return ListView(
                   children: [
-                    _buildTaskSection(
-                        'Incomplete', incompleteTasks, _showIncomplete),
-                    _buildTaskSection(
-                        'Completed', completedTasks, _showCompleted),
+                    _buildTaskSection('Incomplete', incompleteTasks, _showIncomplete),
+                    _buildTaskSection('Completed', completedTasks, _showCompleted),
                   ],
                 );
               },
@@ -259,8 +235,22 @@ class _TodayPageState extends State<TodayPage> {
     );
   }
 
-  Widget _buildTaskSection(
-      String title, List<DocumentSnapshot> tasks, bool isExpanded) {
+  bool _isTaskCompleted(DocumentSnapshot task, String formattedDate) {
+    final data = task.data() as Map<String, dynamic>;
+    final isHabit = data.containsKey('completed_days');
+
+    if (isHabit) {
+      final completedDays = data['completed_days'] as Map<String, dynamic>?;
+      return completedDays != null &&
+          completedDays[_user!.uid] is Map &&
+          (completedDays[_user!.uid][formattedDate] ?? false);
+    } else {
+      final taskCompletionStatus = data['taskCompletionStatus'] as Map<String, dynamic>?;
+      return taskCompletionStatus != null && (taskCompletionStatus[formattedDate] ?? false);
+    }
+  }
+
+  Widget _buildTaskSection(String title, List<DocumentSnapshot> tasks, bool isExpanded) {
     return Column(
       children: [
         InkWell(
@@ -287,9 +277,7 @@ class _TodayPageState extends State<TodayPage> {
                 ),
                 const Spacer(),
                 Icon(
-                  isExpanded
-                      ? Icons.keyboard_arrow_up
-                      : Icons.keyboard_arrow_down,
+                  isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
                   color: Colors.white,
                 ),
               ],
@@ -305,13 +293,9 @@ class _TodayPageState extends State<TodayPage> {
     final data = task.data() as Map<String, dynamic>;
     final isHabit = data.containsKey('completed_days');
     final taskName = isHabit ? data['name'] : data['taskName'];
-    final completionStatusKey =
-        isHabit ? 'completed_days' : 'taskCompletionStatus';
-    final taskCompletionStatus =
-        (data[completionStatusKey] as Map<String, dynamic>?)
-                ?.cast<String, bool>()[
-            DateFormat('yyyy-MM-dd').format(_focusDate!)] ??
-            false;
+    
+    String formattedDate = DateFormat('yyyy-MM-dd').format(_focusDate!);
+    bool taskCompletionStatus = _isTaskCompleted(task, formattedDate);
 
     bool isToday = _isToday(_focusDate!);
 
@@ -324,26 +308,24 @@ class _TodayPageState extends State<TodayPage> {
               context: context,
               isScrollControlled: true,
               backgroundColor: Colors.transparent,
-              builder: (context) =>
-                  TodayEditPage(task: task, selectedDate: _focusDate!),
+              builder: (context) => TodayEditPage(task: task, selectedDate: _focusDate!),
             );
           }
 
           if (isHabit) {
             Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HabitDetailPage(habitId: task.id),
-                    ),
-                  );
+              context,
+              MaterialPageRoute(
+                builder: (context) => HabitDetailPage(habitId: task.id),
+              ),
+            );
           }
         },
         child: Card(
           color: isHabit
               ? const Color.fromARGB(200, 39, 79, 94)
               : const Color.fromARGB(120, 96, 125, 139),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Padding(
             padding: const EdgeInsets.all(12),
             child: Row(
@@ -352,41 +334,41 @@ class _TodayPageState extends State<TodayPage> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4.0),
                   ),
-                  side: const BorderSide(
-                      color: Color.fromARGB(200, 3, 218, 198)),
+                  side: const BorderSide(color: Color.fromARGB(200, 3, 218, 198)),
                   value: taskCompletionStatus,
-                  onChanged: !isHabit ? (bool? value) {
+                  onChanged: isHabit
+                      ? (isToday
+                          ? (bool? value) {
+                              if (value != null) {
+                                Map<String, dynamic> completedDays =
+                                    Map<String, dynamic>.from(data['completed_days'] ?? {});
+                                if (!completedDays.containsKey(_user!.uid)) {
+                                  completedDays[_user!.uid] = {};
+                                }
+                                completedDays[_user!.uid][formattedDate] = value;
+                                FirebaseFirestore.instance
+                                    .collection('habits')
+                                    .doc(task.id)
+                                    .update({
+                                  'completed_days': completedDays,
+                                });
+                              }
+                            }
+                          : (value) {
+                              _showFutureDateAlert();
+                            })
+                      : (bool? value) {
                           if (value != null) {
                             Map<String, bool> completionStatus =
-                                Map<String, bool>.from(
-                                    data[completionStatusKey] ?? {});
-                            completionStatus[DateFormat('yyyy-MM-dd')
-                                .format(_focusDate!)] = value;
+                                Map<String, bool>.from(data['taskCompletionStatus'] ?? {});
+                            completionStatus[formattedDate] = value;
                             FirebaseFirestore.instance
-                                .collection(isHabit ? 'habits' : 'todos')
+                                .collection('todos')
                                 .doc(task.id)
                                 .update({
-                              completionStatusKey: completionStatus,
+                              'taskCompletionStatus': completionStatus,
                             });
                           }
-                        } : isToday
-                      ? (bool? value) {
-                          if (value != null) {
-                            Map<String, bool> completionStatus =
-                                Map<String, bool>.from(
-                                    data[completionStatusKey] ?? {});
-                            completionStatus[DateFormat('yyyy-MM-dd')
-                                .format(_focusDate!)] = value;
-                            FirebaseFirestore.instance
-                                .collection(isHabit ? 'habits' : 'todos')
-                                .doc(task.id)
-                                .update({
-                              completionStatusKey: completionStatus,
-                            });
-                          }
-                        }
-                      : (value) {
-                          _showFutureDateAlert();
                         },
                   activeColor: const Color.fromARGB(150, 3, 218, 198),
                 ),
@@ -396,8 +378,7 @@ class _TodayPageState extends State<TodayPage> {
                     children: [
                       Text(
                         taskName,
-                        style: const TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
+                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 4),
                       if (!isHabit)
@@ -406,8 +387,7 @@ class _TodayPageState extends State<TodayPage> {
                             if (data['taskRecurring'] != 'Tekrar yapma')
                               const Padding(
                                 padding: EdgeInsets.only(right: 10),
-                                child: Icon(Icons.repeat,
-                                    color: Colors.white70, size: 16),
+                                child: Icon(Icons.repeat, color: Colors.white70, size: 16),
                               ),
                             _timeShow(task)
                           ],
@@ -429,9 +409,7 @@ class _TodayPageState extends State<TodayPage> {
 
   bool _isToday(DateTime date) {
     DateTime now = DateTime.now();
-    return date.year == now.year &&
-        date.month == now.month &&
-        date.day == now.day;
+    return date.year == now.year && date.month == now.month && date.day == now.day;
   }
 
   void _showFutureDateAlert() {
@@ -440,7 +418,7 @@ class _TodayPageState extends State<TodayPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text("Geçersiz İşlem"),
-          content: const Text("Sadece güncel tarihteki görevler tamamlanabilir."),
+content: const Text("Sadece güncel tarihteki görevler tamamlanabilir."),
           actions: <Widget>[
             TextButton(
               child: const Text("Tamam"),
@@ -479,6 +457,4 @@ class _TodayPageState extends State<TodayPage> {
       ],
     );
   }
-
-  
 }

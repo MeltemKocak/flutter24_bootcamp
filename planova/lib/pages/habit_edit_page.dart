@@ -50,6 +50,7 @@ class _HabitEditPageState extends State<HabitEditPage> {
             .toDate()
             .toString()
             .substring(0, 10);
+        _friendEmailController.text = data['friend_email'] ?? '';
         _selectedDays.setAll(
             0,
             List<bool>.from(
@@ -81,7 +82,8 @@ class _HabitEditPageState extends State<HabitEditPage> {
         'target_days': _targetDays,
         'recurring_days': _selectedDays,
         'days': _generateHabitDays(),
-        'friends': [], // Arkadaşların email listesi
+        'friend_email': _friendEmailController.text,
+        'friends': [],
       };
 
       if (_friendEmailController.text.isNotEmpty) {
@@ -106,6 +108,10 @@ class _HabitEditPageState extends State<HabitEditPage> {
           .update(habitData)
           .then((value) {
         Navigator.pop(context);
+        setState(() {
+          isLoading = true;
+        });
+        _loadHabitData();
       }).catchError((error) {
         // Hata işleme kodları
       });
@@ -129,7 +135,6 @@ class _HabitEditPageState extends State<HabitEditPage> {
   }
 
   Future<void> _sendNotificationToFriend(String friendId) async {
-    // Bildirim gönderme kodları burada yer alacak
     FirebaseFirestore.instance.collection('notifications').add({
       'toUserId': friendId,
       'message': 'You have been invited to join a habit!',
@@ -237,7 +242,8 @@ class _HabitEditPageState extends State<HabitEditPage> {
                         maxLines: 3),
                     const SizedBox(height: 20),
                     _buildTextField(
-                        _friendEmailController, false, "Friend's Email"),
+                        _friendEmailController, false, "Friend's Email",
+                        enabled: false),
                     const SizedBox(height: 20),
                     Row(
                       children: [
@@ -292,7 +298,7 @@ class _HabitEditPageState extends State<HabitEditPage> {
 
   Widget _buildTextField(
       TextEditingController controller, bool _isNameEmpty, String label,
-      {int maxLines = 1}) {
+      {int maxLines = 1, bool enabled = true}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -306,6 +312,7 @@ class _HabitEditPageState extends State<HabitEditPage> {
           controller: controller,
           style: const TextStyle(color: Colors.white),
           maxLines: maxLines,
+          enabled: enabled,
           decoration: InputDecoration(
             hintText: "Enter $label",
             hintStyle:
