@@ -83,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() {
           isPasswordWrong = true;
         });
-        showErrorMessage('Şifre yanlış. Lütfen tekrar deneyin.');
+        showErrorMessage('Sifre yanlıs. Lütfen tekrar deneyin.');
       }
     } else {
       try {
@@ -173,7 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 _buildEmailSection(context),
                 if (showPasswordField) _buildPasswordSection(context),
                 const SizedBox(height: 20),
-                _buildNewsletterOptIn(context),
+                _buildForgotPassword(context),
               ],
             ),
           ),
@@ -221,7 +221,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 20),
             TextFormField(
-              
               controller: emailController,
               style: const TextStyle(
                 color: Color(0XFF797979),
@@ -273,7 +272,7 @@ class _LoginScreenState extends State<LoginScreen> {
         children: [
           const SizedBox(height: 20),
           Text(
-            isExistingUser ? "Şifrenizi girin" : "Yeni şifre oluşturun",
+            isExistingUser ? "Şifrenizi girin" : "Yeni sifre olusturun",
             style: const TextStyle(
               color: Color(0XFFFFFFFF),
               fontSize: 18,
@@ -287,7 +286,7 @@ class _LoginScreenState extends State<LoginScreen> {
             obscureText: true,
             style: const TextStyle(color: Color(0XFF797979)),
             decoration: InputDecoration(
-              hintText: isExistingUser ? "Şifre" : "Yeni şifre",
+              hintText: isExistingUser ? "Sifre" : "Yeni sifre",
               hintStyle: const TextStyle(color: Color(0XFF797979)),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
@@ -312,31 +311,26 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildNewsletterOptIn(BuildContext context) {
+  Widget _buildForgotPassword(BuildContext context) {
     return Row(
       children: [
-        Checkbox(
-          value: newsletterOptIn,
-          onChanged: (value) {
-            setState(() {
-              newsletterOptIn = value ?? false;
-            });
+        TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ForgotPasswordPage()),
+            );
           },
-        ),
-        const Expanded(
-          child: Padding(
-            padding: EdgeInsets.only(left: 10),
-            child: Text(
-              "En son haberler ve kaynaklar direkt olarak gelen kutunuza gelsin",
-              style: TextStyle(
-                color: Color(0XFF797979),
-                fontSize: 15,
-                fontFamily: 'Lato',
-                fontWeight: FontWeight.w400,
-              ),
+          child: const Text(
+            "Sifremi unuttum",
+            style: TextStyle(
+              color: Color(0XFF03DAC6),
+              fontSize: 15,
+              fontFamily: 'Lato',
+              fontWeight: FontWeight.w400,
             ),
           ),
-        )
+        ),
       ],
     );
   }
@@ -378,6 +372,157 @@ class _LoginScreenState extends State<LoginScreen> {
             fontSize: 16,
             fontFamily: 'Lato',
             fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ForgotPasswordPage extends StatefulWidget {
+  const ForgotPasswordPage({super.key});
+
+  @override
+  _ForgotPasswordPageState createState() => _ForgotPasswordPageState();
+}
+
+class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
+  final TextEditingController emailController = TextEditingController();
+  bool isLoading = false;
+
+  Future<void> sendPasswordResetEmail() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Sifre sıfırlama e-postası gönderildi')),
+      );
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Bir hata oluştu: $e')),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: Color.fromARGB(255, 3, 218, 198),
+              size: 28,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          title: const Text(
+            "Sifremi Unuttum",
+            style: TextStyle(
+              fontFamily: 'Lato',
+              color: Color.fromARGB(255, 3, 218, 198),
+              fontSize: 20,
+            ),
+          ),
+          centerTitle: true,
+        ),
+        backgroundColor: const Color(0XFF1E1E1E),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 20),
+              Text(
+                "Sifrenizi sıfırlamak için lütfen e-posta adresinizi girin",
+                style: const TextStyle(
+                  color: Color(0XFFFFFFFF),
+                  fontSize: 16,
+                  fontFamily: 'Lato',
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: emailController,
+                style: const TextStyle(
+                  color: Color(0XFF797979),
+                  fontSize: 18,
+                  fontFamily: 'Lato',
+                  fontWeight: FontWeight.w400,
+                ),
+                decoration: InputDecoration(
+                  hintText: "E-posta adresi",
+                  hintStyle: const TextStyle(
+                    color: Color(0XFF797979),
+                    fontSize: 16,
+                    fontFamily: 'Lato',
+                    fontWeight: FontWeight.w400,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: const BorderSide(
+                      color: Color(0XFF03DAC6),
+                      width: 2.5,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: const BorderSide(
+                      color: Color(0XFF03DAC6),
+                      width: 2.5,
+                    ),
+                  ),
+                  filled: true,
+                  fillColor: const Color(0XFFFFFFFF),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Container(
+                width: double.maxFinite,
+                height: 54,
+                margin: const EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                  bottom: 34,
+                ),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0XFF274F5E),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  onPressed: isLoading ? null : sendPasswordResetEmail,
+                  child: Text(
+                    isLoading ? "Gönderiliyor..." : "Sifre Sıfırlama E-postası Gönder",
+                    style: const TextStyle(
+                      color: Color(0XFF03DAC6),
+                      fontSize: 16,
+                      fontFamily: 'Lato',
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
