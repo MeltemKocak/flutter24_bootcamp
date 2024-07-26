@@ -10,10 +10,10 @@ import 'package:planova/pages/profile_page.dart';
 import 'package:planova/pages/today_add.dart';
 import 'package:planova/pages/today_page.dart';
 import 'package:planova/pages/today_trash.dart';
+import 'package:planova/pages/user_stories_page.dart';
 import 'package:planova/pages/welcome_screen.dart';
 import 'package:planova/pages/journal_add.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
- // IncomingRequestsPage'i içe aktar
 
 class Homes extends StatelessWidget {
   const Homes({super.key});
@@ -43,9 +43,8 @@ class NavigationExample extends StatefulWidget {
 }
 
 class _NavigationExampleState extends State<NavigationExample> {
-
-    User? user = FirebaseAuth.instance.currentUser;
-    late String userId = user!.uid;
+  User? user = FirebaseAuth.instance.currentUser;
+  late String userId = user!.uid;
   String? userProfileImageUrl;
   String userName = "";
 
@@ -54,8 +53,6 @@ class _NavigationExampleState extends State<NavigationExample> {
     super.initState();
     _loadUserProfileImage();
   }
-
-
 
   Future<void> _loadUserProfileImage() async {
     userName = await _getUserName(user?.uid ?? '');
@@ -71,8 +68,6 @@ class _NavigationExampleState extends State<NavigationExample> {
     }
   }
 
-
-  
   static int currentPageIndex = 0;
   final List<String> appBarTitles = ['Today', 'Habits', 'Journal', 'Profile'];
 
@@ -137,15 +132,16 @@ class _NavigationExampleState extends State<NavigationExample> {
                   _openCalendarBottomSheet, // Takvim butonuna basıldığında açılır
             ),
           if (currentPageIndex == 1)
-          IconButton(
-            icon: const Icon(Icons.inbox, color: Colors.white),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => IncomingRequestsPage()),
-              );
-            },
-          ),
+            IconButton(
+              icon: const Icon(Icons.inbox, color: Colors.white),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => IncomingRequestsPage()),
+                );
+              },
+            ),
         ],
       ),
       drawer: Drawer(
@@ -170,39 +166,39 @@ class _NavigationExampleState extends State<NavigationExample> {
                       } else {
                         return CircleAvatar(
                           radius: 30,
-                          backgroundImage: const AssetImage('assets/images/default_profile.png'),
+                          backgroundImage: const AssetImage(
+                              'assets/images/default_profile.png'),
                         );
                       }
                     },
-                    
                   ),
                   const SizedBox(width: 16),
                   Expanded(
-      child: FutureBuilder<String>(
-        future: _getUserName(userId),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Text(
-              snapshot.data!,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                overflow: TextOverflow.ellipsis,
-              ),
-            );
-          } else {
-            return  Text(
-              (user?.email) ?? 'Anonymous User',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                overflow: TextOverflow.ellipsis,
-              ),
-            );
-          }
-        },
-      ),
-    ),
+                    child: FutureBuilder<String>(
+                      future: _getUserName(userId),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Text(
+                            snapshot.data!,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          );
+                        } else {
+                          return Text(
+                            (user?.email) ?? 'Anonymous User',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -249,6 +245,17 @@ class _NavigationExampleState extends State<NavigationExample> {
                 );
               },
             ),
+            ListTile(
+              leading: const Icon(Icons.book, color: Colors.white),
+              title: const Text('User Stories',
+                  style: TextStyle(color: Colors.white)),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => UserStoriesPage()),
+                );
+              },
+            ),
             const Divider(color: Colors.grey),
             ListTile(
               leading: const Icon(Icons.settings, color: Colors.white),
@@ -268,46 +275,46 @@ class _NavigationExampleState extends State<NavigationExample> {
           ],
         ),
       ),
-      floatingActionButton: currentPageIndex == 3 
-  ? null 
-  : FloatingActionButton(
-      onPressed: () {
-        switch (currentPageIndex) {
-          case 0:
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              backgroundColor: Colors.transparent,
-              builder: (context) => const TodayAddSubPage(),
-            );
-            break;
-          case 1:
-             showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              backgroundColor: Colors.transparent,
-              builder: (context) =>  const HabitAddPage (),
-            );
-            break;
-          case 2:
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              backgroundColor: Colors.transparent,
-              builder: (context) => const JournalAddSubPage(),
-            );
-            break;
-          default:
-        }
-      },
-      backgroundColor: const Color.fromARGB(255, 3, 218, 198),
-      child: const Icon(
-        Icons.add,
-        size: 32,
-        color: Colors.black,
-      ),
-    ),
-    floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
+      floatingActionButton: currentPageIndex == 3
+          ? null
+          : FloatingActionButton(
+              onPressed: () {
+                switch (currentPageIndex) {
+                  case 0:
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => const TodayAddSubPage(),
+                    );
+                    break;
+                  case 1:
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => const HabitAddPage(),
+                    );
+                    break;
+                  case 2:
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => const JournalAddSubPage(),
+                    );
+                    break;
+                  default:
+                }
+              },
+              backgroundColor: const Color.fromARGB(255, 3, 218, 198),
+              child: const Icon(
+                Icons.add,
+                size: 32,
+                color: Colors.black,
+              ),
+            ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       bottomNavigationBar: NavigationBar(
         backgroundColor: const Color.fromARGB(255, 42, 42, 42),
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
@@ -389,7 +396,7 @@ class _NavigationExampleState extends State<NavigationExample> {
     );
   }
 
-     Future<String?> _getUserProfileImage(String userId) async {
+  Future<String?> _getUserProfileImage(String userId) async {
     DocumentSnapshot userDoc =
         await FirebaseFirestore.instance.collection('users').doc(userId).get();
     return userDoc['imageUrl'] ?? '';
@@ -400,7 +407,6 @@ class _NavigationExampleState extends State<NavigationExample> {
         await FirebaseFirestore.instance.collection('users').doc(userId).get();
     return userDoc['name'] ?? '';
   }
-
 }
 
 class Auth {
@@ -411,6 +417,4 @@ class Auth {
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) => const WelcomeScreen()));
   }
-
-  
 }
