@@ -17,6 +17,7 @@ import 'package:planova/pages/pin_entry_page.dart'; // Import PinEntryPage
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:provider/provider.dart';
 import 'package:planova/utilities/theme.dart';
+import 'settings_page.dart'; // Import the SettingsPage
 
 class Homes extends StatelessWidget {
   const Homes({super.key});
@@ -444,10 +445,12 @@ class _NavigationExampleState extends State<NavigationExample> {
             const Divider(color: Colors.grey),
             ListTile(
               leading: const Icon(Icons.settings, color: Colors.white),
-              title:
-                  const Text('Settings', style: TextStyle(color: Colors.white)),
+              title: const Text('Settings', style: TextStyle(color: Colors.white)),
               onTap: () {
-                // Implement your settings action here
+                Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingsPage()),
+                );
               },
             ),
             ListTile(
@@ -456,55 +459,7 @@ class _NavigationExampleState extends State<NavigationExample> {
               onTap: () async {
                 await Auth().signOut(context: context);
               },
-            ),
-            const Divider(color: Colors.grey),
-            ListTile(
-              leading: const Icon(Icons.color_lens, color: Colors.white),
-              title: const Text('Change Theme', style: TextStyle(color: Colors.white)),
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('Select Theme'),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ListTile(
-                            title: const Text('Theme 1'),
-                            onTap: () {
-                              themeProvider.setThemeValue(1);
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          ListTile(
-                            title: const Text('Theme 2'),
-                            onTap: () {
-                              themeProvider.setThemeValue(2);
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          ListTile(
-                            title: const Text('Theme 3'),
-                            onTap: () {
-                              themeProvider.setThemeValue(3);
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          ListTile(
-                            title: const Text('Theme 4'),
-                            onTap: () {
-                              themeProvider.setThemeValue(4);
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
+            ),  
           ],
         ),
       ),

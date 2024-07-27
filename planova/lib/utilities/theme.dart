@@ -10,6 +10,8 @@ class ThemeProvider with ChangeNotifier {
 
   int get themeValue => _themeValue;
 
+  CustomThemeData get currentTheme => ThemeColors.getTheme(_themeValue); // Burada currentTheme getter'ını ekledik
+
   Future<void> _loadThemeValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? storedThemeValue = prefs.getInt('themeValue');
