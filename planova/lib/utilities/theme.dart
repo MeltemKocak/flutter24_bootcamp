@@ -28,6 +28,7 @@ class ThemeProvider with ChangeNotifier {
     await prefs.setInt('themeValue', value);
   }
 }
+
 class ThemeColors {
   static CustomThemeData getTheme(int value) {
     switch (value) {
@@ -43,6 +44,7 @@ class ThemeColors {
           todoCardBackground: const Color.fromARGB(120, 139, 125, 96),
           checkBoxBorderColor: const Color.fromARGB(200, 255, 198, 3),
           checkBoxActiveColor: const Color.fromARGB(150, 255, 198, 3),
+          weeklyStatsBackgroundColor: Color.fromARGB(150, 255, 255, 255)
         );
       case 3:
         return CustomThemeData(
@@ -56,6 +58,7 @@ class ThemeColors {
           todoCardBackground: const Color.fromARGB(120, 96, 96, 139),
           checkBoxBorderColor: const Color.fromARGB(200, 3, 198, 255),
           checkBoxActiveColor: const Color.fromARGB(150, 3, 198, 255),
+          weeklyStatsBackgroundColor: Color.fromARGB(150, 255, 255, 255)
         );
       case 4:
         return CustomThemeData(
@@ -69,6 +72,7 @@ class ThemeColors {
           todoCardBackground: const Color.fromARGB(120, 139, 96, 125),
           checkBoxBorderColor: const Color.fromARGB(200, 198, 3, 255),
           checkBoxActiveColor: const Color.fromARGB(60, 198, 3, 255),
+          weeklyStatsBackgroundColor: Color.fromARGB(150, 255, 255, 255)
         );
       case 1:
       default:
@@ -83,6 +87,7 @@ class ThemeColors {
           todoCardBackground: const Color.fromARGB(120, 96, 125, 139),
           checkBoxBorderColor: const Color.fromARGB(150, 3, 218, 198),
           checkBoxActiveColor: const Color.fromARGB(100, 3, 218, 198),
+          weeklyStatsBackgroundColor: Color.fromARGB(150, 255, 255, 255)
         );
     }
   }
@@ -99,6 +104,7 @@ class CustomThemeData {
   final Color todoCardBackground;
   final Color checkBoxBorderColor;
   final Color checkBoxActiveColor;
+  final Color weeklyStatsBackgroundColor;
 
   CustomThemeData({
     required this.cardBackground,
@@ -111,5 +117,6 @@ class CustomThemeData {
     required this.todoCardBackground,
     required this.checkBoxBorderColor,
     required this.checkBoxActiveColor,
+    required this.weeklyStatsBackgroundColor,
   });
 }

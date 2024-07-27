@@ -178,15 +178,18 @@ class _ProfilePageState extends State<ProfilePage> {
                         style: TextStyle(color: theme.dayNumTextColor),
                         decoration: InputDecoration(
                           hintText: 'Enter Name',
-                          hintStyle: TextStyle(color: theme.dayNumTextColor.withOpacity(0.7)),
+                          hintStyle: TextStyle(
+                              color: theme.dayNumTextColor.withOpacity(0.7)),
                           contentPadding: const EdgeInsets.all(10),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: theme.checkBoxBorderColor),
+                            borderSide:
+                                BorderSide(color: theme.checkBoxBorderColor),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: theme.checkBoxBorderColor),
+                            borderSide:
+                                BorderSide(color: theme.checkBoxBorderColor),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -200,15 +203,18 @@ class _ProfilePageState extends State<ProfilePage> {
                         style: TextStyle(color: theme.dayNumTextColor),
                         decoration: InputDecoration(
                           hintText: 'Enter Bio',
-                          hintStyle: TextStyle(color: theme.dayNumTextColor.withOpacity(0.7)),
+                          hintStyle: TextStyle(
+                              color: theme.dayNumTextColor.withOpacity(0.7)),
                           contentPadding: const EdgeInsets.all(10),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: theme.checkBoxBorderColor),
+                            borderSide:
+                                BorderSide(color: theme.checkBoxBorderColor),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: theme.checkBoxBorderColor),
+                            borderSide:
+                                BorderSide(color: theme.checkBoxBorderColor),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -225,21 +231,29 @@ class _ProfilePageState extends State<ProfilePage> {
                   icon: Icon(Icons.save, color: theme.cardBackground),
                   label: Text(
                     'Save Profile',
-                    style: TextStyle(color: theme.cardBackground, fontSize: 20, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        color: theme.cardBackground,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: theme.activeColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 12),
+                    textStyle: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
                 const SizedBox(height: 60),
                 Text(
                   "Daily Task Overview",
-                  style: TextStyle(color: theme.dayNumTextColor, fontWeight: FontWeight.bold, fontSize: 23),
+                  style: TextStyle(
+                      color: theme.dayNumTextColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 23),
                 ),
                 const SizedBox(height: 20),
                 Row(
@@ -257,32 +271,30 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 const SizedBox(height: 40),
                 Text(
-                  "Daily Task Statistics",
-                  style: TextStyle(color: theme.dayNumTextColor, fontWeight: FontWeight.bold, fontSize: 23),
+                  "Weekly Task Statistics",
+                  style: TextStyle(
+                      color: theme.dayNumTextColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 23),
                 ),
                 const SizedBox(height: 20),
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.width * 0.85,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.circular(15.0),
-                    color: theme.todoCardBackground,
-                  ),
                   height: 200,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: BarChart(
-                      _getBarChartData(theme),
-                    ),
-                  ),
+                  child: WeeklyStatsWidget(),
                 ),
                 const SizedBox(height: 40),
                 Text(
                   "Habits Overview",
-                  style: TextStyle(color: theme.dayNumTextColor, fontWeight: FontWeight.bold, fontSize: 23),
+                  style: TextStyle(
+                      color: theme.dayNumTextColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 23),
                 ),
                 Column(
-                  children: habits.map((habit) => HabitOverviewCard(habit: habit)).toList(),
+                  children: habits
+                      .map((habit) => HabitOverviewCard(habit: habit))
+                      .toList(),
                 ),
               ],
             ),
@@ -310,76 +322,6 @@ class _ProfilePageState extends State<ProfilePage> {
       _incompleteTasks = counts['incomplete'] ?? 0;
       _completedTasks = counts['completed'] ?? 0;
     });
-  }
-
-  BarChartData _getBarChartData(CustomThemeData theme) {
-    return BarChartData(
-      gridData: const FlGridData(show: false),
-      titlesData: const FlTitlesData(show: false),
-      borderData: FlBorderData(show: false),
-      barGroups: [
-        BarChartGroupData(
-          x: 0,
-          barsSpace: 4,
-          barRods: [
-            BarChartRodData(
-              toY: _incompleteTasks.toDouble(),
-              color: theme.activeColor.withOpacity(0.3),
-              width: 20,
-              borderRadius: BorderRadius.circular(6),
-            ),
-          ],
-        ),
-        BarChartGroupData(
-          x: 0,
-          barsSpace: 4,
-          barRods: [
-            BarChartRodData(
-              toY: _completedTasks.toDouble(),
-              color: theme.activeColor,
-              width: 20,
-              borderRadius: BorderRadius.circular(6),
-            ),
-          ],
-        ),
-        BarChartGroupData(
-          x: 1,
-          barsSpace: 4,
-          barRods: [
-            BarChartRodData(
-              toY: _incompleteTasks.toDouble(),
-              color: theme.activeColor.withOpacity(0.3),
-              width: 20,
-              borderRadius: BorderRadius.circular(6),
-            ),
-          ],
-        ),
-        BarChartGroupData(
-          x: 2,
-          barsSpace: 4,
-          barRods: [
-            BarChartRodData(
-              toY: _completedTasks.toDouble(),
-              color: theme.activeColor,
-              width: 20,
-              borderRadius: BorderRadius.circular(6),
-            ),
-          ],
-        ),
-        BarChartGroupData(
-          x: 3,
-          barsSpace: 4,
-          barRods: [
-            BarChartRodData(
-              toY: _incompleteTasks.toDouble(),
-              color: theme.activeColor.withOpacity(0.3),
-              width: 20,
-              borderRadius: BorderRadius.circular(6),
-            ),
-          ],
-        ),
-      ],
-    );
   }
 }
 
@@ -470,9 +412,14 @@ class HabitOverviewCard extends StatelessWidget {
                 const SizedBox(height: 10),
                 _buildStatRow('Current Streak', '$currentStreak days', theme),
                 _buildStatRow('Longest Streak', '$longestStreak days', theme),
-                _buildStatRow('Completion', '$completion% ($completedCount days of $targetDays days)', theme),
-                _buildStatRow('Start Date', _formatDate(habit['start_date']), theme),
-                _buildStatRow('End Date', _formatDate(habit['end_date']), theme),
+                _buildStatRow(
+                    'Completion',
+                    '$completion% ($completedCount days of $targetDays days)',
+                    theme),
+                _buildStatRow(
+                    'Start Date', _formatDate(habit['start_date']), theme),
+                _buildStatRow(
+                    'End Date', _formatDate(habit['end_date']), theme),
               ],
             ),
           ),
@@ -539,13 +486,16 @@ class HabitOverviewCard extends StatelessWidget {
     List<bool> yearProgress = [];
     DateTime startDate = (habit['start_date'] as Timestamp).toDate();
     DateTime endDate = DateTime.now();
-    Map<String, dynamic> completedDays = (habit['completed_days'] ?? {}).cast<String, dynamic>();
+    Map<String, dynamic> completedDays =
+        (habit['completed_days'] ?? {}).cast<String, dynamic>();
 
     for (DateTime date = startDate;
         date.isBefore(endDate) || date.isAtSameMomentAs(endDate);
         date = date.add(const Duration(days: 1))) {
       String formattedDate = DateFormat('yyyy-MM-dd').format(date);
-      Map<String, dynamic> userCompletedDays = (completedDays[FirebaseAuth.instance.currentUser!.uid] ?? {}).cast<String, dynamic>();
+      Map<String, dynamic> userCompletedDays =
+          (completedDays[FirebaseAuth.instance.currentUser!.uid] ?? {})
+              .cast<String, dynamic>();
       yearProgress.add(userCompletedDays[formattedDate] ?? false);
     }
 
@@ -556,16 +506,154 @@ class HabitOverviewCard extends StatelessWidget {
     List<bool> yearProgress = [];
     DateTime startDate = (habit['start_date'] as Timestamp).toDate();
     DateTime endDate = (habit['end_date'] as Timestamp).toDate();
-    Map<String, dynamic> completedDays = (habit['completed_days'] ?? {}).cast<String, dynamic>();
+    Map<String, dynamic> completedDays =
+        (habit['completed_days'] ?? {}).cast<String, dynamic>();
 
     for (DateTime date = startDate;
         date.isBefore(endDate) || date.isAtSameMomentAs(endDate);
         date = date.add(const Duration(days: 1))) {
       String formattedDate = DateFormat('yyyy-MM-dd').format(date);
-      Map<String, dynamic> userCompletedDays = (completedDays[FirebaseAuth.instance.currentUser!.uid] ?? {}).cast<String, dynamic>();
+      Map<String, dynamic> userCompletedDays =
+          (completedDays[FirebaseAuth.instance.currentUser!.uid] ?? {})
+              .cast<String, dynamic>();
       yearProgress.add(userCompletedDays[formattedDate] ?? false);
     }
 
     return yearProgress;
   }
+}
+
+class WeeklyStatsWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        CustomThemeData theme = ThemeColors.getTheme(themeProvider.themeValue);
+
+        return FutureBuilder<Map<String, Map<String, int>>>(
+          future: getWeeklyTaskCounts(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              Map<String, Map<String, int>>? taskCounts = snapshot.data;
+
+              // Max değeri belirle
+              int maxY = 0;
+              if (taskCounts != null) {
+                for (var counts in taskCounts.values) {
+                  if (counts['total']! > maxY) {
+                    maxY = counts['total']!;
+                  }
+                }
+              }
+
+              return Container(
+                decoration: BoxDecoration(
+                  color: theme.todoCardBackground,
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: Text(
+                        ' ',
+                        style: TextStyle(
+                          color: theme.dayNumTextColor,
+                          fontSize:1,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: BarChart(BarChartData(
+                        alignment: BarChartAlignment.spaceEvenly,
+                        maxY: maxY.toDouble(),
+                        titlesData: FlTitlesData(
+                          rightTitles: AxisTitles(),
+                          leftTitles: AxisTitles(
+                            sideTitles: SideTitles(showTitles: false), // Sol tarafı kaldır
+                          ),
+                          topTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: false,
+                            ),
+                          ),
+                          bottomTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              getTitlesWidget: (value, meta) {
+                                switch (value.toInt()) {
+                                  case 0:
+                                    return Text('Mon', style: TextStyle(color: theme.dayNumTextColor, fontSize: 12));
+                                  case 1:
+                                    return Text('Tue', style: TextStyle(color: theme.dayNumTextColor, fontSize: 12));
+                                  case 2:
+                                    return Text('Wed', style: TextStyle(color: theme.dayNumTextColor, fontSize: 12));
+                                  case 3:
+                                    return Text('Thu', style: TextStyle(color: theme.dayNumTextColor, fontSize: 12));
+                                  case 4:
+                                    return Text('Fri', style: TextStyle(color: theme.dayNumTextColor, fontSize: 12));
+                                  case 5:
+                                    return Text('Sat', style: TextStyle(color: theme.dayNumTextColor, fontSize: 12));
+                                  case 6:
+                                    return Text('Sun', style: TextStyle(color: theme.dayNumTextColor, fontSize: 12));
+                                  default:
+                                    return Text('');
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                        gridData: FlGridData(show: false), // Kesikli çizgileri kaldırır
+                        borderData: FlBorderData(show: false),
+                        barGroups: [
+                          for (int i = 0; i < 7; i++)
+                            BarChartGroupData(x: i, barRods: [
+                              BarChartRodData(
+                                toY: taskCounts != null ? taskCounts[weekDays[i]]!['total']!.toDouble() : 0,
+                                color: theme.weeklyStatsBackgroundColor,
+                                width: 22,
+                                rodStackItems: [
+                                  BarChartRodStackItem(
+                                    0,
+                                    taskCounts != null ? taskCounts[weekDays[i]]!['completed']!.toDouble() : 0,
+                                    theme.activeColor,
+                                  ),
+                                ],
+                              ),
+                            ]),
+                        ],
+                      )),
+                    ),
+                  ],
+                ),
+              );
+            }
+          },
+        );
+      },
+    );
+  }
+
+  Future<Map<String, Map<String, int>>> getWeeklyTaskCounts() async {
+    DateTime now = DateTime.now();
+    DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+    Map<String, Map<String, int>> taskCounts = {};
+    for (int i = 0; i < 7; i++) {
+      DateTime day = startOfWeek.add(Duration(days: i));
+      Map<String, int> counts = await TodayPage.getTaskCounts(day);
+      taskCounts[weekDays[i]] = {
+        'total': counts['incomplete']! + counts['completed']!,
+        'completed': counts['completed']!,
+      };
+    }
+    return taskCounts;
+  }
+
+  static const List<String> weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 }
