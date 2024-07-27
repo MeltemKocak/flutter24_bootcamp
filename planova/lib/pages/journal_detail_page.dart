@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:intl/intl.dart';
 import 'package:audioplayers/audioplayers.dart' as ap;
 import 'package:planova/pages/journal_edit_page.dart';
 import 'package:planova/pages/photo_view_page.dart';
@@ -24,6 +21,7 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
   Duration _currentPosition = Duration.zero;
   Map<String, Duration> _audioDurations = {};
   late Map<String, dynamic> _data;
+  List<double> _audioWaveform = [];
 
   @override
   void initState() {
@@ -49,6 +47,7 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
 
     if (_data['audioUrl'] != null) {
       _initializeAudioDuration(_data['audioUrl']);
+      _initializeAudioWaveform();
     }
   }
 
@@ -62,6 +61,12 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
       });
       audioPlayer.dispose();
     }
+  }
+
+  Future<void> _initializeAudioWaveform() async {
+    setState(() {
+      _audioWaveform = List<double>.from(_data['waveform'] ?? []);
+    });
   }
 
   void _viewPhoto(String imageUrl) {
@@ -91,13 +96,14 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
     final minutes = twoDigits(duration.inMinutes);
     final seconds = twoDigits(duration.inSeconds.remainder(60));
-    return "$minutes:$seconds";
+    return " Duration:  $minutes:$seconds";
   }
 
   @override
   Widget build(BuildContext context) {
     List<String> imageUrls = _data['imageUrls'] != null ? List<String>.from(_data['imageUrls']) : [];
     String? audioUrl = _data['audioUrl'];
+    String description = descriptionController.text.trim();
 
     return Scaffold(
       appBar: AppBar(
@@ -138,21 +144,24 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
               _buildSectionTitle("Journal Header"),
               const SizedBox(height: 10),
               _buildHeaderSection(),
-              const SizedBox(height: 20),
-              _buildSectionTitle("Journal Body"),
-              const SizedBox(height: 10),
-              _buildBodySection(),
-              const SizedBox(height: 20),
-              _buildSectionTitle("Images"),
-              const SizedBox(height: 10),
-              _buildImageSelection(imageUrls),
-              const SizedBox(height: 20),
-              if (audioUrl != null && audioUrl.isNotEmpty)
-                ...[
-                  _buildSectionTitle("Audio"),
-                  const SizedBox(height: 10),
-                  _buildAudioSection(audioUrl),
-                ],
+              if (description.isNotEmpty) ...[
+                const SizedBox(height: 20),
+                _buildSectionTitle("Journal Body"),
+                const SizedBox(height: 10),
+                _buildBodySection(),
+              ],
+              if (imageUrls.isNotEmpty) ...[
+                const SizedBox(height: 20),
+                _buildSectionTitle("Images"),
+                const SizedBox(height: 10),
+                _buildImageSelection(imageUrls),
+              ],
+              if (audioUrl != null && audioUrl.isNotEmpty) ...[
+                const SizedBox(height: 20),
+                _buildSectionTitle("Audio"),
+                const SizedBox(height: 10),
+                _buildAudioSection(audioUrl),
+              ],
             ],
           ),
         ),
@@ -231,38 +240,91 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
   }
 
   Widget _buildAudioSection(String audioUrl) {
-    return GestureDetector(
-      onTap: () => _currentlyPlayingUrl == audioUrl ? _stopAudio() : _playAudio(),
-      child: Container(
-        height: 60,
-        decoration: BoxDecoration(
-          color: const Color(0X3F607D8B),
-          borderRadius: BorderRadius.circular(25),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: _currentlyPlayingUrl == audioUrl ? Colors.red : const Color(0XFF03DAC6),
-              ),
-              child: Icon(
-                _currentlyPlayingUrl == audioUrl ? Icons.stop : Icons.play_arrow,
-                color: Colors.white,
-              ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GestureDetector(
+          onTap: () => _currentlyPlayingUrl == audioUrl ? _stopAudio() : _playAudio(),
+          child: Container(
+            height: 60,
+            decoration: BoxDecoration(
+              color: const Color(0X3F607D8B),
+              borderRadius: BorderRadius.circular(25),
             ),
-            const SizedBox(width: 10),
-            Text(
-              _audioDurations.containsKey(audioUrl)
-                  ? _formatDuration(_audioDurations[audioUrl]!)
-                  : "Loading...",
-              style: const TextStyle(color: Colors.white, fontSize: 12),
+            child: Row(
+              children: [
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _currentlyPlayingUrl == audioUrl ? Colors.red : const Color(0XFF03DAC6),
+                  ),
+                  child: Icon(
+                    _currentlyPlayingUrl == audioUrl ? Icons.stop : Icons.play_arrow,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                if (_audioWaveform.isNotEmpty)
+                  Expanded(
+                    child: CustomPaint(
+                      size: const Size(double.infinity, 30),
+                      painter: WaveformPainter(_audioWaveform),
+                    ),
+                  )
+                else
+                  Expanded(
+                    child: Text(
+                      _audioDurations.containsKey(audioUrl)
+                          ? _formatDuration(_audioDurations[audioUrl]!)
+                          : "Loading...",
+                      style: const TextStyle(color: Colors.white, fontSize: 12),
+                    ),
+                  ),
+              ],
             ),
-          ],
+          ),
         ),
-      ),
+        const SizedBox(height: 5),
+        Text(
+          _audioDurations.containsKey(audioUrl)
+              ? _formatDuration(_audioDurations[audioUrl]!)
+              : "Loading...",
+          style: const TextStyle(color: Colors.white, fontSize: 12),
+        ),
+      ],
     );
   }
+}
+
+class WaveformPainter extends CustomPainter {
+  final List<double> waveform;
+
+  WaveformPainter(this.waveform);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = const Color(0XFF03DAC6)
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round;
+
+    final maxAmplitude = size.height / 2;
+    final width = size.width;
+    final stepWidth = width / waveform.length;
+
+    for (var i = 0; i < waveform.length; i++) {
+      final x = i * stepWidth;
+      final amplitude = maxAmplitude * (waveform[i] / 100);
+      canvas.drawLine(
+        Offset(x, size.height / 2 - amplitude),
+        Offset(x, size.height / 2 + amplitude),
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

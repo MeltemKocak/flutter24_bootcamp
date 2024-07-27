@@ -34,8 +34,9 @@ class _PrivateJournalPageState extends State<PrivateJournalPage> {
         color: const Color(0xFF1E1E1E),
         child: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
-              .collection('private_journal')
+              .collection('journal')
               .where('userId', isEqualTo: user.uid)
+              .where('isPrivate', isEqualTo: true) // Only fetch private entries
               .orderBy('date', descending: true)
               .snapshots(),
           builder: (context, snapshot) {

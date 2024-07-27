@@ -27,7 +27,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
   late TextEditingController descriptionController;
   final List<XFile> _newImages = [];
   late List<String> _existingImageUrls;
-  DateTime _dateTime = DateTime.now();
+  late DateTime _dateTime; // Fix type issue
   FlutterSoundRecorder? _soundRecorder;
   FlutterSoundPlayer? _soundPlayer;
   bool _isRecording = false;
@@ -42,6 +42,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
   Map<String, Duration> _audioDurations = {};
   bool _isAudioLoading = false;
   bool _isSaving = false;
+  bool _isPrivate = false; // Checkbox state for privacy
 
   @override
   void initState() {
@@ -49,8 +50,12 @@ class _JournalEditPageState extends State<JournalEditPage> {
     nameController = TextEditingController(text: widget.data['name']);
     descriptionController = TextEditingController(text: widget.data['description']);
     _existingImageUrls = List<String>.from(widget.data['imageUrls'] ?? []);
-    _dateTime = (widget.data['date'] as Timestamp).toDate();
+    // Handle the date conversion properly
+    _dateTime = widget.data['date'] is Timestamp
+        ? (widget.data['date'] as Timestamp).toDate()
+        : widget.data['date'];
     _existingAudioUrl = widget.data['audioUrl'];
+    _isPrivate = widget.data['isPrivate'] ?? false; // Initialize privacy state
     _soundRecorder = FlutterSoundRecorder();
     _soundPlayer = FlutterSoundPlayer();
     _openRecorder();
@@ -203,12 +208,13 @@ class _JournalEditPageState extends State<JournalEditPage> {
       'imageUrls': imageUrls,
       'audioUrl': audioUrl,
       'waveform': _audioWaveform,
+      'isPrivate': _isPrivate, // Save privacy state
     });
 
     setState(() {
       _isSaving = false;
     });
-
+  
     Navigator.pop(context, {
       'name': nameController.text,
       'description': descriptionController.text,
@@ -216,6 +222,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
       'imageUrls': imageUrls,
       'audioUrl': audioUrl,
       'waveform': _audioWaveform,
+      'isPrivate': _isPrivate,
     });
   }
 
@@ -355,7 +362,19 @@ class _JournalEditPageState extends State<JournalEditPage> {
               const SizedBox(height: 20),
               _buildTextField(descriptionController, "Description", maxLines: 3),
               const SizedBox(height: 20),
-              _buildDateField(formattedDate),
+              Row(
+                children: [
+                  Expanded(
+                    flex: 4,
+                    child: _buildDateField(formattedDate),
+                  ),
+                  const SizedBox(width: 15),
+                  Expanded(
+                    flex: 2,
+                    child: _buildPrivacyButton(), // Add the privacy button
+                  ),
+                ],
+              ),
               const SizedBox(height: 20),
               _buildImageSelection(),
               const SizedBox(height: 20),
@@ -591,6 +610,40 @@ class _JournalEditPageState extends State<JournalEditPage> {
               style: const TextStyle(color: Colors.white, fontSize: 12),
             ),
           ),
+      ],
+    );
+  }
+
+  Widget _buildPrivacyButton() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Private",
+          style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w300),
+          textAlign: TextAlign.left,
+        ),
+        SizedBox(height: 2),
+        Container(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: () {
+              setState(() {
+                _isPrivate = !_isPrivate;
+              });
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: _isPrivate ? const Color.fromARGB(150, 3, 198, 255) : const Color(0XFF03DAC6),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: Text(
+              _isPrivate ? 'Private' : 'Public',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
       ],
     );
   }

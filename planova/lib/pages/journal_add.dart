@@ -32,6 +32,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
   Duration _recordedDuration = Duration.zero;
   final List<double> _audioWaveform = [];
   bool _isSaving = false; // Save işlemi devam ederken butonu işlevsiz hale getirmek için değişken
+  bool _isPrivate = false; // Checkbox state for privacy
 
   @override
   void initState() {
@@ -155,6 +156,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
       'imageUrls': imageUrls,
       'audioUrl': audioUrl,
       'waveform': _audioWaveform, // Save the waveform data
+      'isPrivate': _isPrivate, // Save privacy state
     });
 
     setState(() {
@@ -259,7 +261,19 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
               const SizedBox(height: 20),
               _buildTextField(descriptionController, "Description", maxLines: 3),
               const SizedBox(height: 20),
-              _buildDateField(formattedDate),
+              Row(
+                children: [
+                  Expanded(
+                    flex: 4,
+                    child: _buildDateField(formattedDate),
+                  ),
+                  const SizedBox(width: 15),
+                  Expanded(
+                    flex: 2,
+                    child: _buildPrivacyButton(), // Add the privacy button
+                  ),
+                ],
+              ),
               const SizedBox(height: 20),
               _buildImageSelection(),
               const SizedBox(height: 20),
@@ -463,6 +477,35 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
     return CustomPaint(
       size: const Size(double.infinity, 30),
       painter: WaveformPainter(_audioWaveform),
+    );
+  }
+
+  Widget _buildPrivacyButton() {
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("Private",style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w300), textAlign: TextAlign.left,),
+        SizedBox(height: 2),
+        Container(
+          width: double.infinity,
+          child: ElevatedButton(
+            
+            onPressed: () {
+              setState(() {
+                _isPrivate = !_isPrivate;
+              });
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: _isPrivate ? const Color.fromARGB(150, 3, 198, 255) : const Color(0XFF03DAC6),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: Text(_isPrivate ? 'Private' : 'Public', style: TextStyle(color: Colors.white),),
+          ),
+        ),
+      ],
     );
   }
 

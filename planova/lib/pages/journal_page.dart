@@ -33,6 +33,7 @@ class _JournalPageState extends State<JournalPage> {
           stream: FirebaseFirestore.instance
               .collection('journal')
               .where('userId', isEqualTo: user.uid)
+              .where('isPrivate', isEqualTo: false) // Only fetch non-private entries
               .orderBy('date', descending: true)
               .snapshots(),
           builder: (context, snapshot) {

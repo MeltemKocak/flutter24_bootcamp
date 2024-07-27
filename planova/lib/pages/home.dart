@@ -261,6 +261,7 @@ class _NavigationExampleState extends State<NavigationExample> {
           ],
         ),
         actions: [
+          if (currentPageIndex == 2)  
           IconButton(
             icon: const Icon(Icons.lock, color: Colors.white), // Kilit ikonu
             onPressed: () {
@@ -296,11 +297,7 @@ class _NavigationExampleState extends State<NavigationExample> {
               icon: const Icon(Icons.settings_outlined, color: Colors.white),
               onPressed: null,
             ),
-          if (currentPageIndex == 2)
-            IconButton(
-              icon: const Icon(Icons.weekend_outlined, color: Colors.white),
-              onPressed: null,
-            ),
+          
           if (currentPageIndex == 0)
             IconButton(
               icon: const Icon(Icons.filter_list, color: Colors.white),
