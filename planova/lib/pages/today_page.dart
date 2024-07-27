@@ -421,20 +421,7 @@ class _TodayPageState extends State<TodayPage> {
                         ? (isToday
                             ? (bool? value) {
                                 if (value != null) {
-                                  Map<String, dynamic> completedDays =
-                                      Map<String, dynamic>.from(
-                                          data['completed_days'] ?? {});
-                                  if (!completedDays.containsKey(_user!.uid)) {
-                                    completedDays[_user!.uid] = {};
-                                  }
-                                  completedDays[_user!.uid][formattedDate] =
-                                      value;
-                                  FirebaseFirestore.instance
-                                      .collection('habits')
-                                      .doc(task.id)
-                                      .update({
-                                    'completed_days': completedDays,
-                                  });
+                                  _updateCompletionStatus(task, value, formattedDate);
                                 }
                               }
                             : (value) {
@@ -496,6 +483,48 @@ class _TodayPageState extends State<TodayPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _updateCompletionStatus(DocumentSnapshot task, bool value, String formattedDate) async {
+    final data = task.data() as Map<String, dynamic>;
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+
+    Map<String, dynamic> completedDays = (data['completed_days'] ?? {}).cast<String, dynamic>();
+    if (!completedDays.containsKey(userId)) {
+      completedDays[userId] = {};
+    }
+    completedDays[userId][formattedDate] = value;
+
+    await FirebaseFirestore.instance.collection('habits').doc(task.id).update({
+      'completed_days': completedDays,
+    });
+
+    List<dynamic> friends = data['friends'] ?? [];
+    if (friends.isNotEmpty) {
+      for (String friendId in friends.cast<String>()) {
+        QuerySnapshot friendHabits = await FirebaseFirestore.instance
+            .collection('habits')
+            .where('user_id', isEqualTo: friendId)
+            .where('name', isEqualTo: data['name'])
+            .get();
+
+        for (var habit in friendHabits.docs) {
+          Map<String, dynamic> friendCompletedDays = (habit['completed_days'] ?? {}).cast<String, dynamic>();
+
+          if (!friendCompletedDays.containsKey(userId)) {
+            friendCompletedDays[userId] = {};
+          }
+
+          friendCompletedDays[userId][formattedDate] = value;
+
+          await FirebaseFirestore.instance.collection('habits').doc(habit.id).update({
+            'completed_days': friendCompletedDays,
+          });
+        }
+      }
+    }
+
+    setState(() {});
   }
 
   Future<void> _showHabitAlert() async {

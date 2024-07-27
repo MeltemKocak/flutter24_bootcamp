@@ -43,6 +43,7 @@ class _HabitAddPageState extends State<HabitAddPage> {
         'user_id': user.uid,
         'days': _generateHabitDays(),
         'completed_days': {},
+        'friend_email': _friendEmailController.text, // Friend email ekleniyor
         'friends': [],
         'isPending': false,
       };

@@ -92,6 +92,64 @@ class _HabitPageState extends State<HabitPage> {
     return userDoc['name'] ?? 'Unknown User';
   }
 
+  Future<void> _updateCompletionStatus(
+      bool? value, String date, DocumentSnapshot document) async {
+    if (user == null) return;
+
+    Map<String, dynamic>? data = document.data() as Map<String, dynamic>?;
+    if (data == null) return;
+
+    String userId = user!.uid;
+    Map<String, dynamic> completedDays =
+        (data['completed_days'] ?? {}).cast<String, dynamic>();
+
+    if (!completedDays.containsKey(userId)) {
+      completedDays[userId] = {};
+    }
+
+    completedDays[userId][date] = value ?? false;
+
+    await FirebaseFirestore.instance
+        .collection('habits')
+        .doc(document.id)
+        .update({
+      'completed_days': completedDays,
+    });
+
+    List<dynamic> friends = data['friends'] ?? [];
+    if (friends.isNotEmpty) {
+      for (String friendId in friends.cast<String>()) {
+        QuerySnapshot friendHabits = await FirebaseFirestore.instance
+            .collection('habits')
+            .where('user_id', isEqualTo: friendId)
+            .where('name', isEqualTo: data['name'])
+            .get();
+
+        for (var habit in friendHabits.docs) {
+          Map<String, dynamic> friendCompletedDays =
+              (habit['completed_days'] ?? {}).cast<String, dynamic>();
+
+          if (!friendCompletedDays.containsKey(userId)) {
+            friendCompletedDays[userId] = {};
+          }
+
+          friendCompletedDays[userId][date] = value ?? false;
+
+          await FirebaseFirestore.instance
+              .collection('habits')
+              .doc(habit.id)
+              .update({
+            'completed_days': friendCompletedDays,
+          });
+        }
+      }
+    }
+
+    setState(() {
+      data['completed_days'] = completedDays;
+    });
+  }
+
   Widget _buildHabitCard(DocumentSnapshot document, bool isSharedHabit) {
     Map<String, dynamic>? data = document.data() as Map<String, dynamic>?;
 
@@ -175,19 +233,8 @@ class _HabitPageState extends State<HabitPage> {
                       value: isCompleted,
                       onChanged: isTodayHabitDay
                           ? (bool? value) {
-                              setState(() {
-                                if (completedDays[user?.uid] == null) {
-                                  completedDays[user!.uid] = {};
-                                }
-                                completedDays[user?.uid][formattedDate] =
-                                    value ?? false;
-                                FirebaseFirestore.instance
-                                    .collection('habits')
-                                    .doc(document.id)
-                                    .update({
-                                  'completed_days': completedDays,
-                                });
-                              });
+                              _updateCompletionStatus(
+                                  value, formattedDate, document);
                             }
                           : (bool? value) {
                               _showAlertDialog(context);
