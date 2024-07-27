@@ -227,7 +227,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
     );
   }
 
- void _showDatePicker() {
+  void _showDatePicker() {
     showDatePicker(
       builder: (BuildContext context, Widget? child) {
         return Theme(
@@ -259,6 +259,22 @@ class _JournalEditPageState extends State<JournalEditPage> {
   Future<void> _deleteJournalEntry() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
+
+    DocumentSnapshot journalDoc = await FirebaseFirestore.instance
+        .collection('journal')
+        .doc(widget.docId)
+        .get();
+    Map<String, dynamic> journalData = journalDoc.data() as Map<String, dynamic>;
+
+    await FirebaseFirestore.instance.collection('deleted_tasks').add({
+      'name': journalData['name'],
+      'description': journalData['description'],
+      'deletedDate': DateTime.now(),
+      'collection': 'journal',
+      'docId': widget.docId,
+      'userId': user.uid,
+      'data': journalData,
+    });
 
     await FirebaseFirestore.instance.collection('journal').doc(widget.docId).delete();
 

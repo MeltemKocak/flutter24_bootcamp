@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -435,25 +436,20 @@ class _TodayEditPageState extends State<TodayEditPage> {
 
   Widget _buildDaySelectionSection(BuildContext context) {
     return Container(
-      
       alignment: Alignment.center,
       width: MediaQuery.of(context).size.width * 0.8,
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Wrap(
-
         spacing: 8,
         runSpacing: 8,
         alignment: WrapAlignment.center,
         children: List<Widget>.generate(7, (int index) {
-
           return FilterChip(
             label: Text(
               _getDayName(index + 1),
-              
               style: const TextStyle(
                   color: Color.fromARGB(255, 255, 255, 255), fontSize: 18),
             ),
-            
             selected: selectedDays.contains(index + 1),
             onSelected: null, // Günlerin değiştirilemez olmasını sağlamak için
             backgroundColor: const Color(0XFF607D8B),
@@ -761,11 +757,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
       }
     }
 
-    FirebaseFirestore.instance.collection('todos').doc(widget.task.id).update({
-      'taskCompletionStatus': taskCompletionStatus,
-      'taskTimes': taskTimes,
-      'deletedTasks': deletedTasks,
-    }).then((_) {
+    _moveTaskToTrash(widget.task.id, taskCompletionStatus, taskTimes, deletedTasks, deleteAll).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Görev başarıyla silindi.')),
       );
@@ -775,6 +767,42 @@ class _TodayEditPageState extends State<TodayEditPage> {
         SnackBar(content: Text('Görev silinirken hata oluştu: $error')),
       );
     });
+  }
+
+  Future<void> _moveTaskToTrash(
+      String taskId,
+      Map<String, bool> taskCompletionStatus,
+      Map<String, String> taskTimes,
+      List<dynamic> deletedTasks,
+      bool deleteAll) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final taskData = widget.task.data() as Map<String, dynamic>;
+
+      // Silinen görevi 'deleted_tasks' koleksiyonuna taşı
+      await FirebaseFirestore.instance.collection('deleted_tasks').add({
+        'name': taskData['taskName'],
+        'description': taskData['taskDescription'],
+        'deletedDate': DateTime.now(),
+        'collection': 'todos',
+        'docId': taskId,
+        'userId': user.uid,
+        'data': taskData,
+        'deletedTasks': deletedTasks,
+      });
+
+      // Orijinal görevden sadece belirli bir günü silme
+      if (!deleteAll) {
+        Map<String, dynamic> updatedTaskData = Map<String, dynamic>.from(taskData);
+        updatedTaskData['taskCompletionStatus'] = taskCompletionStatus;
+        updatedTaskData['taskTimes'] = taskTimes;
+        updatedTaskData['deletedTasks'] = deletedTasks;
+        await FirebaseFirestore.instance.collection('todos').doc(taskId).update(updatedTaskData);
+      } else {
+        // Orijinal görevden tüm günleri silme
+        await FirebaseFirestore.instance.collection('todos').doc(taskId).delete();
+      }
+    }
   }
 
   String _getDayName(int day) {

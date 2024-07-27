@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="planova"
+        android:label="Planova"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/logo"
         android:enableOnBackInvokedCallback="true"> <!-- Geri tuşu için gerekli -->
 
         <activity

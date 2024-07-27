@@ -84,6 +84,7 @@ dependencies:
   rxdart: any
   provider: any
   flutter_gemini: ^2.0.4
+  shared_preferences: ^2.2.3
 dev_dependencies:
   flutter_test:
     sdk: flutter

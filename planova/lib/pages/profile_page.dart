@@ -6,6 +6,9 @@ import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:planova/pages/today_page.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:planova/utilities/theme.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -22,6 +25,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String? imageUrl;
   final TextEditingController nameController = TextEditingController();
   final TextEditingController bioController = TextEditingController();
+  List<Map<String, dynamic>> habits = [];
 
   @override
   void initState() {
@@ -29,6 +33,7 @@ class _ProfilePageState extends State<ProfilePage> {
     _fetchUser();
     _fetchUserProfile();
     getTaskCountsForToday();
+    _fetchHabits();
   }
 
   Future<void> _fetchUser() async {
@@ -52,6 +57,29 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  Future<void> _fetchHabits() async {
+    if (user != null) {
+      QuerySnapshot habitsSnapshot = await FirebaseFirestore.instance
+          .collection('habits')
+          .where('user_id', isEqualTo: user!.uid)
+          .get();
+
+      habits = habitsSnapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return {
+          'id': doc.id,
+          'name': data['name'],
+          'start_date': data['start_date'],
+          'end_date': data['end_date'],
+          'completed_days': data['completed_days'] ?? {},
+          'target_days': data['target_days'] ?? 0,
+        };
+      }).toList();
+
+      setState(() {});
+    }
+  }
+
   void selectImage() async {
     Uint8List img = await pickImage(ImageSource.gallery);
     setState(() {
@@ -70,7 +98,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void saveProfile() async {
     String name = nameController.text;
     String bio = bioController.text;
-    String email =  user?.email ?? 'Anonymous User';
+    String email = user?.email ?? 'Anonymous User';
     if (_image != null) {
       imageUrl = await _uploadImageToStorage(_image!);
     }
@@ -80,7 +108,7 @@ class _ProfilePageState extends State<ProfilePage> {
       'bio': bio,
       'imageUrl': imageUrl,
       'userId': user!.uid,
-      'userEmail' : email,
+      'userEmail': email,
     });
 
     setState(() {
@@ -90,173 +118,177 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: const Color.fromARGB(255, 30, 30, 30),
-      margin: const EdgeInsets.all(4),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 36),
-            Stack(
-              alignment: Alignment.center,
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        CustomThemeData theme = ThemeColors.getTheme(themeProvider.themeValue);
+        return Card(
+          color: theme.cardBackground,
+          margin: const EdgeInsets.all(4),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CircleAvatar(
-                  radius: 80,
-                  backgroundColor: const Color.fromARGB(255, 3, 218, 198),
-                  child: CircleAvatar(
-                    radius: 78,
-                    backgroundImage: _image != null
-                        ? MemoryImage(_image!)
-                        : (imageUrl != null
-                                ? NetworkImage(imageUrl!)
-                                : const AssetImage(
-                                    'assets/images/default_profile.png'))
-                            as ImageProvider,
+                const SizedBox(height: 36),
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 80,
+                      backgroundColor: theme.activeColor,
+                      child: CircleAvatar(
+                        radius: 78,
+                        backgroundImage: _image != null
+                            ? MemoryImage(_image!)
+                            : (imageUrl != null
+                                    ? NetworkImage(imageUrl!)
+                                    : const AssetImage(
+                                        'assets/images/default_profile.png'))
+                                as ImageProvider,
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: IconButton(
+                        onPressed: selectImage,
+                        icon: Icon(
+                          Icons.add_a_photo,
+                          color: theme.activeColor,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  user?.email ?? 'Anonymous User',
+                  style: TextStyle(
+                    color: theme.dayNumTextColor,
+                    fontSize: 16,
                   ),
                 ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: IconButton(
-                    onPressed: selectImage,
-                    icon: const Icon(
-                      Icons.add_a_photo,
-                      color: Color.fromARGB(255, 3, 218, 198),
+                const SizedBox(height: 24),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      TextField(
+                        controller: nameController,
+                        style: TextStyle(color: theme.dayNumTextColor),
+                        decoration: InputDecoration(
+                          hintText: 'Enter Name',
+                          hintStyle: TextStyle(color: theme.dayNumTextColor.withOpacity(0.7)),
+                          contentPadding: const EdgeInsets.all(10),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: theme.checkBoxBorderColor),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: theme.checkBoxBorderColor),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: theme.activeColor),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: bioController,
+                        style: TextStyle(color: theme.dayNumTextColor),
+                        decoration: InputDecoration(
+                          hintText: 'Enter Bio',
+                          hintStyle: TextStyle(color: theme.dayNumTextColor.withOpacity(0.7)),
+                          contentPadding: const EdgeInsets.all(10),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: theme.checkBoxBorderColor),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: theme.checkBoxBorderColor),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: theme.activeColor),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 35),
+                    ],
+                  ),
+                ),
+                ElevatedButton.icon(
+                  onPressed: saveProfile,
+                  icon: Icon(Icons.save, color: theme.cardBackground),
+                  label: Text(
+                    'Save Profile',
+                    style: TextStyle(color: theme.cardBackground, fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: theme.activeColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(height: 60),
+                Text(
+                  "Daily Task Overview",
+                  style: TextStyle(color: theme.dayNumTextColor, fontWeight: FontWeight.bold, fontSize: 23),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    TaskCard(
+                      title: 'Incomplete Task',
+                      count: _incompleteTasks,
+                    ),
+                    TaskCard(
+                      title: 'Completed Task',
+                      count: _completedTasks,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 40),
+                Text(
+                  "Daily Task Statistics",
+                  style: TextStyle(color: theme.dayNumTextColor, fontWeight: FontWeight.bold, fontSize: 23),
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.85,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(15.0),
+                    color: theme.todoCardBackground,
+                  ),
+                  height: 200,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: BarChart(
+                      _getBarChartData(theme),
                     ),
                   ),
+                ),
+                const SizedBox(height: 40),
+                Text(
+                  "Habits Overview",
+                  style: TextStyle(color: theme.dayNumTextColor, fontWeight: FontWeight.bold, fontSize: 23),
+                ),
+                Column(
+                  children: habits.map((habit) => HabitOverviewCard(habit: habit)).toList(),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            Text(
-              user?.email ?? 'Anonymous User',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-              ),
-            ),
-            const SizedBox(height: 24),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  TextField(
-                    controller: nameController,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      hintText: 'Enter Name',
-                      hintStyle: const TextStyle(color: Colors.white70),
-                      contentPadding: const EdgeInsets.all(10),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide:
-                            const BorderSide(color: Color.fromARGB(200, 3, 218, 198)),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide:
-                            const BorderSide(color: Color.fromARGB(200, 3, 218, 198)),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide:
-                            const BorderSide(color: Color.fromARGB(255, 3, 218, 198)),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: bioController,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      hintText: 'Enter Bio',
-                      hintStyle: const TextStyle(color: Colors.white70),
-                      contentPadding: const EdgeInsets.all(10),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide:
-                            const BorderSide(color: Color.fromARGB(200, 3, 218, 198)),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide:
-                            const BorderSide(color: Color.fromARGB(200, 3, 218, 198)),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide:
-                            const BorderSide(color: Color.fromARGB(255, 3, 218, 198)),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 35),
-                ],
-              ),
-            ),
-            ElevatedButton.icon(
-              onPressed: saveProfile,
-              icon: const Icon(Icons.save,
-                  color: Color.fromARGB(255, 30, 30, 30)),
-              label: const Text(
-                'Save Profile',
-                style: TextStyle(color: Color.fromARGB(230, 30, 30, 30), fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 3, 218, 198),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                textStyle:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-            ),
-            const SizedBox(height: 60),
-            const Text(
-              "Daily Task Overview",
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 23 ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                TaskCard(
-                  title: 'Incomplete Task',
-                  count: _incompleteTasks,
-                ),
-                TaskCard(
-                  title: 'Completed Task' ,
-                  count: _completedTasks,
-                ),
-              ],
-            ),
-            const SizedBox(height: 40),
-            const Text(
-              "Daily Task Statistics",
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 23 ),
-            ),
-            const SizedBox(height: 20),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.85,
-              decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(15.0),
-                color: const Color.fromARGB(255, 42, 42, 42)
-              ),
-              height: 200,
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: BarChart(
-                  _getBarChartData(),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -280,7 +312,7 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
-  BarChartData _getBarChartData() {
+  BarChartData _getBarChartData(CustomThemeData theme) {
     return BarChartData(
       gridData: const FlGridData(show: false),
       titlesData: const FlTitlesData(show: false),
@@ -292,7 +324,7 @@ class _ProfilePageState extends State<ProfilePage> {
           barRods: [
             BarChartRodData(
               toY: _incompleteTasks.toDouble(),
-              color: const Color.fromARGB(70, 3, 218, 198),
+              color: theme.activeColor.withOpacity(0.3),
               width: 20,
               borderRadius: BorderRadius.circular(6),
             ),
@@ -304,7 +336,7 @@ class _ProfilePageState extends State<ProfilePage> {
           barRods: [
             BarChartRodData(
               toY: _completedTasks.toDouble(),
-              color: const Color.fromARGB(200, 3, 218, 198),
+              color: theme.activeColor,
               width: 20,
               borderRadius: BorderRadius.circular(6),
             ),
@@ -316,7 +348,7 @@ class _ProfilePageState extends State<ProfilePage> {
           barRods: [
             BarChartRodData(
               toY: _incompleteTasks.toDouble(),
-              color: const Color.fromARGB(70, 3, 218, 198),
+              color: theme.activeColor.withOpacity(0.3),
               width: 20,
               borderRadius: BorderRadius.circular(6),
             ),
@@ -328,7 +360,7 @@ class _ProfilePageState extends State<ProfilePage> {
           barRods: [
             BarChartRodData(
               toY: _completedTasks.toDouble(),
-              color: const Color.fromARGB(200, 3, 218, 198),
+              color: theme.activeColor,
               width: 20,
               borderRadius: BorderRadius.circular(6),
             ),
@@ -340,7 +372,7 @@ class _ProfilePageState extends State<ProfilePage> {
           barRods: [
             BarChartRodData(
               toY: _incompleteTasks.toDouble(),
-              color: const Color.fromARGB(70, 3, 218, 198),
+              color: theme.activeColor.withOpacity(0.3),
               width: 20,
               borderRadius: BorderRadius.circular(6),
             ),
@@ -359,37 +391,181 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: const Color.fromARGB(255, 42, 42, 42),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
-      ),
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.40,
-        height: 150,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              '$count',
-              style: const TextStyle(
-                fontSize: 48,
-                fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 3, 218, 198),
-              ),
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        CustomThemeData theme = ThemeColors.getTheme(themeProvider.themeValue);
+        return Card(
+          color: theme.todoCardBackground,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.40,
+            height: 150,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '$count',
+                  style: TextStyle(
+                    fontSize: 48,
+                    fontWeight: FontWeight.bold,
+                    color: theme.activeColor,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: theme.dayNumTextColor,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 10),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class HabitOverviewCard extends StatelessWidget {
+  final Map<String, dynamic> habit;
+
+  const HabitOverviewCard({required this.habit});
+
+  @override
+  Widget build(BuildContext context) {
+    final int currentStreak = _calculateCurrentStreak;
+    final int longestStreak = _calculateLongestStreak;
+    final int targetDays = habit['target_days'];
+    final int completedCount = habit['completed_days'].length;
+    double completionDouble = completedCount / targetDays * 100;
+    int completion = completionDouble.isNaN ? 0 : completionDouble.toInt();
+
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        CustomThemeData theme = ThemeColors.getTheme(themeProvider.themeValue);
+        return Card(
+          margin: const EdgeInsets.all(18),
+          color: theme.todoCardBackground,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  habit['name'],
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: theme.dayNumTextColor,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                _buildStatRow('Current Streak', '$currentStreak days', theme),
+                _buildStatRow('Longest Streak', '$longestStreak days', theme),
+                _buildStatRow('Completion', '$completion% ($completedCount days of $targetDays days)', theme),
+                _buildStatRow('Start Date', _formatDate(habit['start_date']), theme),
+                _buildStatRow('End Date', _formatDate(habit['end_date']), theme),
+              ],
             ),
-          ],
-        ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildStatRow(String label, String value, CustomThemeData theme) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: TextStyle(color: theme.dayNumTextColor.withOpacity(0.7)),
+          ),
+          Text(
+            value,
+            style: TextStyle(color: theme.dayNumTextColor),
+          ),
+        ],
       ),
     );
+  }
+
+  String _formatDate(Timestamp timestamp) {
+    DateTime date = timestamp.toDate();
+    return DateFormat('MMM d, yyyy').format(date);
+  }
+
+  int get _calculateCurrentStreak {
+    List<bool> yearProgress = _getStreakProgress();
+    int streak = 0;
+    for (int i = yearProgress.length - 1; i >= 0; i--) {
+      if (yearProgress[i]) {
+        streak++;
+      } else {
+        break;
+      }
+    }
+    return streak;
+  }
+
+  int get _calculateLongestStreak {
+    List<bool> yearProgress = _getYearProgress();
+    int streak = 0;
+    int longest = 0;
+    for (int i = 0; i < yearProgress.length; i++) {
+      if (yearProgress[i]) {
+        streak++;
+        if (streak > longest) {
+          longest = streak;
+        }
+      } else {
+        streak = 0;
+      }
+    }
+    return longest;
+  }
+
+  List<bool> _getStreakProgress() {
+    List<bool> yearProgress = [];
+    DateTime startDate = (habit['start_date'] as Timestamp).toDate();
+    DateTime endDate = DateTime.now();
+    Map<String, dynamic> completedDays = (habit['completed_days'] ?? {}).cast<String, dynamic>();
+
+    for (DateTime date = startDate;
+        date.isBefore(endDate) || date.isAtSameMomentAs(endDate);
+        date = date.add(const Duration(days: 1))) {
+      String formattedDate = DateFormat('yyyy-MM-dd').format(date);
+      Map<String, dynamic> userCompletedDays = (completedDays[FirebaseAuth.instance.currentUser!.uid] ?? {}).cast<String, dynamic>();
+      yearProgress.add(userCompletedDays[formattedDate] ?? false);
+    }
+
+    return yearProgress;
+  }
+
+  List<bool> _getYearProgress() {
+    List<bool> yearProgress = [];
+    DateTime startDate = (habit['start_date'] as Timestamp).toDate();
+    DateTime endDate = (habit['end_date'] as Timestamp).toDate();
+    Map<String, dynamic> completedDays = (habit['completed_days'] ?? {}).cast<String, dynamic>();
+
+    for (DateTime date = startDate;
+        date.isBefore(endDate) || date.isAtSameMomentAs(endDate);
+        date = date.add(const Duration(days: 1))) {
+      String formattedDate = DateFormat('yyyy-MM-dd').format(date);
+      Map<String, dynamic> userCompletedDays = (completedDays[FirebaseAuth.instance.currentUser!.uid] ?? {}).cast<String, dynamic>();
+      yearProgress.add(userCompletedDays[formattedDate] ?? false);
+    }
+
+    return yearProgress;
   }
 }

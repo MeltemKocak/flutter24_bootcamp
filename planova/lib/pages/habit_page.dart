@@ -102,7 +102,8 @@ class _HabitPageState extends State<HabitPage> {
     int targetDays = data['target_days'] ?? 0;
     Map<String, dynamic> completedDays = data['completed_days'] ?? {};
     Map<String, dynamic> userCompletedDates = completedDays[user?.uid] ?? {};
-    int completedCount = userCompletedDates.values.where((value) => value == true).length;
+    int completedCount =
+        userCompletedDates.values.where((value) => value == true).length;
     DateTime today = DateTime.now();
     String formattedDate = DateFormat('yyyy-MM-dd').format(today);
     bool isTodayHabitDay = data['days'][formattedDate] ?? false;
@@ -111,199 +112,216 @@ class _HabitPageState extends State<HabitPage> {
     String displayDate = _findNearestOrTodayDate(data['days']);
     bool isActiveDay = displayDate == formattedDate;
 
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HabitDetailPage(habitId: document.id),
+    return Dismissible(
+      key: Key(document.id),
+      background: Container(
+        color: Colors.red,
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 20.0),
+            child: Icon(Icons.delete, color: Colors.white),
           ),
-        );
-      },
-      child: Card(
-        margin: const EdgeInsets.only(bottom: 16),
-        color: const Color.fromRGBO(42, 46, 55, 1),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        data['name'] ?? 'No name',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 5),
-                      Text(
-                        data['description'] ?? 'No description',
-                        style: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Checkbox(
-                    value: isCompleted,
-                    onChanged: isTodayHabitDay
-                        ? (bool? value) {
-                            setState(() {
-                              if (completedDays[user?.uid] == null) {
-                                completedDays[user!.uid] = {};
-                              }
-                              completedDays[user?.uid][formattedDate] = value ?? false;
-                              FirebaseFirestore.instance
-                                  .collection('habits')
-                                  .doc(document.id)
-                                  .update({
-                                'completed_days': completedDays,
-                              });
-                            });
-                          }
-                        : (bool? value) {
-                            _showAlertDialog(context);
-                          },
-                    checkColor: Colors.white,
-                    activeColor: const Color(0XFF03DAC6),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  const Icon(Icons.list, color: Colors.grey, size: 18),
-                  const SizedBox(width: 5),
-                  Text(
-                    'Progress',
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 14,
-                    ),
-                  ),
-                  Spacer(),
-                  Text(
-                    '$completedCount/$targetDays days',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              LinearProgressIndicator(
-                value: targetDays > 0 ? completedCount / targetDays : 0,
-                backgroundColor: const Color(0XFF1E1E1E),
-                valueColor:
-                    const AlwaysStoppedAnimation<Color>(Color(0XFF03DAC6)),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: const Color.fromRGBO(60, 63, 65, 1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      isActiveDay
-                          ? 'Aktif Gün'
-                          : DateFormat('dd MMM yyyy')
-                              .format(DateTime.parse(displayDate)),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 30),
-                  
-                  if (userProfileImageUrl != null &&
-                      userProfileImageUrl!.isNotEmpty)
+      ),
+      direction: DismissDirection.endToStart,
+      onDismissed: (direction) {
+        _moveHabitToTrash(document);
+      },
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HabitDetailPage(habitId: document.id),
+            ),
+          );
+        },
+        child: Card(
+          color: const Color.fromRGBO(42, 46, 55, 1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CircleAvatar(
-                          radius: 14,
-                          backgroundImage: NetworkImage(userProfileImageUrl!),
-                        ),
                         Text(
-                          userName,
+                          data['name'] ?? 'No name',
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 12,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          data['description'] ?? 'No description',
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 14,
                           ),
                         ),
                       ],
-                    )
-                  else
-                    const CircleAvatar(
-                      radius: 14,
-                      child: Icon(Icons.person, color: Colors.white),
                     ),
-                  if (isSharedHabit)
-                    FutureBuilder<List<Widget>>(
-                      future: Future.wait((data['friends'] as List)
-                          .map<Future<Widget>>((friendId) async {
-                        String? friendImageUrl =
-                            await _getUserProfileImage(friendId);
-                        String friendName = await _getUserName(friendId);
-                        if (friendImageUrl != null &&
-                            friendImageUrl.isNotEmpty) {
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 0.0),
-                            child: Column(
-                              children: [
-                                CircleAvatar(
-                                  radius: 14,
-                                  backgroundImage: NetworkImage(friendImageUrl),
-                                ),
-                                Text(
-                                  friendName,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
+                    Checkbox(
+                      value: isCompleted,
+                      onChanged: isTodayHabitDay
+                          ? (bool? value) {
+                              setState(() {
+                                if (completedDays[user?.uid] == null) {
+                                  completedDays[user!.uid] = {};
+                                }
+                                completedDays[user?.uid][formattedDate] =
+                                    value ?? false;
+                                FirebaseFirestore.instance
+                                    .collection('habits')
+                                    .doc(document.id)
+                                    .update({
+                                  'completed_days': completedDays,
+                                });
+                              });
+                            }
+                          : (bool? value) {
+                              _showAlertDialog(context);
+                            },
+                      checkColor: Colors.white,
+                      activeColor: const Color(0XFF03DAC6),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    const Icon(Icons.list, color: Colors.grey, size: 18),
+                    const SizedBox(width: 5),
+                    Text(
+                      'Progress',
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 14,
+                      ),
+                    ),
+                    Spacer(),
+                    Text(
+                      '$completedCount/$targetDays days',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                LinearProgressIndicator(
+                  value: targetDays > 0 ? completedCount / targetDays : 0,
+                  backgroundColor: const Color(0XFF1E1E1E),
+                  valueColor:
+                      const AlwaysStoppedAnimation<Color>(Color(0XFF03DAC6)),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: const Color.fromRGBO(60, 63, 65, 1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        isActiveDay
+                            ? 'Aktif Gün'
+                            : DateFormat('dd MMM yyyy')
+                                .format(DateTime.parse(displayDate)),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 30),
+                    if (userProfileImageUrl != null &&
+                        userProfileImageUrl!.isNotEmpty)
+                      Column(
+                        children: [
+                          CircleAvatar(
+                            radius: 14,
+                            backgroundImage: NetworkImage(userProfileImageUrl!),
+                          ),
+                          Text(
+                            userName,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
                             ),
+                          ),
+                        ],
+                      )
+                    else
+                      const CircleAvatar(
+                        radius: 14,
+                        child: Icon(Icons.person, color: Colors.white),
+                      ),
+                    if (isSharedHabit)
+                      FutureBuilder<List<Widget>>(
+                        future: Future.wait((data['friends'] as List)
+                            .map<Future<Widget>>((friendId) async {
+                          String? friendImageUrl =
+                              await _getUserProfileImage(friendId);
+                          String friendName = await _getUserName(friendId);
+                          if (friendImageUrl != null &&
+                              friendImageUrl.isNotEmpty) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 0.0),
+                              child: Column(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 14,
+                                    backgroundImage:
+                                        NetworkImage(friendImageUrl),
+                                  ),
+                                  Text(
+                                    friendName,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          } else {
+                            return const SizedBox.shrink();
+                          }
+                        }).toList()),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const CircularProgressIndicator(
+                                color: Color(0XFF03DAC6));
+                          }
+                          if (snapshot.hasError) {
+                            return const SizedBox.shrink();
+                          }
+                          return Row(
+                            children: snapshot.data ?? [],
                           );
-                        } else {
-                          return const SizedBox.shrink();
-                        }
-                      }).toList()),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const CircularProgressIndicator(
-                              color: Color(0XFF03DAC6));
-                        }
-                        if (snapshot.hasError) {
-                          return const SizedBox.shrink();
-                        }
-                        return Row(
-                          children: snapshot.data ?? [],
-                        );
-                      },
-                    ),
-                ],
-              ),
-              const SizedBox(height: 10),
-            ],
+                        },
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+              ],
+            ),
           ),
         ),
       ),
@@ -315,7 +333,6 @@ class _HabitPageState extends State<HabitPage> {
     return Card(
       color: const Color.fromARGB(255, 30, 30, 30),
       shadowColor: Colors.transparent,
-      margin: const EdgeInsets.only(right: 18),
       child: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('habits')
@@ -359,5 +376,26 @@ class _HabitPageState extends State<HabitPage> {
         },
       ),
     );
+  }
+
+  void _moveHabitToTrash(DocumentSnapshot habit) async {
+    final data = habit.data() as Map<String, dynamic>;
+
+    // Silinen alışkanlığı 'deleted_tasks' koleksiyonuna taşı
+    await FirebaseFirestore.instance.collection('deleted_tasks').add({
+      'name': data['name'],
+      'description': data['description'],
+      'deletedDate': DateTime.now(),
+      'collection': 'habits',
+      'docId': habit.id,
+      'userId': user!.uid,
+      'data': data,
+    });
+
+    // Alışkanlığı orijinal koleksiyonundan sil
+    await FirebaseFirestore.instance
+        .collection('habits')
+        .doc(habit.id)
+        .delete();
   }
 }

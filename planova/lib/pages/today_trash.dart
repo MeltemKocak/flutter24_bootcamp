@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 
 class TrashPage extends StatefulWidget {
@@ -49,6 +50,17 @@ class _TrashPageState extends State<TrashPage> {
             ),
           ],
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.delete_forever,
+              color: Color.fromARGB(255, 3, 218, 198),
+            ),
+            onPressed: () {
+              _showDeleteAllConfirmDialog();
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -64,34 +76,21 @@ class _TrashPageState extends State<TrashPage> {
   Widget _buildDeletedTasksList() {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
-          .collection('todos')
-          .where('deletedTasks', isNotEqualTo: [])
+          .collection('deleted_tasks')
+          .where('userId', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
           .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
 
         var tasks = snapshot.data!.docs;
-        List<Map<String, dynamic>> deletedTasks = [];
-
-        for (var task in tasks) {
-          List<dynamic> taskDeletedDates = task['deletedTasks'];
-          for (var date in taskDeletedDates) {
-            deletedTasks.add({
-              'task': task,
-              'deletedDate': date,
-            });
-          }
-        }
 
         return ListView.builder(
-          itemCount: deletedTasks.length,
+          itemCount: tasks.length,
           itemBuilder: (context, index) {
-            var taskData = deletedTasks[index];
-            var task = taskData['task'];
-            var deletedDate = taskData['deletedDate'];
+            var taskData = tasks[index];
 
             return Dismissible(
-              key: Key(task.id + deletedDate),
+              key: Key(taskData.id),
               background: Container(
                 color: const Color(0XFF03DAC6),
                 child: const Align(
@@ -102,11 +101,28 @@ class _TrashPageState extends State<TrashPage> {
                   ),
                 ),
               ),
-              direction: DismissDirection.endToStart,
-              onDismissed: (direction) {
-                _showRestoreBottomSheet(task, deletedDate);
+              secondaryBackground: Container(
+                color: Colors.red,
+                child: const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 20.0),
+                    child: Icon(Icons.delete, color: Colors.white),
+                  ),
+                ),
+              ),
+              direction: DismissDirection.horizontal,
+              confirmDismiss: (direction) async {
+                if (direction == DismissDirection.startToEnd) {
+                  _showDeleteConfirmDialog(taskData);
+                  return false;
+                } else if (direction == DismissDirection.endToStart) {
+                  _restoreTask(taskData);
+                  return false;
+                }
+                return false;
               },
-              child: _buildTaskCard(task, deletedDate),
+              child: _buildTaskCard(taskData),
             );
           },
         );
@@ -114,22 +130,30 @@ class _TrashPageState extends State<TrashPage> {
     );
   }
 
-  Widget _buildTaskCard(DocumentSnapshot task, String deletedDate) {
+  Widget _buildTaskCard(DocumentSnapshot taskData) {
+    var data = taskData.data() as Map<String, dynamic>;
+    var taskName = data['name'];
+    var deletedDate = data['deletedDate'];
+
     return Card(
       color: const Color(0X3F607D8B),
       child: ListTile(
-        title: Text(task['taskName'], style: const TextStyle(color: Colors.white)),
+        title: Text(taskName, style: const TextStyle(color: Colors.white)),
         subtitle: Text(
-          DateFormat('dd/MM/yyyy').format(DateTime.parse(deletedDate)),
+          DateFormat('dd/MM/yyyy').format(deletedDate.toDate()),
           style: const TextStyle(color: Colors.white70),
         ),
         trailing: const Icon(Icons.swipe_left, color: Colors.white54),
-        onTap: () => _showRestoreBottomSheet(task, deletedDate),
+        onTap: () => _showRestoreBottomSheet(taskData),
       ),
     );
   }
 
-  void _showRestoreBottomSheet(DocumentSnapshot task, String deletedDate) {
+  void _showRestoreBottomSheet(DocumentSnapshot taskData) {
+    var data = taskData.data() as Map<String, dynamic>;
+    var taskName = data['name'];
+    var taskDescription = data['description'];
+
     showModalBottomSheet(
       context: context,
       backgroundColor: const Color(0XFF1E1E1E),
@@ -140,9 +164,9 @@ class _TrashPageState extends State<TrashPage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(task['taskName'], style: const TextStyle(color: Colors.white, fontSize: 20)),
+              Text(taskName, style: const TextStyle(color: Colors.white, fontSize: 20)),
               const SizedBox(height: 10),
-              Text(task['taskDescription'], style: const TextStyle(color: Colors.white70)),
+              Text(taskDescription, style: const TextStyle(color: Colors.white70)),
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -153,7 +177,7 @@ class _TrashPageState extends State<TrashPage> {
                     child: const Text('İptal', style: TextStyle(color: Colors.white),),
                   ),
                   ElevatedButton(
-                    onPressed: () => _restoreTask(task, deletedDate),
+                    onPressed: () => _restoreTask(taskData),
                     style: ElevatedButton.styleFrom(backgroundColor: const Color(0XFF03DAC6)),
                     child: const Text('Geri Getir'),
                   ),
@@ -166,25 +190,135 @@ class _TrashPageState extends State<TrashPage> {
     );
   }
 
-  void _restoreTask(DocumentSnapshot task, String deletedDate) {
-    Map<String, bool> taskCompletionStatus =
-        Map<String, bool>.from(task['taskCompletionStatus']);
+  void _showDeleteConfirmDialog(DocumentSnapshot taskData) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: const Color(0xFF1E1E1E),
+          title: const Text(
+            'Sil',
+            style: TextStyle(color: Colors.white),
+          ),
+          content: const Text(
+            'Bu öğeyi kalıcı olarak silmek istediğinize emin misiniz?',
+            style: TextStyle(color: Colors.white70),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text(
+                'İptal',
+                style: TextStyle(color: Color(0xFF03DAC6)),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _deleteTaskPermanently(taskData);
+              },
+              child: const Text(
+                'Sil',
+                style: TextStyle(color: Color(0xFF03DAC6)),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
-    // Görev tamamlanma durumu için tarihi geri yükle
-    taskCompletionStatus[deletedDate] = false;
+  void _showDeleteAllConfirmDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: const Color(0xFF1E1E1E),
+          title: const Text(
+            'Tümünü Sil',
+            style: TextStyle(color: Colors.white),
+          ),
+          content: const Text(
+            'Tüm silinmiş öğeleri kalıcı olarak silmek istediğinize emin misiniz?',
+            style: TextStyle(color: Colors.white70),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text(
+                'İptal',
+                style: TextStyle(color: Color(0xFF03DAC6)),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _deleteAllTasksPermanently();
+              },
+              child: const Text(
+                'Sil',
+                style: TextStyle(color: Color(0xFF03DAC6)),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
-    FirebaseFirestore.instance.collection('todos').doc(task.id).update({
-      'taskCompletionStatus': taskCompletionStatus,
-      'deletedTasks': FieldValue.arrayRemove([deletedDate]),
-    }).then((_) {
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Görev başarıyla geri getirildi')),
-      );
-    }).catchError((error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Hata oluştu: $error')),
-      );
-    });
+  void _deleteTaskPermanently(DocumentSnapshot taskData) async {
+    var data = taskData.data() as Map<String, dynamic>;
+    var docId = data['docId'];
+    var collection = data['collection'];
+
+    // Orijinal koleksiyondan sil
+    await FirebaseFirestore.instance.collection(collection).doc(docId).delete();
+
+    // 'deleted_tasks' koleksiyonundan sil
+    await FirebaseFirestore.instance.collection('deleted_tasks').doc(taskData.id).delete();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Öğe kalıcı olarak silindi')),
+    );
+  }
+
+  void _deleteAllTasksPermanently() async {
+    var snapshot = await FirebaseFirestore.instance
+        .collection('deleted_tasks')
+        .where('userId', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get();
+
+    for (var doc in snapshot.docs) {
+      var data = doc.data() as Map<String, dynamic>;
+      var docId = data['docId'];
+      var collection = data['collection'];
+
+      // Orijinal koleksiyondan sil
+      await FirebaseFirestore.instance.collection(collection).doc(docId).delete();
+
+      // 'deleted_tasks' koleksiyonundan sil
+      await FirebaseFirestore.instance.collection('deleted_tasks').doc(doc.id).delete();
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Tüm silinmiş öğeler kalıcı olarak silindi')),
+    );
+  }
+
+  void _restoreTask(DocumentSnapshot taskData) async {
+    var data = taskData.data() as Map<String, dynamic>;
+    var collection = data['collection'];
+    var docId = data['docId'];
+    var taskDataOriginal = data['data'];
+
+    // Orijinal koleksiyona geri yükle
+    await FirebaseFirestore.instance.collection(collection).doc(docId).set(taskDataOriginal);
+
+    // 'deleted_tasks' koleksiyonundan sil
+    await FirebaseFirestore.instance.collection('deleted_tasks').doc(taskData.id).delete();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Görev başarıyla geri getirildi')),
+    );
   }
 }

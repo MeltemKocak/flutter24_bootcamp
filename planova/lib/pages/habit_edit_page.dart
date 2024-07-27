@@ -119,19 +119,39 @@ class _HabitEditPageState extends State<HabitEditPage> {
   }
 
   void _deleteHabit() async {
-    FirebaseFirestore.instance
-        .collection('habits')
-        .doc(widget.habitId)
-        .delete()
-        .then((value) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const Homes()),
-        (Route<dynamic> route) => false,
-      );
-    }).catchError((error) {
-      // Hata işleme kodları
-    });
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      DocumentSnapshot habitDoc = await FirebaseFirestore.instance
+          .collection('habits')
+          .doc(widget.habitId)
+          .get();
+      Map<String, dynamic> habitData = habitDoc.data() as Map<String, dynamic>;
+
+      await FirebaseFirestore.instance.collection('deleted_tasks').add({
+        'name': habitData['name'],
+        'description': habitData['description'],
+        'deletedDate': DateTime.now(),
+        'collection': 'habits',
+        'docId': widget.habitId,
+        'userId': user.uid,
+        'data': habitData,
+      });
+
+      FirebaseFirestore.instance
+          .collection('habits')
+          .doc(widget.habitId)
+          .delete()
+          .then((value) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const Homes()),
+          (Route<dynamic> route) => false,
+        );
+      }).catchError((error) {
+        // Hata işleme kodları
+      });
+    }
   }
 
   Future<void> _sendNotificationToFriend(String friendId) async {

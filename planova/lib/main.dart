@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:planova/pages/home.dart';
 import 'package:planova/pages/login_page.dart';
 import 'package:planova/pages/welcome_screen.dart';
+import 'package:planova/utilities/theme.dart';
+import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,7 +15,12 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

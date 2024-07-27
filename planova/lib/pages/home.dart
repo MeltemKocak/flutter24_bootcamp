@@ -14,6 +14,8 @@ import 'package:planova/pages/user_stories_page.dart';
 import 'package:planova/pages/welcome_screen.dart';
 import 'package:planova/pages/journal_add.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
+import 'package:provider/provider.dart';
+import 'package:planova/utilities/theme.dart';
 
 class Homes extends StatelessWidget {
   const Homes({super.key});
@@ -25,7 +27,7 @@ class Homes extends StatelessWidget {
         useMaterial3: true,
         navigationBarTheme: NavigationBarThemeData(
           indicatorColor: const Color.fromARGB(255, 3, 218, 198),
-          labelTextStyle: WidgetStateProperty.all(
+          labelTextStyle: MaterialStateProperty.all(
             const TextStyle(color: Colors.white),
           ),
         ),
@@ -47,6 +49,7 @@ class _NavigationExampleState extends State<NavigationExample> {
   late String userId = user!.uid;
   String? userProfileImageUrl;
   String userName = "";
+  String filter = 'All Tasks'; // Default filter
 
   @override
   void initState() {
@@ -91,12 +94,77 @@ class _NavigationExampleState extends State<NavigationExample> {
     );
   }
 
+  void _openFilterDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: const Color(0xFF1E1E1E),
+          title: const Text(
+            'Filtrele',
+            style: TextStyle(color: Colors.white),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                RadioListTile<String>(
+                  title: const Text(
+                    'All Tasks',
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                  value: 'All Tasks',
+                  groupValue: filter,
+                  onChanged: (value) {
+                    setState(() {
+                      filter = value!;
+                      Navigator.of(context).pop();
+                    });
+                  },
+                ),
+                RadioListTile<String>(
+                  title: const Text(
+                    'Favorite Tasks',
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                  value: 'Favorite Tasks',
+                  groupValue: filter,
+                  onChanged: (value) {
+                    setState(() {
+                      filter = value!;
+                      Navigator.of(context).pop();
+                    });
+                  },
+                ),
+                RadioListTile<String>(
+                  title: const Text(
+                    'Habits',
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                  value: 'Habits',
+                  groupValue: filter,
+                  onChanged: (value) {
+                    setState(() {
+                      filter = value!;
+                      Navigator.of(context).pop();
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    CustomThemeData theme = ThemeColors.getTheme(themeProvider.themeValue);
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 30, 30, 30),
+      backgroundColor: theme.cardBackground,
       appBar: AppBar(
         leading: Builder(
           builder: (BuildContext context) {
@@ -120,16 +188,13 @@ class _NavigationExampleState extends State<NavigationExample> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.search, color: Colors.white),
-            onPressed: () {
-              // Implement your search action here
-            },
+            icon: const Icon(Icons.filter_list, color: Colors.white),
+            onPressed: _openFilterDialog,
           ),
           if (currentPageIndex == 0)
             IconButton(
               icon: const Icon(Icons.calendar_today, color: Colors.white),
-              onPressed:
-                  _openCalendarBottomSheet, // Takvim butonuna basıldığında açılır
+              onPressed: _openCalendarBottomSheet,
             ),
           if (currentPageIndex == 1)
             IconButton(
@@ -189,7 +254,7 @@ class _NavigationExampleState extends State<NavigationExample> {
                         } else {
                           return Text(
                             (user?.email) ?? 'Anonymous User',
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 18,
                               overflow: TextOverflow.ellipsis,
@@ -214,8 +279,7 @@ class _NavigationExampleState extends State<NavigationExample> {
             ),
             ListTile(
               leading: const Icon(Icons.check_circle, color: Colors.white),
-              title:
-                  const Text('Habits', style: TextStyle(color: Colors.white)),
+              title: const Text('Habits', style: TextStyle(color: Colors.white)),
               onTap: () {
                 setState(() {
                   currentPageIndex = 1;
@@ -272,6 +336,54 @@ class _NavigationExampleState extends State<NavigationExample> {
                 await Auth().signOut(context: context);
               },
             ),
+            const Divider(color: Colors.grey),
+            ListTile(
+              leading: const Icon(Icons.color_lens, color: Colors.white),
+              title: const Text('Change Theme', style: TextStyle(color: Colors.white)),
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Select Theme'),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListTile(
+                            title: const Text('Theme 1'),
+                            onTap: () {
+                              themeProvider.setThemeValue(1);
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          ListTile(
+                            title: const Text('Theme 2'),
+                            onTap: () {
+                              themeProvider.setThemeValue(2);
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          ListTile(
+                            title: const Text('Theme 3'),
+                            onTap: () {
+                              themeProvider.setThemeValue(3);
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          ListTile(
+                            title: const Text('Theme 4'),
+                            onTap: () {
+                              themeProvider.setThemeValue(4);
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
           ],
         ),
       ),
@@ -307,7 +419,7 @@ class _NavigationExampleState extends State<NavigationExample> {
                   default:
                 }
               },
-              backgroundColor: const Color.fromARGB(255, 3, 218, 198),
+              backgroundColor: theme.activeColor,
               child: const Icon(
                 Icons.add,
                 size: 32,
@@ -316,7 +428,7 @@ class _NavigationExampleState extends State<NavigationExample> {
             ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       bottomNavigationBar: NavigationBar(
-        backgroundColor: const Color.fromARGB(255, 42, 42, 42),
+        backgroundColor: theme.cardBackground,
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         onDestinationSelected: (int index) {
           setState(() {
@@ -388,6 +500,7 @@ class _NavigationExampleState extends State<NavigationExample> {
               _focusDate = selectedDate;
             });
           },
+          filter: filter,
         ),
         const HabitPage(),
         const JournalPage(),
