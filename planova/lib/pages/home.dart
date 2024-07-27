@@ -13,6 +13,7 @@ import 'package:planova/pages/today_trash.dart';
 import 'package:planova/pages/user_stories_page.dart';
 import 'package:planova/pages/welcome_screen.dart';
 import 'package:planova/pages/journal_add.dart';
+import 'package:planova/pages/pin_entry_page.dart'; // Import PinEntryPage
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:provider/provider.dart';
 import 'package:planova/utilities/theme.dart';
@@ -260,44 +261,51 @@ class _NavigationExampleState extends State<NavigationExample> {
           ],
         ),
         actions: [
-          if (currentPageIndex != 0)
           IconButton(
-            icon: const Icon(Icons.book_outlined, color: Colors.white),
-            onPressed: () async {
-              
-              
-                 if (user != null && user.isAnonymous) {
-                    _showAnonymousAlertDialog(context);
-                    return;
-                  }
-                  bool userExists = await _isUserInCollection(userId);
-                  if (!userExists) {
-                    _showProfileAlertDialog(context);
-                    return;
-                  }
+            icon: const Icon(Icons.lock, color: Colors.white), // Kilit ikonu
+            onPressed: () {
               Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PinEntryPage(),
+                ),
+              );
+            },
+          ),
+          if (currentPageIndex != 0)
+            IconButton(
+              icon: const Icon(Icons.book_outlined, color: Colors.white),
+              onPressed: () async {
+                if (user != null && user.isAnonymous) {
+                  _showAnonymousAlertDialog(context);
+                  return;
+                }
+                bool userExists = await _isUserInCollection(userId);
+                if (!userExists) {
+                  _showProfileAlertDialog(context);
+                  return;
+                }
+                Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => UserStoriesPage()),
-                );},
-          ),
+                );
+              },
+            ),
           if (currentPageIndex == 3)
-          IconButton(
-            icon: const Icon(Icons.settings_outlined, color: Colors.white),
-            onPressed: null,
-          ),
-
-           if (currentPageIndex == 2)
-          IconButton(
-            icon: const Icon(Icons.weekend_outlined, color: Colors.white),
-            onPressed: null,
-          ),
-
-
+            IconButton(
+              icon: const Icon(Icons.settings_outlined, color: Colors.white),
+              onPressed: null,
+            ),
+          if (currentPageIndex == 2)
+            IconButton(
+              icon: const Icon(Icons.weekend_outlined, color: Colors.white),
+              onPressed: null,
+            ),
           if (currentPageIndex == 0)
-          IconButton(
-            icon: const Icon(Icons.filter_list, color: Colors.white),
-            onPressed: _openFilterDialog,
-          ),
+            IconButton(
+              icon: const Icon(Icons.filter_list, color: Colors.white),
+              onPressed: _openFilterDialog,
+            ),
           if (currentPageIndex == 0)
             IconButton(
               icon: const Icon(Icons.calendar_today, color: Colors.white),
@@ -421,16 +429,15 @@ class _NavigationExampleState extends State<NavigationExample> {
               title: const Text('User Stories',
                   style: TextStyle(color: Colors.white)),
               onTap: () async {
-
                 if (user != null && user.isAnonymous) {
-                    _showAnonymousAlertDialog(context);
-                    return;
-                  }
-                  bool userExists = await _isUserInCollection(userId);
-                  if (!userExists) {
-                    _showProfileAlertDialog(context);
-                    return;
-                  }
+                  _showAnonymousAlertDialog(context);
+                  return;
+                }
+                bool userExists = await _isUserInCollection(userId);
+                if (!userExists) {
+                  _showProfileAlertDialog(context);
+                  return;
+                }
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => UserStoriesPage()),

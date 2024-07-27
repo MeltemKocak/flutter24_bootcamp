@@ -5,16 +5,15 @@ import 'package:intl/intl.dart';
 import 'package:planova/pages/journal_detail_page.dart';
 import 'package:planova/pages/journal_edit_page.dart';
 import 'package:planova/pages/photo_view_page.dart';
-import 'package:planova/pages/pin_entry_page.dart'; // Import PinEntryPage
 
-class JournalPage extends StatefulWidget {
-  const JournalPage({super.key});
+class PrivateJournalPage extends StatefulWidget {
+  const PrivateJournalPage({super.key});
 
   @override
-  _JournalPageState createState() => _JournalPageState();
+  _PrivateJournalPageState createState() => _PrivateJournalPageState();
 }
 
-class _JournalPageState extends State<JournalPage> {
+class _PrivateJournalPageState extends State<PrivateJournalPage> {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
@@ -26,12 +25,16 @@ class _JournalPageState extends State<JournalPage> {
     }
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Private Journal'),
+        backgroundColor: const Color(0xFF1E1E1E),
+      ),
       backgroundColor: const Color(0xFF1E1E1E),
       body: Card(
         color: const Color(0xFF1E1E1E),
         child: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
-              .collection('journal')
+              .collection('private_journal')
               .where('userId', isEqualTo: user.uid)
               .orderBy('date', descending: true)
               .snapshots(),
@@ -184,13 +187,13 @@ class _JournalPageState extends State<JournalPage> {
       'name': data['name'],
       'description': data['description'],
       'deletedDate': DateTime.now(),
-      'collection': 'journal',
+      'collection': 'private_journal',
       'docId': entry.id,
       'userId': FirebaseAuth.instance.currentUser!.uid,
       'data': data,
     });
 
-    await FirebaseFirestore.instance.collection('journal').doc(entry.id).delete();
+    await FirebaseFirestore.instance.collection('private_journal').doc(entry.id).delete();
   }
 
   void _viewPhoto(String imageUrl) {

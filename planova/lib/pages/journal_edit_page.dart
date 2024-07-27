@@ -209,7 +209,14 @@ class _JournalEditPageState extends State<JournalEditPage> {
       _isSaving = false;
     });
 
-    Navigator.pop(context);
+    Navigator.pop(context, {
+      'name': nameController.text,
+      'description': descriptionController.text,
+      'date': _dateTime,
+      'imageUrls': imageUrls,
+      'audioUrl': audioUrl,
+      'waveform': _audioWaveform,
+    });
   }
 
   Future<String> _uploadImage(XFile image) async {
