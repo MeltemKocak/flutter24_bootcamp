@@ -31,6 +31,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
   double _decibelLevel = 0.0;
   Duration _recordedDuration = Duration.zero;
   final List<double> _audioWaveform = [];
+  bool _isSaving = false; // Save işlemi devam ederken butonu işlevsiz hale getirmek için değişken
 
   @override
   void initState() {
@@ -117,10 +118,18 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
   }
 
   Future<void> _saveJournalEntry() async {
+    if (_isSaving) return; // İşlem devam ederken çık
+    setState(() {
+      _isSaving = true; // İşlem başladığında değiştir
+    });
+
     if (nameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Header cannot be empty')),
       );
+      setState(() {
+        _isSaving = false; // İşlem tamamlandığında değiştir
+      });
       return;
     }
 
@@ -145,6 +154,11 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
       'date': _dateTime,
       'imageUrls': imageUrls,
       'audioUrl': audioUrl,
+      'waveform': _audioWaveform, // Save the waveform data
+    });
+
+    setState(() {
+      _isSaving = false; // İşlem tamamlandığında değiştir
     });
 
     Navigator.pop(context);
@@ -226,7 +240,6 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
       _isPlaying = false;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -463,7 +476,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
             borderRadius: BorderRadius.circular(10),
           ),
         ),
-        onPressed: _saveJournalEntry,
+        onPressed: _isSaving ? null : _saveJournalEntry, // İşlem devam ederken butonu devre dışı bırak
         child: const Text("Save Journal Entry"),
       ),
     );

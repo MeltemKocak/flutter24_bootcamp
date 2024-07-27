@@ -16,6 +16,30 @@ class JournalPage extends StatefulWidget {
 class _JournalPageState extends State<JournalPage> {
   final ap.AudioPlayer _audioPlayer = ap.AudioPlayer();
   String? _currentlyPlayingUrl;
+  Duration _audioDuration = Duration.zero;
+  Duration _currentPosition = Duration.zero;
+  Map<String, Duration> _audioDurations = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _audioPlayer.onDurationChanged.listen((duration) {
+      setState(() {
+        _audioDuration = duration;
+      });
+    });
+    _audioPlayer.onPositionChanged.listen((position) {
+      setState(() {
+        _currentPosition = position;
+      });
+    });
+    _audioPlayer.onPlayerComplete.listen((event) {
+      setState(() {
+        _currentlyPlayingUrl = null;
+        _currentPosition = Duration.zero;
+      });
+    });
+  }
 
   @override
   void dispose() {
@@ -23,18 +47,25 @@ class _JournalPageState extends State<JournalPage> {
     super.dispose();
   }
 
-  void _playAudio(String url) async {
-    if (_currentlyPlayingUrl == url) {
-      await _audioPlayer.stop();
+  Future<void> _initializeAudioDuration(String audioUrl) async {
+    if (!_audioDurations.containsKey(audioUrl)) {
+      final audioPlayer = ap.AudioPlayer();
+      await audioPlayer.setSourceUrl(audioUrl);
+      final duration = await audioPlayer.getDuration();
       setState(() {
-        _currentlyPlayingUrl = null;
+        _audioDurations[audioUrl] = duration ?? Duration.zero;
       });
-    } else {
-      await _audioPlayer.play(ap.UrlSource(url));
-      setState(() {
-        _currentlyPlayingUrl = url;
-      });
+      audioPlayer.dispose();
     }
+  }
+
+  void _playAudio(BuildContext context, String docId, Map<String, dynamic> data) async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => JournalEditPage(docId: docId, data: data, playAudioOnStart: true),
+      ),
+    );
   }
 
   void _viewPhoto(String imageUrl) {
@@ -44,6 +75,13 @@ class _JournalPageState extends State<JournalPage> {
         builder: (context) => PhotoViewPage(imageUrl: imageUrl),
       ),
     );
+  }
+
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final minutes = twoDigits(duration.inMinutes);
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+    return "$minutes:$seconds";
   }
 
   @override
@@ -84,6 +122,11 @@ class _JournalPageState extends State<JournalPage> {
               String formattedDate = DateFormat('d MMMM').format(date);
               List<String> imageUrls = data['imageUrls'] != null ? List<String>.from(data['imageUrls']) : [];
               String? audioUrl = data['audioUrl'];
+              List<double>? waveform = data['waveform'] != null ? List<double>.from(data['waveform']) : null;
+
+              if (audioUrl != null) {
+                _initializeAudioDuration(audioUrl);
+              }
 
               return Dismissible(
                 key: Key(doc.id),
@@ -151,8 +194,7 @@ class _JournalPageState extends State<JournalPage> {
                           style: const TextStyle(
                             color: Colors.white70,
                             fontSize: 16,
-                            fontWeight: FontWeight.w300,
-                          ),
+                            fontWeight: FontWeight.w300),
                         ),
                         const SizedBox(height: 15),
                         if (imageUrls.isNotEmpty)
@@ -182,31 +224,15 @@ class _JournalPageState extends State<JournalPage> {
                           ),
                         const SizedBox(height: 15),
                         if (audioUrl != null && audioUrl.isNotEmpty)
-                          Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: const Color(0X3F607D8B),
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                            child: Row(
-                              children: [
-                                GestureDetector(
-                                  onTap: () => _playAudio(audioUrl),
-                                  child: Container(
-                                    width: 50,
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: _currentlyPlayingUrl == audioUrl ? Colors.red : const Color(0XFF03DAC6),
-                                    ),
-                                    child: Icon(
-                                      _currentlyPlayingUrl == audioUrl ? Icons.stop : Icons.play_arrow,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                                
-                              ],
+                          GestureDetector(
+                            onTap: () => _playAudio(context, doc.id, data),
+                            child: AudioPlayerWidget(
+                              audioUrl: audioUrl,
+                              currentlyPlayingUrl: _currentlyPlayingUrl,
+                              waveform: waveform,
+                              audioDurations: _audioDurations,
+                              currentPosition: _currentPosition,
+                              audioDuration: _audioDuration,
                             ),
                           ),
                       ],
@@ -238,4 +264,117 @@ class _JournalPageState extends State<JournalPage> {
     // Günlüğü orijinal koleksiyonundan sil
     await FirebaseFirestore.instance.collection('journal').doc(entry.id).delete();
   }
+}
+
+class AudioPlayerWidget extends StatelessWidget {
+  final String audioUrl;
+  final String? currentlyPlayingUrl;
+  final List<double>? waveform;
+  final Map<String, Duration> audioDurations;
+  final Duration currentPosition;
+  final Duration audioDuration;
+
+  const AudioPlayerWidget({
+    Key? key,
+    required this.audioUrl,
+    required this.currentlyPlayingUrl,
+    this.waveform,
+    required this.audioDurations,
+    required this.currentPosition,
+    required this.audioDuration,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          height: 50,
+          decoration: BoxDecoration(
+            color: const Color(0X3F607D8B),
+            borderRadius: BorderRadius.circular(25),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: currentlyPlayingUrl == audioUrl ? Colors.red : const Color(0XFF03DAC6),
+                ),
+                child: Icon(
+                  currentlyPlayingUrl == audioUrl ? Icons.stop : Icons.play_arrow,
+                  color: Colors.white,
+                ),
+              ),
+              if (waveform != null)
+                Expanded(
+                  child: CustomPaint(
+                    size: const Size(double.infinity, 30),
+                    painter: WaveformPainter(waveform!),
+                  ),
+                ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Text(
+            audioDurations.containsKey(audioUrl)
+                ? _formatDuration(audioDurations[audioUrl]!)
+                : "Loading...",
+            style: const TextStyle(color: Colors.white, fontSize: 12),
+          ),
+        ),
+        if (currentlyPlayingUrl == audioUrl)
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              "${_formatDuration(currentPosition)} / ${_formatDuration(audioDuration)}",
+              style: const TextStyle(color: Colors.white, fontSize: 12),
+            ),
+          ),
+      ],
+    );
+  }
+
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final minutes = twoDigits(duration.inMinutes);
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+    return "$minutes:$seconds";
+  }
+}
+
+class WaveformPainter extends CustomPainter {
+  final List<double> waveform;
+
+  WaveformPainter(this.waveform);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = const Color(0XFF03DAC6)
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round;
+
+    final maxAmplitude = size.height / 2;
+    final width = size.width;
+    final stepWidth = width / waveform.length;
+
+    for (var i = 0; i < waveform.length; i++) {
+      final x = i * stepWidth;
+      final amplitude = maxAmplitude * (waveform[i] / 100);
+      canvas.drawLine(
+        Offset(x, size.height / 2 - amplitude),
+        Offset(x, size.height / 2 + amplitude),
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

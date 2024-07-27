@@ -14,8 +14,9 @@ import 'package:audioplayers/audioplayers.dart' as ap;
 class JournalEditPage extends StatefulWidget {
   final String docId;
   final Map<String, dynamic> data;
+  final bool playAudioOnStart;
 
-  const JournalEditPage({required this.docId, required this.data, super.key});
+  const JournalEditPage({required this.docId, required this.data, this.playAudioOnStart = false, super.key});
 
   @override
   _JournalEditPageState createState() => _JournalEditPageState();
@@ -35,8 +36,12 @@ class _JournalEditPageState extends State<JournalEditPage> {
   final ap.AudioPlayer _audioPlayer = ap.AudioPlayer();
   double _decibelLevel = 0.0;
   Duration _recordedDuration = Duration.zero;
-  final List<double> _audioWaveform = [];
+  List<double> _audioWaveform = [];
   bool _isPlaying = false;
+  Duration _audioDuration = Duration.zero;
+  Map<String, Duration> _audioDurations = {};
+  bool _isAudioLoading = false;
+  bool _isSaving = false;
 
   @override
   void initState() {
@@ -55,6 +60,31 @@ class _JournalEditPageState extends State<JournalEditPage> {
         _isPlaying = false;
       });
     });
+    if (_existingAudioUrl != null) {
+      _initializeAudioDuration(_existingAudioUrl!);
+      _initializeAudioWaveform();
+      if (widget.playAudioOnStart) {
+        _playAudio();
+      }
+    }
+  }
+
+  Future<void> _initializeAudioWaveform() async {
+    setState(() {
+      _audioWaveform = List<double>.from(widget.data['waveform'] ?? []);
+    });
+  }
+
+  Future<void> _initializeAudioDuration(String audioUrl) async {
+    if (!_audioDurations.containsKey(audioUrl)) {
+      final audioPlayer = ap.AudioPlayer();
+      await audioPlayer.setSourceUrl(audioUrl);
+      final duration = await audioPlayer.getDuration();
+      setState(() {
+        _audioDurations[audioUrl] = duration ?? Duration.zero;
+      });
+      audioPlayer.dispose();
+    }
   }
 
   Future<void> _openRecorder() async {
@@ -137,10 +167,18 @@ class _JournalEditPageState extends State<JournalEditPage> {
   }
 
   Future<void> _saveJournalEntry() async {
+    if (_isSaving) return;
+    setState(() {
+      _isSaving = true;
+    });
+
     if (nameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Header cannot be empty')),
       );
+      setState(() {
+        _isSaving = false;
+      });
       return;
     }
 
@@ -164,6 +202,11 @@ class _JournalEditPageState extends State<JournalEditPage> {
       'date': _dateTime,
       'imageUrls': imageUrls,
       'audioUrl': audioUrl,
+      'waveform': _audioWaveform,
+    });
+
+    setState(() {
+      _isSaving = false;
     });
 
     Navigator.pop(context);
@@ -505,10 +548,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
                     color: _isRecording ? Colors.red : const Color(0XFF03DAC6),
                   ),
                   child: Icon(
-                    _isRecording ? Icons.stop :
-                    _isPlaying ? Icons.stop :
-                    (_recordedFilePath != null || _existingAudioUrl != null) ? Icons.play_arrow : 
-                    Icons.mic,
+                    _isRecording ? Icons.stop : _isPlaying ? Icons.stop : (_recordedFilePath != null || _existingAudioUrl != null) ? Icons.play_arrow : Icons.mic,
                     color: Colors.white,
                   ),
                 ),
@@ -538,7 +578,9 @@ class _JournalEditPageState extends State<JournalEditPage> {
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
-              "Duration: ${_recordedDuration.inMinutes}:${(_recordedDuration.inSeconds % 60).toString().padLeft(2, '0')}",
+              _audioDurations.containsKey(_existingAudioUrl)
+                  ? "Duration: ${_formatDuration(_audioDurations[_existingAudioUrl]!)}"
+                  : "Loading duration...",
               style: const TextStyle(color: Colors.white, fontSize: 12),
             ),
           ),
@@ -556,10 +598,17 @@ class _JournalEditPageState extends State<JournalEditPage> {
             borderRadius: BorderRadius.circular(10),
           ),
         ),
-        onPressed: _saveJournalEntry,
+        onPressed: _isSaving ? null : _saveJournalEntry,
         child: const Text("Save Changes"),
       ),
     );
+  }
+
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final minutes = twoDigits(duration.inMinutes);
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+    return "$minutes:$seconds";
   }
 }
 
