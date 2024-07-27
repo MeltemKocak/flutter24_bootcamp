@@ -5,7 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 class TodayAddSubPage extends StatefulWidget {
-  const TodayAddSubPage({super.key});
+  final DateTime? focusDate;
+
+  const TodayAddSubPage({super.key, required this.focusDate});
 
   @override
   _TodayAddSubPageState createState() => _TodayAddSubPageState();
@@ -543,7 +545,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
     }
 
     Map<String, String> taskTimes = {};
-    DateTime currentDate = DateTime.now();
+    DateTime currentDate = widget.focusDate ?? DateTime.now();
     String taskTime = selectedTime != null ? selectedTime!.format(context) : "boş";
 
     if (selectedDays.isNotEmpty) {

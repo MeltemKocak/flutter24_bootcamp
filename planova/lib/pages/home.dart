@@ -157,6 +157,79 @@ class _NavigationExampleState extends State<NavigationExample> {
     );
   }
 
+  void _showAnonymousAlertDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Uyarı'),
+          content: const Text(
+              'Habit kısmını misafir ile giriş yapmış iken kullanamazsınız. Lütfen hesap oluşturun.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  currentPageIndex = 0;
+                });
+                Navigator.of(context).pop();
+              },
+              child: const Text('İptal'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                      builder: (context) => const WelcomeScreen()),
+                  (Route<dynamic> route) => false,
+                );
+              },
+              child: const Text('Onayla'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showProfileAlertDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Uyarı'),
+          content: const Text(
+              'Bu işleme devam edebilmek için profil oluşturmanız gerekmektedir.\n\n(Bio kısmına yazı ekleyerek story kısmını daha detaylı hale getirebilirsiniz.)'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  currentPageIndex = 0;
+                });
+                Navigator.of(context).pop();
+              },
+              child: const Text('İptal'),
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  currentPageIndex = 3;
+                });
+                Navigator.of(context).pop();
+              },
+              child: const Text('Onayla'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<bool> _isUserInCollection(String userId) async {
+    DocumentSnapshot userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    return userDoc.exists;
+  }
+
   @override
   Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
@@ -187,6 +260,40 @@ class _NavigationExampleState extends State<NavigationExample> {
           ],
         ),
         actions: [
+          if (currentPageIndex != 0)
+          IconButton(
+            icon: const Icon(Icons.book_outlined, color: Colors.white),
+            onPressed: () async {
+              
+              
+                 if (user != null && user.isAnonymous) {
+                    _showAnonymousAlertDialog(context);
+                    return;
+                  }
+                  bool userExists = await _isUserInCollection(userId);
+                  if (!userExists) {
+                    _showProfileAlertDialog(context);
+                    return;
+                  }
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => UserStoriesPage()),
+                );},
+          ),
+          if (currentPageIndex == 3)
+          IconButton(
+            icon: const Icon(Icons.settings_outlined, color: Colors.white),
+            onPressed: null,
+          ),
+
+           if (currentPageIndex == 2)
+          IconButton(
+            icon: const Icon(Icons.weekend_outlined, color: Colors.white),
+            onPressed: null,
+          ),
+
+
+          if (currentPageIndex == 0)
           IconButton(
             icon: const Icon(Icons.filter_list, color: Colors.white),
             onPressed: _openFilterDialog,
@@ -313,7 +420,17 @@ class _NavigationExampleState extends State<NavigationExample> {
               leading: const Icon(Icons.book, color: Colors.white),
               title: const Text('User Stories',
                   style: TextStyle(color: Colors.white)),
-              onTap: () {
+              onTap: () async {
+
+                if (user != null && user.isAnonymous) {
+                    _showAnonymousAlertDialog(context);
+                    return;
+                  }
+                  bool userExists = await _isUserInCollection(userId);
+                  if (!userExists) {
+                    _showProfileAlertDialog(context);
+                    return;
+                  }
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => UserStoriesPage()),
@@ -390,14 +507,25 @@ class _NavigationExampleState extends State<NavigationExample> {
       floatingActionButton: currentPageIndex == 3
           ? null
           : FloatingActionButton(
-              onPressed: () {
+              onPressed: () async {
+                if (currentPageIndex == 1 || currentPageIndex == 2) {
+                  if (user != null && user.isAnonymous) {
+                    _showAnonymousAlertDialog(context);
+                    return;
+                  }
+                  bool userExists = await _isUserInCollection(userId);
+                  if (!userExists) {
+                    _showProfileAlertDialog(context);
+                    return;
+                  }
+                }
                 switch (currentPageIndex) {
                   case 0:
                     showModalBottomSheet(
                       context: context,
                       isScrollControlled: true,
                       backgroundColor: Colors.transparent,
-                      builder: (context) => const TodayAddSubPage(),
+                      builder: (context) => TodayAddSubPage(focusDate: _focusDate),
                     );
                     break;
                   case 1:
