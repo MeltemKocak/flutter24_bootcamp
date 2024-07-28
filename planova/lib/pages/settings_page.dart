@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
 import 'package:flutter/material.dart';
 import 'package:planova/utilities/theme.dart';
 import 'package:provider/provider.dart';
@@ -12,188 +10,190 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E1E1E), // Tema rengi
-        title: null, // Başlığı burada ayarlamayacağız
+        backgroundColor: theme.appBar,
+        title: null,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.white), // iOS stilinde geri ok
+          icon: Icon(Icons.arrow_back_ios, color: theme.loginTextAndBorder),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
-        elevation: 0, // Gölgeyi kaldırmak isterseniz
+        elevation: 0,
         flexibleSpace: Column(
           children: [
-            SizedBox(height: 30), // Geri ok simgesi ile başlık arasındaki boşluk
+            SizedBox(height: 30),
             Expanded(
               child: Center(
                 child: Text(
                   'Settings',
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.normal, color: Colors.white),
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.normal,
+                    color: theme.loginTextAndBorder,
+                  ),
                 ),
               ),
             ),
           ],
         ),
       ),
-      backgroundColor: const Color(0xFF1E1E1E), // Arkaplan rengi
+      backgroundColor: theme.background,
       body: ListView(
         children: [
-          ListTile(
-            title: Text('Profile Settings', style: TextStyle(color: Colors.white)),
-            leading: Icon(Icons.person, color: Colors.white),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ProfileSettingsPage()),
-              );
-            },
+          _buildListTile(
+            context,
+            title: 'Profile Settings',
+            icon: Icons.person,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ProfileSettingsPage()),
+            ),
           ),
-          ListTile(
-            title: Text('Security and Privacy', style: TextStyle(color: Colors.white)),
-            leading: Icon(Icons.security, color: Colors.white),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SecurityPrivacyPage()),
-              );
-            },
+          _buildListTile(
+            context,
+            title: 'Security and Privacy',
+            icon: Icons.security,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SecurityPrivacyPage()),
+            ),
           ),
-          ListTile(
-            title: Text('Notifications', style: TextStyle(color: Colors.white)),
-            leading: Icon(Icons.notifications, color: Colors.white),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => NotificationsPage()),
-              );
-            },
+          _buildListTile(
+            context,
+            title: 'Notifications',
+            icon: Icons.notifications,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => NotificationsPage()),
+            ),
           ),
-          ListTile(
-            title: Text('Themes', style: TextStyle(color: Colors.white)),
-            leading: Icon(Icons.color_lens, color: Colors.white),
-            onTap: () {
-              _showThemeDialog();
-            },
+          _buildListTile(
+            context,
+            title: 'Themes',
+            icon: Icons.color_lens,
+            onTap: _showThemeDialog,
           ),
-          ListTile(
-            title: Text('Language', style: TextStyle(color: Colors.white)),
-            leading: Icon(Icons.language, color: Colors.white),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => LanguagePage()),
-              );
-            },
+          _buildListTile(
+            context,
+            title: 'Language',
+            icon: Icons.language,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => LanguagePage()),
+            ),
           ),
-          ListTile(
-            title: Text('Data and Synchronization', style: TextStyle(color: Colors.white)),
-            leading: Icon(Icons.sync, color: Colors.white),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => DataSyncPage()),
-              );
-            },
+          _buildListTile(
+            context,
+            title: 'Data and Synchronization',
+            icon: Icons.sync,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => DataSyncPage()),
+            ),
           ),
-          ListTile(
-            title: Text('App Settings', style: TextStyle(color: Colors.white)),
-            leading: Icon(Icons.settings, color: Colors.white),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AppSettingsPage()),
-              );
-            },
+          _buildListTile(
+            context,
+            title: 'App Settings',
+            icon: Icons.settings,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AppSettingsPage()),
+            ),
           ),
-          ListTile(
-            title: Text('Feedback and Support', style: TextStyle(color: Colors.white)),
-            leading: Icon(Icons.feedback, color: Colors.white),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => FeedbackSupportPage()),
-              );
-            },
+          _buildListTile(
+            context,
+            title: 'Feedback and Support',
+            icon: Icons.feedback,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => FeedbackSupportPage()),
+            ),
           ),
-          ListTile(
-            title: Text('About', style: TextStyle(color: Colors.white)),
-            leading: Icon(Icons.info, color: Colors.white),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AboutPage()),
-              );
-            },
+          _buildListTile(
+            context,
+            title: 'About',
+            icon: Icons.info,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AboutPage()),
+            ),
           ),
         ],
       ),
     );
   }
 
-void _showThemeDialog() {
+  Widget _buildListTile(
+      BuildContext context, {
+        required String title,
+        required IconData icon,
+        required VoidCallback onTap,
+      }) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
+
+    return ListTile(
+      title: Text(title, style: TextStyle(color: theme.welcomeText)),
+      leading: Icon(icon, color: theme.welcomeText),
+      onTap: onTap,
+    );
+  }
+
+  void _showThemeDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        final theme = Provider.of<ThemeProvider>(context).currentTheme;
         return AlertDialog(
-          backgroundColor: Provider.of<ThemeProvider>(context).currentTheme.background, // Tema rengi
-          title: Text('Select Theme', style: TextStyle(color: Provider.of<ThemeProvider>(context).currentTheme.welcomeText)), // Başlık rengi
+          backgroundColor: theme.background,
+          title: Text('Select Theme', style: TextStyle(color: theme.welcomeText)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ListTile(
-                title: Text('Light Theme', style: TextStyle(color: Provider.of<ThemeProvider>(context).currentTheme.welcomeText)),
-                onTap: () {
-                  Provider.of<ThemeProvider>(context, listen: false).setThemeValue(1);
-                  Navigator.of(context).pop();
-                },
-              ),
-              ListTile(
-                title: Text('Dark Theme', style: TextStyle(color: Provider.of<ThemeProvider>(context).currentTheme.welcomeText)),
-                onTap: () {
-                  Provider.of<ThemeProvider>(context, listen: false).setThemeValue(2);
-                  Navigator.of(context).pop();
-                },
-              ),
-              ListTile(
-                title: Text('Blue Theme', style: TextStyle(color: Provider.of<ThemeProvider>(context).currentTheme.welcomeText)),
-                onTap: () {
-                  Provider.of<ThemeProvider>(context, listen: false).setThemeValue(3);
-                  Navigator.of(context).pop();
-                },
-              ),
-              ListTile(
-                title: Text('Purple Theme', style: TextStyle(color: Provider.of<ThemeProvider>(context).currentTheme.welcomeText)),
-                onTap: () {
-                  Provider.of<ThemeProvider>(context, listen: false).setThemeValue(4);
-                  Navigator.of(context).pop();
-                },
-              ),
+              _buildThemeOption(context, 'Light Theme', 1),
+              _buildThemeOption(context, 'Dark Theme', 2),
+              _buildThemeOption(context, 'Blue Theme', 3),
+              _buildThemeOption(context, 'Purple Theme', 4),
             ],
           ),
         );
       },
     );
   }
+
+  Widget _buildThemeOption(BuildContext context, String themeName, int themeValue) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
+    return ListTile(
+      title: Text(themeName, style: TextStyle(color: theme.welcomeText)),
+      onTap: () {
+        Provider.of<ThemeProvider>(context, listen: false).setThemeValue(themeValue);
+        Navigator.of(context).pop();
+      },
+    );
+  }
 }
+
 class ProfileSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E1E1E),
+        backgroundColor: theme.appBar,
         centerTitle: true,
-        title: Text('Profile Settings', style: TextStyle(color: Colors.white)),
+        title: Text('Profile Settings', style: TextStyle(color: theme.welcomeText)),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.white), // iOS stilinde geri ok
+          icon: Icon(Icons.arrow_back_ios, color: theme.loginTextAndBorder),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
       ),
-      backgroundColor: const Color(0xFF1E1E1E),
-      body: Center(child: Text('Profile Settings Page', style: TextStyle(color: Colors.white))),
+      backgroundColor: theme.background,
+      body: Center(child: Text('Profile Settings Page', style: TextStyle(color: theme.welcomeText))),
     );
   }
 }
@@ -201,20 +201,21 @@ class ProfileSettingsPage extends StatelessWidget {
 class SecurityPrivacyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E1E1E),
+        backgroundColor: theme.appBar,
         centerTitle: true,
-        title: Text('Security and Privacy', style: TextStyle(color: Colors.white)),
+        title: Text('Security and Privacy', style: TextStyle(color: theme.welcomeText)),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.white), // iOS stilinde geri ok
+          icon: Icon(Icons.arrow_back_ios, color: theme.loginTextAndBorder),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
       ),
-      backgroundColor: const Color(0xFF1E1E1E),
-      body: Center(child: Text('Security and Privacy Page', style: TextStyle(color: Colors.white))),
+      backgroundColor: theme.background,
+      body: Center(child: Text('Security and Privacy Page', style: TextStyle(color: theme.welcomeText))),
     );
   }
 }
@@ -222,20 +223,21 @@ class SecurityPrivacyPage extends StatelessWidget {
 class NotificationsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E1E1E),
+        backgroundColor: theme.appBar,
         centerTitle: true,
-        title: Text('Notifications', style: TextStyle(color: Colors.white)),
+        title: Text('Notifications', style: TextStyle(color: theme.welcomeText)),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.white), // iOS stilinde geri ok
+          icon: Icon(Icons.arrow_back_ios, color: theme.loginTextAndBorder),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
       ),
-      backgroundColor: const Color(0xFF1E1E1E),
-      body: Center(child: Text('Notifications Page', style: TextStyle(color: Colors.white))),
+      backgroundColor: theme.background,
+      body: Center(child: Text('Notifications Page', style: TextStyle(color: theme.welcomeText))),
     );
   }
 }
@@ -243,20 +245,21 @@ class NotificationsPage extends StatelessWidget {
 class LanguagePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E1E1E),
+        backgroundColor: theme.appBar,
         centerTitle: true,
-        title: Text('Language', style: TextStyle(color: Colors.white)),
+        title: Text('Language', style: TextStyle(color: theme.welcomeText)),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.white), // iOS stilinde geri ok
+          icon: Icon(Icons.arrow_back_ios, color: theme.loginTextAndBorder),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
       ),
-      backgroundColor: const Color(0xFF1E1E1E),
-      body: Center(child: Text('Language Page', style: TextStyle(color: Colors.white))),
+      backgroundColor: theme.background,
+      body: Center(child: Text('Language Page', style: TextStyle(color: theme.welcomeText))),
     );
   }
 }
@@ -264,20 +267,21 @@ class LanguagePage extends StatelessWidget {
 class DataSyncPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E1E1E),
+        backgroundColor: theme.appBar,
         centerTitle: true,
-        title: Text('Data and Synchronization', style: TextStyle(color: Colors.white)),
+        title: Text('Data and Synchronization', style: TextStyle(color: theme.welcomeText)),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.white), // iOS stilinde geri ok
+          icon: Icon(Icons.arrow_back_ios, color: theme.loginTextAndBorder),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
       ),
-      backgroundColor: const Color(0xFF1E1E1E),
-      body: Center(child: Text('Data and Synchronization Page', style: TextStyle(color: Colors.white))),
+      backgroundColor: theme.background,
+      body: Center(child: Text('Data and Synchronization Page', style: TextStyle(color: theme.welcomeText))),
     );
   }
 }
@@ -285,20 +289,21 @@ class DataSyncPage extends StatelessWidget {
 class AppSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E1E1E),
+        backgroundColor: theme.appBar,
         centerTitle: true,
-        title: Text('App Settings', style: TextStyle(color: Colors.white)),
+        title: Text('App Settings', style: TextStyle(color: theme.welcomeText)),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.white), // iOS stilinde geri ok
+          icon: Icon(Icons.arrow_back_ios, color: theme.loginTextAndBorder),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
       ),
-      backgroundColor: const Color(0xFF1E1E1E),
-      body: Center(child: Text('App Settings Page', style: TextStyle(color: Colors.white))),
+      backgroundColor: theme.background,
+      body: Center(child: Text('App Settings Page', style: TextStyle(color: theme.welcomeText))),
     );
   }
 }
@@ -306,20 +311,21 @@ class AppSettingsPage extends StatelessWidget {
 class FeedbackSupportPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E1E1E),
+        backgroundColor: theme.appBar,
         centerTitle: true,
-        title: Text('Feedback and Support', style: TextStyle(color: Colors.white)),
+        title: Text('Feedback and Support', style: TextStyle(color: theme.welcomeText)),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.white), // iOS stilinde geri ok
+          icon: Icon(Icons.arrow_back_ios, color: theme.loginTextAndBorder),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
       ),
-      backgroundColor: const Color(0xFF1E1E1E),
-      body: Center(child: Text('Feedback and Support Page', style: TextStyle(color: Colors.white))),
+      backgroundColor: theme.background,
+      body: Center(child: Text('Feedback and Support Page', style: TextStyle(color: theme.welcomeText))),
     );
   }
 }
@@ -327,20 +333,21 @@ class FeedbackSupportPage extends StatelessWidget {
 class AboutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E1E1E),
+        backgroundColor: theme.appBar,
         centerTitle: true,
-        title: Text('About', style: TextStyle(color: Colors.white)),
+        title: Text('About', style: TextStyle(color: theme.welcomeText)),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.white), // iOS stilinde geri ok
+          icon: Icon(Icons.arrow_back_ios, color: theme.loginTextAndBorder),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
       ),
-      backgroundColor: const Color(0xFF1E1E1E),
-      body: Center(child: Text('About Page', style: TextStyle(color: Colors.white))),
+      backgroundColor: theme.background,
+      body: Center(child: Text('About Page', style: TextStyle(color: theme.welcomeText))),
     );
   }
 }
