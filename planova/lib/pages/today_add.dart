@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:planova/utilities/theme.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TodayAddSubPage extends StatefulWidget {
   final DateTime? focusDate;
@@ -34,9 +37,11 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
+
     return Container(
-      decoration: const BoxDecoration(
-        color: Color(0XFF1E1E1E),
+      decoration: BoxDecoration(
+        color: theme.background,
         borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
       ),
       child: Stack(
@@ -45,15 +50,15 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _buildColumnVector(context),
+                _buildColumnVector(context, theme),
                 const SizedBox(height: 26),
-                _buildTaskSection(context),
+                _buildTaskSection(context, theme),
                 const SizedBox(height: 14),
-                _buildDescriptionSection(context),
+                _buildDescriptionSection(context, theme),
                 const SizedBox(height: 24),
-                _buildRecurringSection(context),
+                _buildRecurringSection(context, theme),
                 if (selectedRecurrence != 'Tekrar yapma')
-                  _buildDaySelectionSection(context),
+                  _buildDaySelectionSection(context, theme),
                 const SizedBox(height: 150),
               ],
             ),
@@ -61,14 +66,14 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
           Positioned(
             right: 20,
             bottom: 20,
-            child: _buildAiButton(context),
+            child: _buildAiButton(context, theme),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildColumnVector(BuildContext context) {
+  Widget _buildColumnVector(BuildContext context, CustomThemeData theme) {
     return Container(
       width: double.maxFinite,
       margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -87,13 +92,14 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                     width: 20,
                     child: SvgPicture.asset(
                       "assets/images/img_vector.svg",
+                      color: theme.welcomeDot,
                     ),
                   ),
                 ),
-                const Text(
+                Text(
                   "Task",
                   style: TextStyle(
-                    color: Color(0XFFFFFFFF),
+                    color: theme.welcomeText,
                     fontSize: 24,
                     fontFamily: 'Roboto',
                     fontWeight: FontWeight.w300,
@@ -108,6 +114,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                       width: 38,
                       child: SvgPicture.asset(
                         "assets/images/img_check.svg",
+                        color: theme.welcomeDot,
                       ),
                     ),
                   ),
@@ -120,7 +127,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
     );
   }
 
-  Widget _buildTaskSection(BuildContext context) {
+  Widget _buildTaskSection(BuildContext context, CustomThemeData theme) {
     return Container(
       width: double.maxFinite,
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -131,10 +138,10 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
             width: double.maxFinite,
             child: Row(
               children: [
-                const Text(
+                Text(
                   "Task Name",
                   style: TextStyle(
-                    color: Color(0XFFFFFFFF),
+                    color: theme.welcomeText,
                     fontSize: 15,
                     fontFamily: 'Roboto',
                     fontWeight: FontWeight.w300,
@@ -149,6 +156,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                       width: 16,
                       child: SvgPicture.asset(
                         "assets/images/img_task_logo.svg",
+                        color: theme.welcomeDot,
                       ),
                     ),
                   ),
@@ -162,42 +170,42 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
             child: TextFormField(
               controller: nameController,
               focusNode: taskNameFocusNode,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: theme.welcomeText,
               ),
               decoration: InputDecoration(
                 hintText: "Enter Task Name",
-                hintStyle: const TextStyle(
-                  color: Color.fromARGB(150, 255, 255, 255),
+                hintStyle: TextStyle(
+                  color: theme.subText,
                   fontSize: 15,
                   fontFamily: 'Roboto',
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide(
-                    color: isTaskNameEmpty ? Colors.red : Colors.transparent,
+                    color: isTaskNameEmpty ? Colors.red : theme.borderColor,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide(
-                    color: isTaskNameEmpty ? Colors.red : Colors.transparent,
+                    color: isTaskNameEmpty ? Colors.red : theme.borderColor,
                   ),
                 ),
                 disabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide(
-                    color: isTaskNameEmpty ? Colors.red : Colors.transparent,
+                    color: isTaskNameEmpty ? Colors.red : theme.borderColor,
                   ),
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide(
-                    color: isTaskNameEmpty ? Colors.red : Colors.transparent,
+                    color: isTaskNameEmpty ? Colors.red : theme.borderColor,
                   ),
                 ),
                 filled: true,
-                fillColor: const Color(0X3F607D8B),
+                fillColor: theme.toDoCardBackground,
                 isDense: true,
               ),
               textInputAction: TextInputAction.next,
@@ -211,7 +219,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
     );
   }
 
-  Widget _buildDescriptionSection(BuildContext context) {
+  Widget _buildDescriptionSection(BuildContext context, CustomThemeData theme) {
     return Container(
       width: double.maxFinite,
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -223,12 +231,12 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Align(
+                Align(
                   alignment: Alignment.center,
                   child: Text(
                     "Description",
                     style: TextStyle(
-                      color: Color(0XFFFFFFFF),
+                      color: theme.welcomeText,
                       fontSize: 15,
                       fontFamily: 'Roboto',
                       fontWeight: FontWeight.w300,
@@ -242,6 +250,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                     width: 10,
                     child: SvgPicture.asset(
                       "assets/images/img_describtion_logo.svg",
+                      color: theme.welcomeDot,
                     ),
                   ),
                 )
@@ -254,15 +263,15 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
             child: TextFormField(
               controller: edittextController,
               focusNode: descriptionFocusNode,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: theme.welcomeText,
               ),
               textInputAction: TextInputAction.done,
               maxLines: 6,
               decoration: InputDecoration(
                 hintText: "Enter Description",
-                hintStyle: const TextStyle(
-                  color: Color.fromARGB(150, 255, 255, 255),
+                hintStyle: TextStyle(
+                  color: theme.subText,
                   fontSize: 15,
                   fontFamily: 'Roboto',
                 ),
@@ -283,7 +292,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                   borderSide: BorderSide.none,
                 ),
                 filled: true,
-                fillColor: const Color(0X3F607D8B),
+                fillColor: theme.toDoCardBackground,
                 isDense: true,
                 contentPadding: const EdgeInsets.all(12),
               ),
@@ -297,7 +306,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
     );
   }
 
-  Widget _buildRecurringSection(BuildContext context) {
+  Widget _buildRecurringSection(BuildContext context, CustomThemeData theme) {
     return Container(
       width: double.maxFinite,
       margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -314,7 +323,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                     height: 60,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0X3F607D8B),
+                        backgroundColor: theme.toDoCardBackground,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -325,14 +334,14 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Container(
-                            child: const Icon(Icons.refresh_outlined,
-                                color: Colors.white, size: 28),
+                            child: Icon(Icons.refresh_outlined,
+                                color: theme.welcomeText, size: 28),
                           ),
                           const SizedBox(width: 12),
-                          const Text(
+                          Text(
                             "Recurring",
                             style: TextStyle(
-                              color: Color(0XFFFFFFFF),
+                              color: theme.welcomeText,
                               fontSize: 17,
                               fontFamily: 'Roboto',
                             ),
@@ -349,7 +358,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                     height: 60,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0X3F607D8B),
+                        backgroundColor: theme.toDoCardBackground,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -366,13 +375,13 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                           builder: (BuildContext context, Widget? child) {
                             return Theme(
                               data: ThemeData.dark().copyWith(
-                                colorScheme: const ColorScheme.dark(
-                                  primary: Color(0XFF03DAC6),
+                                colorScheme: ColorScheme.dark(
+                                  primary: theme.checkBoxActiveColor,
                                   onPrimary: Colors.black,
-                                  surface: Color(0XFF1E1E1E),
-                                  onSurface: Colors.white,
+                                  surface: theme.background,
+                                  onSurface: theme.welcomeText,
                                 ),
-                                dialogBackgroundColor: const Color(0XFF1E1E1E),
+                                dialogBackgroundColor: theme.background,
                               ),
                               child: child!,
                             );
@@ -387,14 +396,14 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.access_time, color: Colors.white),
+                          Icon(Icons.access_time, color: theme.welcomeText),
                           const SizedBox(width: 12),
                           Text(
                             selectedTime != null
                                 ? selectedTime!.format(context)
                                 : "Select Time",
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: theme.welcomeText,
                               fontSize: 17,
                               fontFamily: 'Roboto',
                             ),
@@ -412,7 +421,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
     );
   }
 
-  Widget _buildDaySelectionSection(BuildContext context) {
+  Widget _buildDaySelectionSection(BuildContext context, CustomThemeData theme) {
     return Container(
       alignment: Alignment.center,
       width: MediaQuery.of(context).size.width * 0.8,
@@ -425,7 +434,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
           return FilterChip(
             label: Text(
               _getDayName(index + 1),
-              style: const TextStyle(color: Colors.white, fontSize: 18),
+              style: TextStyle(color: theme.welcomeText, fontSize: 18),
             ),
             selected: selectedDays.contains(index + 1),
             onSelected: (bool selected) {
@@ -437,15 +446,15 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                 }
               });
             },
-            backgroundColor: const Color(0XFF607D8B),
-            selectedColor: const Color(0XFF03DAC6),
+            backgroundColor: theme.checkBoxBorderColor,
+            selectedColor: theme.checkBoxActiveColor,
           );
         }),
       ),
     );
   }
 
-  Widget _buildAiButton(BuildContext context) {
+  Widget _buildAiButton(BuildContext context, CustomThemeData theme) {
     return GestureDetector(
       onTap: _addTodo,
       child: Container(
@@ -454,32 +463,34 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
         width: 70,
         padding: const EdgeInsets.all(0),
         decoration: BoxDecoration(
-          color: const Color(0XFF03DAC6),
+          color: theme.addButton,
           borderRadius: BorderRadius.circular(16),
         ),
-        child: const SizedBox(
-          child: Icon(Icons.psychology_outlined, color: Colors.white, size: 45),
-        ),
+        child: Icon(Icons.psychology_outlined,
+            color: theme.addButtonIcon, size: 45),
       ),
     );
   }
 
   void _showRecurringDialog() {
+    final theme = Provider.of<ThemeProvider>(context, listen: false).currentTheme;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return Theme(
           data: ThemeData.dark().copyWith(
-            colorScheme: const ColorScheme.dark(
-              primary: Color(0XFF03DAC6),
+            colorScheme: ColorScheme.dark(
+              primary: theme.checkBoxActiveColor,
               onPrimary: Colors.black,
-              surface: Color(0XFF1E1E1E),
-              onSurface: Colors.white,
+              surface: theme.background,
+              onSurface: theme.welcomeText,
             ),
-            dialogBackgroundColor: const Color(0XFF1E1E1E),
+            dialogBackgroundColor: theme.background,
           ),
           child: AlertDialog(
-            title: const Text("Select Recurrence", style: TextStyle(color: Colors.white)),
+            title: Text("Select Recurrence",
+                style: TextStyle(color: theme.welcomeText)),
             content: DropdownButton<String>(
               value: selectedRecurrence,
               items: [
@@ -500,8 +511,8 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                 });
                 Navigator.of(context).pop();
               },
-              dropdownColor: const Color(0XFF1E1E1E),
-              style: const TextStyle(color: Colors.white),
+              dropdownColor: theme.background,
+              style: TextStyle(color: theme.welcomeText),
             ),
           ),
         );
@@ -512,7 +523,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
   void _addTodo() {
     if (_user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('You must be logged in to add a task')),
+        SnackBar(content: Text('You must be logged in to add a task')),
       );
       return;
     }
@@ -523,7 +534,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
 
     if (isTaskNameEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Task name cannot be empty')),
+        SnackBar(content: Text('Task name cannot be empty')),
       );
       return;
     }
@@ -546,7 +557,8 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
 
     Map<String, String> taskTimes = {};
     DateTime currentDate = widget.focusDate ?? DateTime.now();
-    String taskTime = selectedTime != null ? selectedTime!.format(context) : "boş";
+    String taskTime =
+        selectedTime != null ? selectedTime!.format(context) : "boş";
 
     if (selectedDays.isNotEmpty) {
       for (int i = 0; i < recurrenceDays; i++) {
@@ -572,7 +584,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
 
     FirebaseFirestore.instance.collection('todos').add(taskData).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Task added successfully')),
+        SnackBar(content: Text('Task added successfully')),
       );
       Navigator.pop(context);
     }).catchError((error) {

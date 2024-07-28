@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:planova/utilities/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'habit_edit_page.dart';
@@ -51,7 +52,6 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
       'completed_days': completedDays,
     });
 
-    // Eğer arkadaş listesi boş değilse, arkadaşların hesabında da güncelle
     List<dynamic> friends = habitData!['friends'] ?? [];
     if (friends.isNotEmpty) {
       for (String friendId in friends.cast<String>()) {
@@ -97,7 +97,7 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
           builder: (BuildContext context, ScrollController scrollController) {
             return Container(
               decoration: BoxDecoration(
-                color: const Color(0xFF1E1E1E),
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
@@ -133,12 +133,14 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
+
     if (isLoading) {
       return Scaffold(
         appBar: AppBar(
           centerTitle: true,
           title: const Text('Loading...'),
-          backgroundColor: const Color(0xFF1E1E1E),
+          backgroundColor: theme.appBar,
         ),
         body: const Center(
           child: CircularProgressIndicator(color: Color(0XFF03DAC6)),
@@ -151,7 +153,7 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
         appBar: AppBar(
           centerTitle: true,
           title: const Text('Habit Details'),
-          backgroundColor: const Color(0xFF1E1E1E),
+          backgroundColor: theme.appBar,
         ),
         body: const Center(
           child: Text('Habit not found', style: TextStyle(color: Colors.white)),
@@ -178,23 +180,23 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
               centerTitle: true,
               title: Text(
                 provider.habitData['name'] ?? 'Habit Details',
-                style: const TextStyle(
-                  color: Color.fromRGBO(255, 255, 255, 1),
+                style: TextStyle(
+                  color: theme.welcomeText,
                   fontFamily: 'Roboto',
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               leading: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                icon: Icon(Icons.arrow_back, color: theme.welcomeText),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
-              backgroundColor: const Color(0xFF1E1E1E),
+              backgroundColor: theme.appBar,
             ),
             body: Container(
-              color: const Color(0xFF1E1E1E),
+              color: theme.background,
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: SingleChildScrollView(
@@ -246,35 +248,34 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
                       const SizedBox(height: 15),
                       const AllTimeStats(),
                       Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      formattedDate,
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            formattedDate,
+                            style: TextStyle(
+                              color: theme.subText,
+                              fontSize: 14,
+                            ),
+                          ),
+                          Checkbox(
+                            value: isCompleted,
+                            onChanged: isTodayHabitDay
+                                ? (bool? value) {
+                                    _updateCompletionStatus(value, formattedDate);
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) => super.widget));
+                                  }
+                                : (bool? value) {
+                                    _showAlertDialog(context);
+                                  },
+                            checkColor: theme.background,
+                            activeColor: theme.checkBoxActiveColor,
+                          ),
+                        ],
                       ),
-                    ),
-                    Checkbox(
-                      value: isCompleted,
-                      onChanged: isTodayHabitDay
-                          ? (bool? value) {
-                               _updateCompletionStatus(value, formattedDate);
-                              Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (BuildContext context) => super.widget));
-                            }
-                          : (bool? value) {
-                              _showAlertDialog(context);
-                            },
-                      checkColor: Colors.white,
-                      activeColor: const Color(0XFF03DAC6),
-                    ),
-                  ],
-                ),
-
-                      const SizedBox(height:15),
+                      const SizedBox(height: 15),
                       TwoWeekProgress(
                         habitId: widget.habitId,
                         targetDays: targetDays,
@@ -445,7 +446,6 @@ class ProgressPainter extends CustomPainter {
     final paint = Paint();
 
     if (user2Completed == null) {
-      // Arkadaş yoksa tamamen doldur
       paint.color = user1Completed ? const Color.fromRGBO(3, 218, 198, 1) : const Color.fromRGBO(3, 218, 198, 0.2);
       canvas.drawRect(Rect.fromLTRB(0, 0, size.width, size.height), paint);
     } else {
@@ -498,10 +498,8 @@ class HabitProvider with ChangeNotifier {
     DateTime today = DateTime.now();
     int dayOfYear = int.parse(DateFormat("D").format(today));
 
-    // Toggle the current day's status
     yearProgress[dayOfYear - 1] = !yearProgress[dayOfYear - 1];
 
-    // Update twoWeekProgress
     if (yearProgress[dayOfYear - 1]) {
       twoWeekProgress = [true, ...twoWeekProgress.sublist(0, 13)];
     } else {
@@ -510,10 +508,8 @@ class HabitProvider with ChangeNotifier {
       twoWeekProgress = [false, ...twoWeekProgress.sublist(0, 13)];
     }
 
-    // Update monthlyStats
     monthlyStats[today.month - 1][today.day] = yearProgress[dayOfYear - 1];
 
-    // Update ticked status
     ticked = yearProgress[dayOfYear - 1];
     notifyListeners();
   }
@@ -938,7 +934,6 @@ class DayPainter extends CustomPainter {
 
     if (isHabitDay) {
       if (friendCompleted == null) {
-        // Arkadaş yoksa tamamen doldur
         paint.color = userCompleted ? const Color.fromARGB(255, 3, 218, 198) : const Color.fromARGB(80, 3, 218, 198);
         canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
       } else {
@@ -946,15 +941,12 @@ class DayPainter extends CustomPainter {
           paint.color = const Color.fromARGB(255, 96, 125, 139);
           canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
         } else if (isPastDate) {
-          // Kullanıcının yarısı
           paint.color = userCompleted ? const Color.fromARGB(255, 3, 218, 198) : const Color.fromARGB(80, 3, 218, 198);
           canvas.drawRect(Rect.fromLTWH(0, 0, size.width, halfHeight), paint);
 
-          // Arkadaşın yarısı
           paint.color = friendCompleted! ? Colors.white : const Color.fromRGBO(3, 218, 198, 0.2);
           canvas.drawRect(Rect.fromLTWH(0, halfHeight, size.width, halfHeight), paint);
         } else {
-          // Bugün
           paint.color = userCompleted ? const Color.fromARGB(255, 127, 76, 175) : const Color.fromARGB(255, 96, 125, 139);
           canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
         }
@@ -971,10 +963,8 @@ class DayPainter extends CustomPainter {
 
 // Asenkron veri hazırlama fonksiyonu
 Future<Map<String, dynamic>> prepareData() async {
-  // Asenkron işlemler (örneğin, ağ çağrıları)
-  await Future.delayed(Duration(seconds: 2)); // Örnek gecikme
+  await Future.delayed(Duration(seconds: 2)); 
 
-  // Örnek veri
   return {
     'isHabitDay': true,
     'userCompleted': true,
@@ -984,7 +974,6 @@ Future<Map<String, dynamic>> prepareData() async {
   };
 }
 
-// StatefulWidget ile kullanımı
 class MyPainterWidget extends StatefulWidget {
   @override
   _MyPainterWidgetState createState() => _MyPainterWidgetState();

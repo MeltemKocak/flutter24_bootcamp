@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:planova/utilities/theme.dart';
+import 'package:provider/provider.dart';
 
 class PatternSetupPage extends StatefulWidget {
   @override
@@ -56,27 +58,31 @@ class _PatternSetupPageState extends State<PatternSetupPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(_isConfirming ? 'Confirm Pattern' : 'Set Up Pattern'),
-        backgroundColor: const Color(0xFF1E1E1E),
+        backgroundColor: theme.appBar,
       ),
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: theme.background,
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
             Text(
-              _isConfirming ? 'Draw the pattern again to confirm' : 'Draw your pattern',
-              style: TextStyle(color: Colors.white, fontSize: 18),
+              _isConfirming
+                  ? 'Draw the pattern again to confirm'
+                  : 'Draw your pattern',
+              style: TextStyle(color: theme.welcomeText, fontSize: 18),
             ),
             SizedBox(height: 20),
-            _buildPatternLock(),
+            _buildPatternLock(theme),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: _isConfirming ? _setupPattern : _confirmPatternSetup,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0XFF03DAC6),
+                backgroundColor: theme.addButton,
               ),
               child: Text(_isConfirming ? 'Confirm Pattern' : 'Set Up Pattern'),
             ),
@@ -94,7 +100,7 @@ class _PatternSetupPageState extends State<PatternSetupPage> {
     );
   }
 
-  Widget _buildPatternLock() {
+  Widget _buildPatternLock(CustomThemeData theme) {
     return AspectRatio(
       aspectRatio: 1,
       child: GridView.builder(
@@ -111,7 +117,7 @@ class _PatternSetupPageState extends State<PatternSetupPage> {
             child: Container(
               margin: EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: isSelected ? Colors.blue : Colors.grey,
+                color: isSelected ? theme.addButtonIcon : theme.borderColor,
                 shape: BoxShape.circle,
               ),
             ),

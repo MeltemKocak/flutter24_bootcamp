@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
+import 'package:planova/utilities/theme.dart';
+import 'package:provider/provider.dart';
 
 class TrashPage extends StatefulWidget {
   const TrashPage({super.key});
@@ -13,10 +15,12 @@ class TrashPage extends StatefulWidget {
 class _TrashPageState extends State<TrashPage> {
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
+
     return Scaffold(
-      backgroundColor: const Color(0XFF1E1E1E),
+      backgroundColor: theme.background,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: theme.appBar,
         elevation: 0,
         automaticallyImplyLeading: false,
         leading: null,
@@ -29,16 +33,16 @@ class _TrashPageState extends State<TrashPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                  const Icon(
+                  Icon(
                     Icons.arrow_back_ios,
-                    color: Color.fromARGB(255, 3, 218, 198),
+                    color: theme.loginTextAndBorder,
                     size: 28,
                   ),
-                  const Text(
+                  Text(
                     'Geri',
                     style: TextStyle(
                       fontFamily: 'Lato',
-                      color: Color.fromARGB(255, 3, 218, 198),
+                      color: theme.loginTextAndBorder,
                       fontSize: 17,
                     ),
                   ),
@@ -52,12 +56,12 @@ class _TrashPageState extends State<TrashPage> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.delete_forever,
-              color: Color.fromARGB(255, 3, 218, 198),
+              color: theme.loginTextAndBorder,
             ),
             onPressed: () {
-              _showDeleteAllConfirmDialog();
+              _showDeleteAllConfirmDialog(theme);
             },
           ),
         ],
@@ -66,21 +70,21 @@ class _TrashPageState extends State<TrashPage> {
         children: [
           const SizedBox(height: 30),
           Expanded(
-            child: _buildDeletedTasksList(),
+            child: _buildDeletedTasksList(theme),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildDeletedTasksList() {
+  Widget _buildDeletedTasksList(CustomThemeData theme) {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('deleted_tasks')
           .where('userId', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
           .snapshots(),
       builder: (context, snapshot) {
-        if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+        if (!snapshot.hasData) return Center(child: CircularProgressIndicator(color: theme.habitProgress));
 
         var tasks = snapshot.data!.docs;
 
@@ -92,29 +96,29 @@ class _TrashPageState extends State<TrashPage> {
             return Dismissible(
               key: Key(taskData.id),
               background: Container(
-                color: const Color(0XFF03DAC6),
-                child: const Align(
+                color: theme.checkBoxActiveColor,
+                child: Align(
                   alignment: Alignment.centerRight,
                   child: Padding(
                     padding: EdgeInsets.only(right: 20.0),
-                    child: Icon(Icons.restore, color: Colors.white),
+                    child: Icon(Icons.restore, color: theme.welcomeText),
                   ),
                 ),
               ),
               secondaryBackground: Container(
-                color: Colors.red,
-                child: const Align(
+                color: theme.habitIcons,
+                child: Align(
                   alignment: Alignment.centerLeft,
                   child: Padding(
                     padding: EdgeInsets.only(left: 20.0),
-                    child: Icon(Icons.delete, color: Colors.white),
+                    child: Icon(Icons.delete, color: theme.welcomeText),
                   ),
                 ),
               ),
               direction: DismissDirection.horizontal,
               confirmDismiss: (direction) async {
                 if (direction == DismissDirection.startToEnd) {
-                  _showDeleteConfirmDialog(taskData);
+                  _showDeleteConfirmDialog(taskData, theme);
                   return false;
                 } else if (direction == DismissDirection.endToStart) {
                   _restoreTask(taskData);
@@ -122,7 +126,7 @@ class _TrashPageState extends State<TrashPage> {
                 }
                 return false;
               },
-              child: _buildTaskCard(taskData),
+              child: _buildTaskCard(taskData, theme),
             );
           },
         );
@@ -130,33 +134,33 @@ class _TrashPageState extends State<TrashPage> {
     );
   }
 
-  Widget _buildTaskCard(DocumentSnapshot taskData) {
+  Widget _buildTaskCard(DocumentSnapshot taskData, CustomThemeData theme) {
     var data = taskData.data() as Map<String, dynamic>;
     var taskName = data['name'];
     var deletedDate = data['deletedDate'];
 
     return Card(
-      color: const Color(0X3F607D8B),
+      color: theme.toDoCardBackground,
       child: ListTile(
-        title: Text(taskName, style: const TextStyle(color: Colors.white)),
+        title: Text(taskName, style: TextStyle(color: theme.welcomeText)),
         subtitle: Text(
           DateFormat('dd/MM/yyyy').format(deletedDate.toDate()),
-          style: const TextStyle(color: Colors.white70),
+          style: TextStyle(color: theme.subText),
         ),
-        trailing: const Icon(Icons.swipe_left, color: Colors.white54),
-        onTap: () => _showRestoreBottomSheet(taskData),
+        trailing: Icon(Icons.swipe_left, color: theme.welcomeText),
+        onTap: () => _showRestoreBottomSheet(taskData, theme),
       ),
     );
   }
 
-  void _showRestoreBottomSheet(DocumentSnapshot taskData) {
+  void _showRestoreBottomSheet(DocumentSnapshot taskData, CustomThemeData theme) {
     var data = taskData.data() as Map<String, dynamic>;
     var taskName = data['name'];
     var taskDescription = data['description'];
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0XFF1E1E1E),
+      backgroundColor: theme.background,
       builder: (BuildContext context) {
         return Container(
           padding: const EdgeInsets.all(20),
@@ -164,22 +168,22 @@ class _TrashPageState extends State<TrashPage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(taskName, style: const TextStyle(color: Colors.white, fontSize: 20)),
+              Text(taskName, style: TextStyle(color: theme.welcomeText, fontSize: 20)),
               const SizedBox(height: 10),
-              Text(taskDescription, style: const TextStyle(color: Colors.white70)),
+              Text(taskDescription, style: TextStyle(color: theme.subText)),
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.white70),
-                    child: const Text('İptal', style: TextStyle(color: Colors.white),),
+                    style: ElevatedButton.styleFrom(backgroundColor: theme.subText),
+                    child: Text('İptal', style: TextStyle(color: theme.welcomeText)),
                   ),
                   ElevatedButton(
                     onPressed: () => _restoreTask(taskData),
-                    style: ElevatedButton.styleFrom(backgroundColor: const Color(0XFF03DAC6)),
-                    child: const Text('Geri Getir'),
+                    style: ElevatedButton.styleFrom(backgroundColor: theme.checkBoxActiveColor),
+                    child: Text('Geri Getir', style: TextStyle(color: theme.addButtonIcon)),
                   ),
                 ],
               ),
@@ -190,26 +194,26 @@ class _TrashPageState extends State<TrashPage> {
     );
   }
 
-  void _showDeleteConfirmDialog(DocumentSnapshot taskData) {
+  void _showDeleteConfirmDialog(DocumentSnapshot taskData, CustomThemeData theme) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: const Color(0xFF1E1E1E),
-          title: const Text(
+          backgroundColor: theme.background,
+          title: Text(
             'Sil',
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: theme.welcomeText),
           ),
-          content: const Text(
+          content: Text(
             'Bu öğeyi kalıcı olarak silmek istediğinize emin misiniz?',
-            style: TextStyle(color: Colors.white70),
+            style: TextStyle(color: theme.subText),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text(
+              child: Text(
                 'İptal',
-                style: TextStyle(color: Color(0xFF03DAC6)),
+                style: TextStyle(color: theme.checkBoxActiveColor),
               ),
             ),
             TextButton(
@@ -217,9 +221,9 @@ class _TrashPageState extends State<TrashPage> {
                 Navigator.of(context).pop();
                 _deleteTaskPermanently(taskData);
               },
-              child: const Text(
+              child: Text(
                 'Sil',
-                style: TextStyle(color: Color(0xFF03DAC6)),
+                style: TextStyle(color: theme.checkBoxActiveColor),
               ),
             ),
           ],
@@ -228,26 +232,26 @@ class _TrashPageState extends State<TrashPage> {
     );
   }
 
-  void _showDeleteAllConfirmDialog() {
+  void _showDeleteAllConfirmDialog(CustomThemeData theme) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: const Color(0xFF1E1E1E),
-          title: const Text(
+          backgroundColor: theme.background,
+          title: Text(
             'Tümünü Sil',
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: theme.welcomeText),
           ),
-          content: const Text(
+          content: Text(
             'Tüm silinmiş öğeleri kalıcı olarak silmek istediğinize emin misiniz?',
-            style: TextStyle(color: Colors.white70),
+            style: TextStyle(color: theme.subText),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text(
+              child: Text(
                 'İptal',
-                style: TextStyle(color: Color(0xFF03DAC6)),
+                style: TextStyle(color: theme.checkBoxActiveColor),
               ),
             ),
             TextButton(
@@ -255,9 +259,9 @@ class _TrashPageState extends State<TrashPage> {
                 Navigator.of(context).pop();
                 _deleteAllTasksPermanently();
               },
-              child: const Text(
+              child: Text(
                 'Sil',
-                style: TextStyle(color: Color(0xFF03DAC6)),
+                style: TextStyle(color: theme.checkBoxActiveColor),
               ),
             ),
           ],

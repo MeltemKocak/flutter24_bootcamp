@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart' as ap;
 import 'package:planova/pages/journal_edit_page.dart';
 import 'package:planova/pages/photo_view_page.dart';
+import 'package:planova/utilities/theme.dart';
+import 'package:provider/provider.dart'; // Provider eklendi
 
 class JournalDetailPage extends StatefulWidget {
   final String docId;
@@ -101,22 +103,23 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
     List<String> imageUrls = _data['imageUrls'] != null ? List<String>.from(_data['imageUrls']) : [];
     String? audioUrl = _data['audioUrl'];
     String description = descriptionController.text.trim();
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E1E1E),
+        backgroundColor: theme.appBar,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: theme.welcomeText),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.edit, color: Colors.white),
+            icon: Icon(Icons.edit, color: theme.welcomeText),
             onPressed: () async {
               final updatedData = await Navigator.push(
                 context,
@@ -134,33 +137,33 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
           ),
         ],
       ),
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: theme.habitDetailEditBackground,
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildSectionTitle("Journal Header"),
+              _buildSectionTitle("Journal Header", theme),
               const SizedBox(height: 10),
-              _buildHeaderSection(),
+              _buildHeaderSection(theme),
               if (description.isNotEmpty) ...[
                 const SizedBox(height: 20),
-                _buildSectionTitle("Journal Body"),
+                _buildSectionTitle("Journal Body", theme),
                 const SizedBox(height: 10),
-                _buildBodySection(),
+                _buildBodySection(theme),
               ],
               if (imageUrls.isNotEmpty) ...[
                 const SizedBox(height: 20),
-                _buildSectionTitle("Images"),
+                _buildSectionTitle("Images", theme),
                 const SizedBox(height: 10),
-                _buildImageSelection(imageUrls),
+                _buildImageSelection(imageUrls, theme),
               ],
               if (audioUrl != null && audioUrl.isNotEmpty) ...[
                 const SizedBox(height: 20),
-                _buildSectionTitle("Audio"),
+                _buildSectionTitle("Audio", theme),
                 const SizedBox(height: 10),
-                _buildAudioSection(audioUrl),
+                _buildAudioSection(audioUrl, theme),
               ],
             ],
           ),
@@ -169,24 +172,24 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(String title, CustomThemeData theme) {
     return Text(
       title,
-      style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+      style: TextStyle(color: theme.welcomeText, fontSize: 18, fontWeight: FontWeight.bold),
     );
   }
 
-  Widget _buildHeaderSection() {
+  Widget _buildHeaderSection(CustomThemeData theme) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
       decoration: BoxDecoration(
-        color: const Color(0X3F607D8B),
+        color: theme.toDoCardBackground,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Text(
         _data['name'],
-        style: const TextStyle(
-          color: Colors.white,
+        style: TextStyle(
+          color: theme.welcomeText,
           fontSize: 22,
           fontWeight: FontWeight.w700,
         ),
@@ -194,24 +197,24 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
     );
   }
 
-  Widget _buildBodySection() {
+  Widget _buildBodySection(CustomThemeData theme) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
       decoration: BoxDecoration(
-        color: const Color(0X3F607D8B),
+        color: theme.toDoCardBackground,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Text(
         descriptionController.text,
-        style: const TextStyle(
-          color: Colors.white,
+        style: TextStyle(
+          color: theme.welcomeText,
           fontSize: 16,
         ),
       ),
     );
   }
 
-  Widget _buildImageSelection(List<String> imageUrls) {
+  Widget _buildImageSelection(List<String> imageUrls, CustomThemeData theme) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
@@ -224,7 +227,7 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
                 height: 100,
                 margin: const EdgeInsets.only(right: 8),
                 decoration: BoxDecoration(
-                  color: const Color(0X3F607D8B),
+                  color: theme.toDoCardBackground,
                   borderRadius: BorderRadius.circular(10),
                   image: DecorationImage(
                     image: NetworkImage(imageUrl),
@@ -239,7 +242,7 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
     );
   }
 
-  Widget _buildAudioSection(String audioUrl) {
+  Widget _buildAudioSection(String audioUrl, CustomThemeData theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -248,7 +251,7 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
           child: Container(
             height: 60,
             decoration: BoxDecoration(
-              color: const Color(0X3F607D8B),
+              color: theme.toDoCardBackground,
               borderRadius: BorderRadius.circular(25),
             ),
             child: Row(
@@ -258,11 +261,11 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
                   height: 50,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: _currentlyPlayingUrl == audioUrl ? Colors.red : const Color(0XFF03DAC6),
+                    color: _currentlyPlayingUrl == audioUrl ? Colors.red : theme.addButton,
                   ),
                   child: Icon(
                     _currentlyPlayingUrl == audioUrl ? Icons.stop : Icons.play_arrow,
-                    color: Colors.white,
+                    color: theme.welcomeText,
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -270,7 +273,7 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
                   Expanded(
                     child: CustomPaint(
                       size: const Size(double.infinity, 30),
-                      painter: WaveformPainter(_audioWaveform),
+                      painter: WaveformPainter(_audioWaveform, theme.addButton),
                     ),
                   )
                 else
@@ -279,7 +282,7 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
                       _audioDurations.containsKey(audioUrl)
                           ? _formatDuration(_audioDurations[audioUrl]!)
                           : "Loading...",
-                      style: const TextStyle(color: Colors.white, fontSize: 12),
+                      style: TextStyle(color: theme.welcomeText, fontSize: 12),
                     ),
                   ),
               ],
@@ -291,7 +294,7 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
           _audioDurations.containsKey(audioUrl)
               ? _formatDuration(_audioDurations[audioUrl]!)
               : "Loading...",
-          style: const TextStyle(color: Colors.white, fontSize: 12),
+          style: TextStyle(color: theme.welcomeText, fontSize: 12),
         ),
       ],
     );
@@ -300,13 +303,14 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
 
 class WaveformPainter extends CustomPainter {
   final List<double> waveform;
+  final Color color;
 
-  WaveformPainter(this.waveform);
+  WaveformPainter(this.waveform, this.color);
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0XFF03DAC6)
+      ..color = color
       ..strokeWidth = 2
       ..strokeCap = StrokeCap.round;
 

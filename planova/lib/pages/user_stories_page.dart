@@ -4,6 +4,8 @@ import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
+import 'package:planova/utilities/theme.dart';
+import 'package:provider/provider.dart';
 
 class UserStoriesPage extends StatefulWidget {
   @override
@@ -22,7 +24,7 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
   @override
   void initState() {
     super.initState();
-    Gemini.init(apiKey: "AIzaSyCc49bDki47KVW42vhvxMNyi7mO9dy0OLI");
+    Gemini.init(apiKey: "API_KEY");
     gemini = Gemini.instance;
     _fetchUserName();
     _fetchStory();
@@ -156,15 +158,16 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
       firstDate: DateTime(2020),
       lastDate: DateTime(2101),
       builder: (BuildContext context, Widget? child) {
+        final theme = Provider.of<ThemeProvider>(context).currentTheme;
         return Theme(
           data: ThemeData.light().copyWith(
             colorScheme: ColorScheme.light(
-              primary: Color.fromARGB(255, 0, 0, 0),
-              onPrimary: Colors.white,
-              surface: Colors.teal,
-              onSurface: Colors.black,
+              primary: theme.loginTextAndBorder,
+              onPrimary: theme.welcomeText,
+              surface: theme.habitCardBackground,
+              onSurface: theme.welcomeText,
             ),
-            dialogBackgroundColor: Colors.white,
+            dialogBackgroundColor: theme.background,
           ),
           child: child!,
         );
@@ -180,10 +183,11 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
     String formattedDate = DateFormat('d MMMM').format(selectedDate);
 
     return Scaffold(
-      backgroundColor: const Color(0XFF1E1E1E),
+      backgroundColor: theme.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -198,16 +202,16 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                  const Icon(
+                  Icon(
                     Icons.arrow_back_ios,
-                    color: Color.fromARGB(255, 3, 218, 198),
+                    color: theme.loginTextAndBorder,
                     size: 28,
                   ),
-                  const Text(
+                  Text(
                     'Geri',
                     style: TextStyle(
                       fontFamily: 'Lato',
-                      color: Color.fromARGB(255, 3, 218, 198),
+                      color: theme.loginTextAndBorder,
                       fontSize: 17,
                     ),
                   ),
@@ -226,24 +230,28 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () => _selectDate(context),
-              child: Text("Select Date"),
+              style: ElevatedButton.styleFrom(backgroundColor: theme.addButton),
+              child: Text(
+                "Select Date",
+                style: TextStyle(color: theme.addButtonIcon),
+              ),
             ),
             const SizedBox(height: 30),
             if (storyExists)
               for (var story in stories)
-                _buildStoryCard(userName, story['date'], story['story'])
+                _buildStoryCard(userName, story['date'], story['story'], theme)
             else if (selectedDate.isAtSameMomentAs(DateTime.now()) ||
                 selectedDate.isBefore(DateTime.now()))
-              _buildCreateStoryButton()
+              _buildCreateStoryButton(theme)
             else
-              _buildNoStoryMessage(),
+              _buildNoStoryMessage(theme),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildStoryCard(String userName, String date, String story) {
+  Widget _buildStoryCard(String userName, String date, String story, CustomThemeData theme) {
     return Container(
       margin: EdgeInsets.fromLTRB(20, 0, 20, 17),
       decoration: BoxDecoration(
@@ -252,10 +260,10 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
           begin: Alignment(-1, 0),
           end: Alignment(1, 0),
           colors: <Color>[
-            Color(0xFF004942),
-            Color(0xFF005C54),
-            Color.fromARGB(166, 1, 143, 131),
-            Color.fromARGB(136, 3, 218, 197)
+            theme.habitProgress,
+            theme.habitActiveDayText,
+            theme.habitCardBackground,
+            theme.habitDetailEditBackground,
           ],
           stops: <double>[0.331, 0.536, 0.821, 1],
         ),
@@ -275,7 +283,7 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
                   fontWeight: FontWeight.w700,
                   fontSize: 24,
                   height: 1,
-                  color: Color(0xFFFFFFFF),
+                  color: theme.welcomeText,
                 ),
               ),
             ),
@@ -290,7 +298,7 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
                     fontWeight: FontWeight.w500,
                     fontSize: 20,
                     height: 1,
-                    color: Color(0xFFFFFFFF),
+                    color: theme.welcomeText,
                   ),
                 ),
               ),
@@ -304,7 +312,7 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
                   fontWeight: FontWeight.w200,
                   fontSize: 14,
                   height: 1,
-                  color: Color(0xFFFFFFFF),
+                  color: theme.welcomeText,
                 ),
               ),
             ),
@@ -314,14 +322,14 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
     );
   }
 
-  Widget _buildCreateStoryButton() {
+  Widget _buildCreateStoryButton(CustomThemeData theme) {
     return Container(
       alignment: Alignment.center,
       margin: EdgeInsets.only(top: 20),
       child: ElevatedButton(
         onPressed: _isLoading ? null : _sendMessage,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.teal,
+          backgroundColor: theme.addButton,
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
@@ -329,7 +337,7 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
         ),
         child: _isLoading
             ? CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                valueColor: AlwaysStoppedAnimation<Color>(theme.addButtonIcon),
               )
             : Text(
                 'Create Story',
@@ -337,14 +345,14 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
                   'Exo 2',
                   fontWeight: FontWeight.w500,
                   fontSize: 18,
-                  color: Colors.white,
+                  color: theme.addButtonIcon,
                 ),
               ),
       ),
     );
   }
 
-  Widget _buildNoStoryMessage() {
+  Widget _buildNoStoryMessage(CustomThemeData theme) {
     return Container(
       alignment: Alignment.center,
       margin: EdgeInsets.only(top: 20),
@@ -354,7 +362,7 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
           'Exo 2',
           fontWeight: FontWeight.w500,
           fontSize: 18,
-          color: Colors.white,
+          color: theme.welcomeText,
         ),
       ),
     );

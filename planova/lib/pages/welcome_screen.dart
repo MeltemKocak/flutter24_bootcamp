@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:planova/utilities/theme.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:planova/pages/login_subpage.dart';
-
+import 'package:provider/provider.dart';
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
 
@@ -16,9 +17,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
     return SafeArea(
       child: Scaffold(
-        backgroundColor: const Color(0XFF1E1E1E),
+        backgroundColor: theme.background,
         body: Container(
           width: double.maxFinite,
           padding: const EdgeInsets.symmetric(
@@ -44,10 +46,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   activeIndex: sliderIndex,
                   count: 3,
                   axisDirection: Axis.horizontal,
-                  effect: const ScrollingDotsEffect(
+                  effect: ScrollingDotsEffect(
                     spacing: 6,
-                    activeDotColor: Color(0XFF03DAC6),
-                    dotColor: Color(0XFFD9D9D9),
+                    activeDotColor: theme.welcomeDotActive,
+                    dotColor: theme.welcomeDot,
                     dotHeight: 8,
                     dotWidth: 8,
                   ),
@@ -57,12 +59,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             ],
           ),
         ),
-        bottomNavigationBar: _buildGetStartedButton(),
+        bottomNavigationBar: _buildGetStartedButton(theme),
       ),
     );
   }
 
   Widget _buildWelcomeSlider() {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
     return Container(
       width: double.maxFinite,
       margin: const EdgeInsets.symmetric(horizontal: 24),
@@ -83,20 +86,20 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         ),
         itemCount: 3,
         itemBuilder: (context, index, realIndex) {
-          return WelcomesliderItemWidget(index: index);
+          return WelcomesliderItemWidget(index: index, theme: theme);
         },
       ),
     );
   }
 
-  Widget _buildGetStartedButton() {
+  Widget _buildGetStartedButton(CustomThemeData theme) {
     return Container(
       width: double.maxFinite,
       height: 64,
       margin: const EdgeInsets.only(left: 16, right: 16, bottom: 34),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0XFF274F5E),
+          backgroundColor: theme.welcomeButton,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),
@@ -114,10 +117,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             builder: (context) => LoginSubPage(),
           );
         },
-        child: const Text(
+        child: Text(
           "Get started",
           style: TextStyle(
-            color: Color.fromARGB(200, 3, 218, 198),
+            color: theme.loginTextAndBorder,
             fontSize: 16,
             fontFamily: 'Lato',
             fontWeight: FontWeight.w600,
@@ -130,91 +133,92 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
 class WelcomesliderItemWidget extends StatelessWidget {
   final int index;
+  final CustomThemeData theme;
 
-  const WelcomesliderItemWidget({super.key, required this.index});
+  const WelcomesliderItemWidget({super.key, required this.index, required this.theme});
 
   @override
   Widget build(BuildContext context) {
     switch (index) {
       case 0:
-        return const Column(
+        return Column(
           children: [
             Text(
               "Welcome to Planova",
               style: TextStyle(
-                color: Color(0XFFFFFFFF),
+                color: theme.welcomeText,
                 fontSize: 27,
                 fontFamily: 'Lato',
                 fontWeight: FontWeight.w700,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               "Here’s a good place for a brief overview\nof the app or it’s key features.",
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Color(0XFF797979),
+                color: theme.subText,
                 fontSize: 17,
                 fontFamily: 'Lato',
                 fontWeight: FontWeight.w400,
               ),
-            )
+            ),
           ],
         );
       case 1:
-        return const Column(
+        return Column(
           children: [
             Text(
               "Discover Features",
               style: TextStyle(
-                color: Color(0XFFFFFFFF),
+                color: theme.welcomeText,
                 fontSize: 27,
                 fontFamily: 'Lato',
                 fontWeight: FontWeight.w700,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               "Explore the various features\nthat make our app unique.",
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Color(0XFF797979),
+                color: theme.subText,
                 fontSize: 17,
                 fontFamily: 'Lato',
                 fontWeight: FontWeight.w400,
               ),
-            )
+            ),
           ],
         );
       case 2:
-        return const Column(
+        return Column(
           children: [
             Text(
               "Get Started Now",
               style: TextStyle(
-                color: Color(0XFFFFFFFF),
+                color: theme.welcomeText,
                 fontSize: 27,
                 fontFamily: 'Lato',
                 fontWeight: FontWeight.w700,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               "Sign up and start using\nthe app today.",
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Color(0XFF797979),
+                color: theme.subText,
                 fontSize: 17,
                 fontFamily: 'Lato',
                 fontWeight: FontWeight.w400,
               ),
-            )
+            ),
           ],
         );
       default:

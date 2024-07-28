@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
       home: const AuthCheck(),
       routes: {
         '/home': (context) => const Homes(),
-        '/login': (context) => const LoginScreen(),
+        '/login': (context) =>  LoginScreen(),
       },
     );
   }

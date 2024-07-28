@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:planova/utilities/theme.dart';
+import 'package:provider/provider.dart';
 
 class PhotoViewPage extends StatelessWidget {
   final String imageUrl;
@@ -8,11 +10,13 @@ class PhotoViewPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: theme.appBar,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white, size: 30), // Increase the size and change the color
+          icon: Icon(Icons.arrow_back, color: theme.welcomeText, size: 30), // Increase the size and change the color
           onPressed: () {
             Navigator.pop(context);
           },
@@ -21,10 +25,10 @@ class PhotoViewPage extends StatelessWidget {
       body: Center(
         child: PhotoView(
           imageProvider: NetworkImage(imageUrl),
-          backgroundDecoration: const BoxDecoration(color: Colors.black),
+          backgroundDecoration: BoxDecoration(color: theme.background),
         ),
       ),
-      backgroundColor: Colors.black,
+      backgroundColor: theme.background,
     );
   }
 }

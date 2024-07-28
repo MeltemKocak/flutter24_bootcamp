@@ -10,6 +10,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:intl/intl.dart';
 import 'package:planova/pages/photo_view_page.dart';
 import 'package:audioplayers/audioplayers.dart' as ap;
+import 'package:planova/utilities/theme.dart';
+import 'package:provider/provider.dart'; // Provider eklendi
 
 class JournalEditPage extends StatefulWidget {
   final String docId;
@@ -289,13 +291,13 @@ class _JournalEditPageState extends State<JournalEditPage> {
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.dark().copyWith(
-            colorScheme: const ColorScheme.dark(
-              primary: Color(0XFF03DAC6),
-              onPrimary: Colors.white,
-              surface: Color(0XFF1E1E1E),
-              onSurface: Colors.white,
+            colorScheme: ColorScheme.dark(
+              primary: Provider.of<ThemeProvider>(context).currentTheme.focusDayColor,
+              onPrimary: Provider.of<ThemeProvider>(context).currentTheme.calenderNumbers,
+              surface: Provider.of<ThemeProvider>(context).currentTheme.background,
+              onSurface: Provider.of<ThemeProvider>(context).currentTheme.calenderNumbers,
             ),
-            dialogBackgroundColor: const Color(0XFF1E1E1E),
+            dialogBackgroundColor: Provider.of<ThemeProvider>(context).currentTheme.background,
           ),
           child: child!,
         );
@@ -340,47 +342,48 @@ class _JournalEditPageState extends State<JournalEditPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
     String formattedDate = DateFormat('MM/dd/yyyy').format(_dateTime);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E1E1E),
+        backgroundColor: theme.appBar,
         actions: [
           IconButton(
-            icon: const Icon(Icons.delete, color: Colors.white),
+            icon: Icon(Icons.delete, color: theme.calenderNumbers),
             onPressed: _deleteJournalEntry,
           ),
         ],
       ),
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: theme.background,
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildTextField(nameController, "Header"),
+              _buildTextField(nameController, "Header", theme),
               const SizedBox(height: 20),
-              _buildTextField(descriptionController, "Description", maxLines: 3),
+              _buildTextField(descriptionController, "Description", theme, maxLines: 3),
               const SizedBox(height: 20),
               Row(
                 children: [
                   Expanded(
                     flex: 4,
-                    child: _buildDateField(formattedDate),
+                    child: _buildDateField(formattedDate, theme),
                   ),
                   const SizedBox(width: 15),
                   Expanded(
                     flex: 2,
-                    child: _buildPrivacyButton(), // Add the privacy button
+                    child: _buildPrivacyButton(theme), // Add the privacy button
                   ),
                 ],
               ),
               const SizedBox(height: 20),
-              _buildImageSelection(),
+              _buildImageSelection(theme),
               const SizedBox(height: 20),
-              _buildAudioRecordingSection(),
+              _buildAudioRecordingSection(theme),
               const SizedBox(height: 30),
-              _buildConfirmButton(),
+              _buildConfirmButton(theme),
             ],
           ),
         ),
@@ -388,24 +391,24 @@ class _JournalEditPageState extends State<JournalEditPage> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String label, {int maxLines = 1}) {
+  Widget _buildTextField(TextEditingController controller, String label, CustomThemeData theme, {int maxLines = 1}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w300),
+          style: TextStyle(color: theme.welcomeText, fontSize: 15, fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 2),
         TextFormField(
           controller: controller,
-          style: const TextStyle(color: Colors.white),
+          style: TextStyle(color: theme.welcomeText),
           maxLines: maxLines,
           decoration: InputDecoration(
             hintText: "Enter $label",
-            hintStyle: const TextStyle(color: Color.fromARGB(150, 255, 255, 255)),
+            hintStyle: TextStyle(color: theme.borderColor.withOpacity(0.6)),
             filled: true,
-            fillColor: const Color(0X3F607D8B),
+            fillColor: theme.habitCardBackground.withOpacity(0.25),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide.none,
@@ -416,13 +419,13 @@ class _JournalEditPageState extends State<JournalEditPage> {
     );
   }
 
-  Widget _buildDateField(String formattedDate) {
+  Widget _buildDateField(String formattedDate, CustomThemeData theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           "Date",
-          style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w300),
+          style: TextStyle(color: theme.welcomeText, fontSize: 15, fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 2),
         GestureDetector(
@@ -430,7 +433,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             decoration: BoxDecoration(
-              color: const Color(0X3F607D8B),
+              color: theme.habitCardBackground.withOpacity(0.25),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
@@ -438,9 +441,9 @@ class _JournalEditPageState extends State<JournalEditPage> {
               children: [
                 Text(
                   formattedDate,
-                  style: const TextStyle(color: Colors.white),
+                  style: TextStyle(color: theme.welcomeText),
                 ),
-                const Icon(Icons.calendar_today, color: Colors.white),
+                Icon(Icons.calendar_today, color: theme.welcomeText),
               ],
             ),
           ),
@@ -449,13 +452,13 @@ class _JournalEditPageState extends State<JournalEditPage> {
     );
   }
 
-  Widget _buildImageSelection() {
+  Widget _buildImageSelection(CustomThemeData theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           "Images",
-          style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w300),
+          style: TextStyle(color: theme.welcomeText, fontSize: 15, fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 2),
         SingleChildScrollView(
@@ -463,10 +466,10 @@ class _JournalEditPageState extends State<JournalEditPage> {
           child: Row(
             children: [
               ..._newImages.asMap().entries.map((entry) {
-                return _buildImageThumbnail(entry.value.path, () => _removeImage(entry.key, false));
+                return _buildImageThumbnail(entry.value.path, () => _removeImage(entry.key, false), theme);
               }),
               ..._existingImageUrls.asMap().entries.map((entry) {
-                return _buildImageThumbnail(entry.value, () => _removeImage(entry.key, true), isNetwork: true);
+                return _buildImageThumbnail(entry.value, () => _removeImage(entry.key, true), theme, isNetwork: true);
               }),
               GestureDetector(
                 onTap: _pickImage,
@@ -474,12 +477,12 @@ class _JournalEditPageState extends State<JournalEditPage> {
                   width: 60,
                   height: 60,
                   decoration: BoxDecoration(
-                    color: const Color(0X3F607D8B),
+                    color: theme.habitCardBackground.withOpacity(0.25),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.add,
-                    color: Colors.white,
+                    color: theme.welcomeText,
                   ),
                 ),
               ),
@@ -490,7 +493,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
     );
   }
 
-  Widget _buildImageThumbnail(String path, VoidCallback onRemove, {bool isNetwork = false}) {
+  Widget _buildImageThumbnail(String path, VoidCallback onRemove, CustomThemeData theme, {bool isNetwork = false}) {
     return Padding(
       padding: const EdgeInsets.only(right: 8.0),
       child: Stack(
@@ -520,14 +523,14 @@ class _JournalEditPageState extends State<JournalEditPage> {
             child: GestureDetector(
               onTap: onRemove,
               child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.red,
+                decoration: BoxDecoration(
+                  color: theme.checkBoxActiveColor,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.close,
                   size: 18,
-                  color: Colors.white,
+                  color: theme.welcomeText,
                 ),
               ),
             ),
@@ -537,19 +540,19 @@ class _JournalEditPageState extends State<JournalEditPage> {
     );
   }
 
-  Widget _buildAudioRecordingSection() {
+  Widget _buildAudioRecordingSection(CustomThemeData theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           "Audio",
-          style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w300),
+          style: TextStyle(color: theme.welcomeText, fontSize: 15, fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 10),
         Container(
           height: 50,
           decoration: BoxDecoration(
-            color: const Color(0X3F607D8B),
+            color: theme.habitCardBackground.withOpacity(0.25),
             borderRadius: BorderRadius.circular(25),
           ),
           child: Row(
@@ -571,11 +574,11 @@ class _JournalEditPageState extends State<JournalEditPage> {
                   height: 50,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: _isRecording ? Colors.red : const Color(0XFF03DAC6),
+                    color: _isRecording ? theme.checkBoxActiveColor : theme.addButton,
                   ),
                   child: Icon(
                     _isRecording ? Icons.stop : _isPlaying ? Icons.stop : (_recordedFilePath != null || _existingAudioUrl != null) ? Icons.play_arrow : Icons.mic,
-                    color: Colors.white,
+                    color: theme.welcomeText,
                   ),
                 ),
               ),
@@ -583,18 +586,18 @@ class _JournalEditPageState extends State<JournalEditPage> {
                 child: _isRecording || _recordedFilePath != null || _existingAudioUrl != null
                     ? CustomPaint(
                         size: const Size(double.infinity, 30),
-                        painter: WaveformPainter(_audioWaveform),
+                        painter: WaveformPainter(_audioWaveform, theme.addButton),
                       )
-                    : const Center(
+                    : Center(
                         child: Text(
                           "Tap to record",
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(color: theme.welcomeText),
                         ),
                       ),
               ),
               if ((_recordedFilePath != null || _existingAudioUrl != null) && !_isRecording)
                 IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.white),
+                  icon: Icon(Icons.delete, color: theme.welcomeText),
                   onPressed: _removeAudio,
                 ),
             ],
@@ -607,20 +610,20 @@ class _JournalEditPageState extends State<JournalEditPage> {
               _audioDurations.containsKey(_existingAudioUrl)
                   ? "Duration: ${_formatDuration(_audioDurations[_existingAudioUrl]!)}"
                   : "Loading duration...",
-              style: const TextStyle(color: Colors.white, fontSize: 12),
+              style: TextStyle(color: theme.welcomeText, fontSize: 12),
             ),
           ),
       ],
     );
   }
 
-  Widget _buildPrivacyButton() {
+  Widget _buildPrivacyButton(CustomThemeData theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           "Private",
-          style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w300),
+          style: TextStyle(color: theme.welcomeText, fontSize: 15, fontWeight: FontWeight.w300),
           textAlign: TextAlign.left,
         ),
         SizedBox(height: 2),
@@ -633,14 +636,14 @@ class _JournalEditPageState extends State<JournalEditPage> {
               });
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: _isPrivate ? const Color.fromARGB(150, 3, 198, 255) : const Color(0XFF03DAC6),
+              backgroundColor: _isPrivate ? theme.checkBoxActiveColor.withOpacity(0.6) : theme.addButton,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
             child: Text(
               _isPrivate ? 'Private' : 'Public',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: theme.welcomeText),
             ),
           ),
         ),
@@ -648,18 +651,18 @@ class _JournalEditPageState extends State<JournalEditPage> {
     );
   }
 
-  Widget _buildConfirmButton() {
+  Widget _buildConfirmButton(CustomThemeData theme) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0XFF03DAC6),
+          backgroundColor: theme.addButton,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
         ),
         onPressed: _isSaving ? null : _saveJournalEntry,
-        child: const Text("Save Changes"),
+        child: Text("Save Changes", style: TextStyle(color: theme.welcomeText)),
       ),
     );
   }
@@ -674,13 +677,14 @@ class _JournalEditPageState extends State<JournalEditPage> {
 
 class WaveformPainter extends CustomPainter {
   final List<double> waveform;
+  final Color color; // Color parametresi eklendi
 
-  WaveformPainter(this.waveform);
+  WaveformPainter(this.waveform, this.color);
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0XFF03DAC6)
+      ..color = color
       ..strokeWidth = 2
       ..strokeCap = StrokeCap.round;
 

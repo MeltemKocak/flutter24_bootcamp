@@ -1,32 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:planova/utilities/theme.dart';
+import 'package:provider/provider.dart';
 import 'package:planova/utilities/auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Firebase Auth Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, child) {
+          return MaterialApp(
+            title: 'Firebase Auth Demo',
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+            ),
+            home: LoginScreen(),
+          );
+        },
       ),
-      home: const LoginScreen(),
     );
   }
 }
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
-
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -83,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() {
           isPasswordWrong = true;
         });
-        showErrorMessage('Sifre yanlıs. Lütfen tekrar deneyin.');
+        showErrorMessage('Şifre yanlış. Lütfen tekrar deneyin.');
       }
     } else {
       try {
@@ -99,27 +104,30 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void showErrorMessage(String message) {
+    final theme = Provider.of<ThemeProvider>(context, listen: false).currentTheme;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.error, color: Colors.white),
-            const SizedBox(width: 10),
+            Icon(Icons.error, color: theme.welcomeText),
+            SizedBox(width: 10),
             Expanded(child: Text(message)),
           ],
         ),
-        backgroundColor: Colors.red,
+        backgroundColor: theme.checkBoxActiveColor,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        duration: const Duration(seconds: 3),
+        duration: Duration(seconds: 3),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -136,16 +144,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                    const Icon(
+                    Icon(
                       Icons.arrow_back_ios,
-                      color: Color.fromARGB(255, 3, 218, 198),
+                      color: theme.welcomeDotActive,
                       size: 28,
                     ),
-                    const Text(
+                    Text(
                       'Geri',
                       style: TextStyle(
                         fontFamily: 'Lato',
-                        color: Color.fromARGB(255, 3, 218, 198),
+                        color: theme.welcomeDotActive,
                         fontSize: 17,
                       ),
                     ),
@@ -158,7 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ),
-        backgroundColor: const Color(0XFF1E1E1E),
+        backgroundColor: theme.background,
         resizeToAvoidBottomInset: false,
         body: SingleChildScrollView(
           child: Container(
@@ -170,20 +178,20 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildEmailSection(context),
-                if (showPasswordField) _buildPasswordSection(context),
+                _buildEmailSection(context, theme),
+                if (showPasswordField) _buildPasswordSection(context, theme),
                 const SizedBox(height: 20),
-                _buildForgotPassword(context),
+                _buildForgotPassword(context, theme),
               ],
             ),
           ),
         ),
-        bottomNavigationBar: _buildContinueButton(context),
+        bottomNavigationBar: _buildContinueButton(context, theme),
       ),
     );
   }
 
-  Widget _buildEmailSection(BuildContext context) {
+  Widget _buildEmailSection(BuildContext context, CustomThemeData theme) {
     return SizedBox(
       width: double.maxFinite,
       child: Padding(
@@ -198,22 +206,22 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Image.asset("assets/images/Frame.png"),
             ),
             const SizedBox(height: 10),
-            const Text(
+            Text(
               "E-posta ile devam edin",
               style: TextStyle(
-                color: Color(0XFFFFFFFF),
+                color: theme.welcomeText,
                 fontSize: 20,
                 fontFamily: 'Lato',
                 fontWeight: FontWeight.w700,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
+            Text(
               "E-posta adresinin neden gerekli olduğunu açıklamak faydalıdır.",
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                color: Color(0XFF797979),
+                color: theme.subText,
                 fontSize: 15,
                 fontFamily: 'Lato',
                 fontWeight: FontWeight.w400,
@@ -222,36 +230,36 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 20),
             TextFormField(
               controller: emailController,
-              style: const TextStyle(
-                color: Color(0XFF797979),
+              style: TextStyle(
+                color: theme.subText,
                 fontSize: 18,
                 fontFamily: 'Lato',
                 fontWeight: FontWeight.w400,
               ),
               decoration: InputDecoration(
                 hintText: "E-posta adresi",
-                hintStyle: const TextStyle(
-                  color: Color(0XFF797979),
+                hintStyle: TextStyle(
+                  color: theme.subText,
                   fontSize: 16,
                   fontFamily: 'Lato',
                   fontWeight: FontWeight.w400,
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(
-                    color: Color(0XFF03DAC6),
+                  borderSide: BorderSide(
+                    color: theme.welcomeDotActive,
                     width: 2.5,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(
-                    color: Color(0XFF03DAC6),
+                  borderSide: BorderSide(
+                    color: theme.welcomeDotActive,
                     width: 2.5,
                   ),
                 ),
                 filled: true,
-                fillColor: const Color(0XFFFFFFFF),
+                fillColor: theme.welcomeText,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 14,
@@ -264,7 +272,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildPasswordSection(BuildContext context) {
+  Widget _buildPasswordSection(BuildContext context, CustomThemeData theme) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -272,9 +280,9 @@ class _LoginScreenState extends State<LoginScreen> {
         children: [
           const SizedBox(height: 20),
           Text(
-            isExistingUser ? "Şifrenizi girin" : "Yeni sifre olusturun",
-            style: const TextStyle(
-              color: Color(0XFFFFFFFF),
+            isExistingUser ? "Şifrenizi girin" : "Yeni şifre oluşturun",
+            style: TextStyle(
+              color: theme.welcomeText,
               fontSize: 18,
               fontFamily: 'Lato',
               fontWeight: FontWeight.w700,
@@ -284,26 +292,26 @@ class _LoginScreenState extends State<LoginScreen> {
           TextFormField(
             controller: passwordController,
             obscureText: true,
-            style: const TextStyle(color: Color(0XFF797979)),
+            style: TextStyle(color: theme.subText),
             decoration: InputDecoration(
-              hintText: isExistingUser ? "Sifre" : "Yeni sifre",
-              hintStyle: const TextStyle(color: Color(0XFF797979)),
+              hintText: isExistingUser ? "Şifre" : "Yeni şifre",
+              hintStyle: TextStyle(color: theme.subText),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide(
                   width: 2.5,
-                  color: isPasswordWrong ? Colors.red : const Color(0XFF03DAC6),
+                  color: isPasswordWrong ? theme.welcomeButton : theme.welcomeDotActive,
                 ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide(
                   width: 2.5,
-                  color: isPasswordWrong ? Colors.red : const Color(0XFF03DAC6),
+                  color: isPasswordWrong ? theme.welcomeButton : theme.welcomeDotActive,
                 ),
               ),
               filled: true,
-              fillColor: const Color(0XFFFFFFFF),
+              fillColor: theme.welcomeText,
             ),
           ),
         ],
@@ -311,20 +319,20 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildForgotPassword(BuildContext context) {
+  Widget _buildForgotPassword(BuildContext context, CustomThemeData theme) {
     return Row(
       children: [
         TextButton(
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const ForgotPasswordPage()),
+              MaterialPageRoute(builder: (context) => ForgotPasswordPage()),
             );
           },
-          child: const Text(
-            "Sifremi unuttum",
+          child: Text(
+            "Şifremi unuttum",
             style: TextStyle(
-              color: Color(0XFF03DAC6),
+              color: theme.welcomeDotActive,
               fontSize: 15,
               fontFamily: 'Lato',
               fontWeight: FontWeight.w400,
@@ -335,7 +343,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildContinueButton(BuildContext context) {
+  Widget _buildContinueButton(BuildContext context, CustomThemeData theme) {
     return Container(
       width: double.maxFinite,
       height: 54,
@@ -346,7 +354,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0XFF274F5E),
+          backgroundColor: theme.welcomeButton,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),
@@ -367,8 +375,8 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Text(
           isLoading ? "Kontrol ediliyor..." : 
           showPasswordField ? (isExistingUser ? "Giriş Yap" : "Hesap Oluştur") : "Devam et",
-          style: const TextStyle(
-            color: Color(0XFF03DAC6),
+          style: TextStyle(
+            color: theme.welcomeDotActive,
             fontSize: 16,
             fontFamily: 'Lato',
             fontWeight: FontWeight.w600,
@@ -380,8 +388,6 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 class ForgotPasswordPage extends StatefulWidget {
-  const ForgotPasswordPage({super.key});
-
   @override
   _ForgotPasswordPageState createState() => _ForgotPasswordPageState();
 }
@@ -397,7 +403,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Sifre sıfırlama e-postası gönderildi')),
+        const SnackBar(content: Text('Şifre sıfırlama e-postası gönderildi')),
       );
       Navigator.pop(context);
     } catch (e) {
@@ -413,6 +419,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -420,26 +428,26 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           elevation: 0,
           automaticallyImplyLeading: false,
           leading: IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.arrow_back_ios,
-              color: Color.fromARGB(255, 3, 218, 198),
+              color: theme.welcomeDotActive,
               size: 28,
             ),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
-          title: const Text(
-            "Sifremi Unuttum",
+          title: Text(
+            "Şifremi Unuttum",
             style: TextStyle(
               fontFamily: 'Lato',
-              color: Color.fromARGB(255, 3, 218, 198),
+              color: theme.welcomeDotActive,
               fontSize: 20,
             ),
           ),
           centerTitle: true,
         ),
-        backgroundColor: const Color(0XFF1E1E1E),
+        backgroundColor: theme.background,
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -447,9 +455,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             children: [
               const SizedBox(height: 20),
               Text(
-                "Sifrenizi sıfırlamak için lütfen e-posta adresinizi girin",
-                style: const TextStyle(
-                  color: Color(0XFFFFFFFF),
+                "Şifrenizi sıfırlamak için lütfen e-posta adresinizi girin",
+                style: TextStyle(
+                  color: theme.welcomeText,
                   fontSize: 16,
                   fontFamily: 'Lato',
                   fontWeight: FontWeight.w400,
@@ -458,36 +466,36 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               const SizedBox(height: 20),
               TextFormField(
                 controller: emailController,
-                style: const TextStyle(
-                  color: Color(0XFF797979),
+                style: TextStyle(
+                  color: theme.subText,
                   fontSize: 18,
                   fontFamily: 'Lato',
                   fontWeight: FontWeight.w400,
                 ),
                 decoration: InputDecoration(
                   hintText: "E-posta adresi",
-                  hintStyle: const TextStyle(
-                    color: Color(0XFF797979),
+                  hintStyle: TextStyle(
+                    color: theme.subText,
                     fontSize: 16,
                     fontFamily: 'Lato',
                     fontWeight: FontWeight.w400,
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(
-                      color: Color(0XFF03DAC6),
+                    borderSide: BorderSide(
+                      color: theme.welcomeDotActive,
                       width: 2.5,
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(
-                      color: Color(0XFF03DAC6),
+                    borderSide: BorderSide(
+                      color: theme.welcomeDotActive,
                       width: 2.5,
                     ),
                   ),
                   filled: true,
-                  fillColor: const Color(0XFFFFFFFF),
+                  fillColor: theme.welcomeText,
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 14,
@@ -505,16 +513,16 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 ),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0XFF274F5E),
+                    backgroundColor: theme.welcomeButton,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
                   onPressed: isLoading ? null : sendPasswordResetEmail,
                   child: Text(
-                    isLoading ? "Gönderiliyor..." : "Sifre Sıfırlama E-postası Gönder",
-                    style: const TextStyle(
-                      color: Color(0XFF03DAC6),
+                    isLoading ? "Gönderiliyor..." : "Şifre Sıfırlama E-postası Gönder",
+                    style: TextStyle(
+                      color: theme.welcomeDotActive,
                       fontSize: 16,
                       fontFamily: 'Lato',
                       fontWeight: FontWeight.w600,

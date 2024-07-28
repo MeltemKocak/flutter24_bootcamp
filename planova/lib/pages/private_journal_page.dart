@@ -41,7 +41,7 @@ class _PrivateJournalPageState extends State<PrivateJournalPage> {
               .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator(color: Color(0XFF03DAC6)));
+              return const Center(child: CircularProgressIndicator(color: Color(0xFF03DAC6)));
             }
             if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}', style: const TextStyle(color: Colors.white)));
@@ -102,16 +102,16 @@ class _PrivateJournalPageState extends State<PrivateJournalPage> {
                                 Text(
                                   formattedDate,
                                   style: const TextStyle(
-                                    color: Color(0XFF03DAC6),
+                                    color: Color(0xFF03DAC6),
                                     fontSize: 24,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
                                 const Spacer(),
                                 if (audioUrl != null && audioUrl.isNotEmpty)
-                                  const Icon(Icons.audiotrack, color: Color(0XFF03DAC6)),
+                                  const Icon(Icons.audiotrack, color: Color(0xFF03DAC6)),
                                 IconButton(
-                                  icon: const Icon(Icons.edit, color: Color(0XFF03DAC6)),
+                                  icon: const Icon(Icons.edit, color: Color(0xFF03DAC6)),
                                   onPressed: () {
                                     Navigator.push(
                                       context,

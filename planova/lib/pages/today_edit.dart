@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:planova/utilities/theme.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TodayEditPage extends StatefulWidget {
   final DocumentSnapshot task;
@@ -59,9 +62,11 @@ class _TodayEditPageState extends State<TodayEditPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
+
     return Container(
-      decoration: const BoxDecoration(
-        color: Color(0XFF1E1E1E),
+      decoration: BoxDecoration(
+        color: theme.background,
         borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
       ),
       child: Stack(
@@ -70,15 +75,15 @@ class _TodayEditPageState extends State<TodayEditPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _buildColumnVector(context),
+                _buildColumnVector(context, theme),
                 const SizedBox(height: 26),
-                _buildTaskSection(context),
+                _buildTaskSection(context, theme),
                 const SizedBox(height: 14),
-                _buildDescriptionSection(context),
+                _buildDescriptionSection(context, theme),
                 const SizedBox(height: 24),
-                _buildRecurringSection(context),
+                _buildRecurringSection(context, theme),
                 if (selectedRecurrence != 'Tekrar yapma')
-                  _buildDaySelectionSection(context),
+                  _buildDaySelectionSection(context, theme),
                 const SizedBox(height: 150),
               ],
             ),
@@ -86,19 +91,19 @@ class _TodayEditPageState extends State<TodayEditPage> {
           Positioned(
             right: 20,
             bottom: 20,
-            child: _buildUpdateButton(context),
+            child: _buildUpdateButton(context, theme),
           ),
           Positioned(
             left: 20,
             bottom: 20,
-            child: _buildDeleteButton(context),
+            child: _buildDeleteButton(context, theme),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildColumnVector(BuildContext context) {
+  Widget _buildColumnVector(BuildContext context, CustomThemeData theme) {
     return Container(
       width: double.maxFinite,
       margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -117,13 +122,14 @@ class _TodayEditPageState extends State<TodayEditPage> {
                     width: 20,
                     child: SvgPicture.asset(
                       "assets/images/img_vector.svg",
+                      color: theme.welcomeDot,
                     ),
                   ),
                 ),
-                const Text(
+                Text(
                   "Edit Task",
                   style: TextStyle(
-                    color: Color(0XFFFFFFFF),
+                    color: theme.welcomeText,
                     fontSize: 24,
                     fontFamily: 'Roboto',
                     fontWeight: FontWeight.w300,
@@ -138,6 +144,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
                       width: 38,
                       child: SvgPicture.asset(
                         "assets/images/img_check.svg",
+                        color: theme.welcomeDot,
                       ),
                     ),
                   ),
@@ -150,7 +157,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
     );
   }
 
-  Widget _buildTaskSection(BuildContext context) {
+  Widget _buildTaskSection(BuildContext context, CustomThemeData theme) {
     return Container(
       width: double.maxFinite,
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -161,10 +168,10 @@ class _TodayEditPageState extends State<TodayEditPage> {
             width: double.maxFinite,
             child: Row(
               children: [
-                const Text(
+                Text(
                   "Task Name",
                   style: TextStyle(
-                    color: Color(0XFFFFFFFF),
+                    color: theme.welcomeText,
                     fontSize: 15,
                     fontFamily: 'Roboto',
                     fontWeight: FontWeight.w300,
@@ -179,6 +186,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
                       width: 16,
                       child: SvgPicture.asset(
                         "assets/images/img_task_logo.svg",
+                        color: theme.welcomeDot,
                       ),
                     ),
                   ),
@@ -192,13 +200,13 @@ class _TodayEditPageState extends State<TodayEditPage> {
             child: TextFormField(
               controller: nameController,
               focusNode: taskNameFocusNode,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: theme.welcomeText,
               ),
               decoration: InputDecoration(
                 hintText: "Enter Task Name",
-                hintStyle: const TextStyle(
-                  color: Color.fromARGB(150, 255, 255, 255),
+                hintStyle: TextStyle(
+                  color: theme.subText,
                   fontSize: 15,
                   fontFamily: 'Roboto',
                 ),
@@ -219,7 +227,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
                   borderSide: BorderSide.none,
                 ),
                 filled: true,
-                fillColor: const Color(0X3F607D8B),
+                fillColor: theme.toDoCardBackground,
                 isDense: true,
               ),
               textInputAction: TextInputAction.next,
@@ -233,7 +241,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
     );
   }
 
-  Widget _buildDescriptionSection(BuildContext context) {
+  Widget _buildDescriptionSection(BuildContext context, CustomThemeData theme) {
     return Container(
       width: double.maxFinite,
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -245,12 +253,12 @@ class _TodayEditPageState extends State<TodayEditPage> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Align(
+                Align(
                   alignment: Alignment.center,
                   child: Text(
                     "Description",
                     style: TextStyle(
-                      color: Color(0XFFFFFFFF),
+                      color: theme.welcomeText,
                       fontSize: 15,
                       fontFamily: 'Roboto',
                       fontWeight: FontWeight.w300,
@@ -264,6 +272,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
                     width: 10,
                     child: SvgPicture.asset(
                       "assets/images/img_describtion_logo.svg",
+                      color: theme.welcomeDot,
                     ),
                   ),
                 )
@@ -276,15 +285,15 @@ class _TodayEditPageState extends State<TodayEditPage> {
             child: TextFormField(
               controller: descriptionController,
               focusNode: descriptionFocusNode,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: theme.welcomeText,
               ),
               textInputAction: TextInputAction.done,
               maxLines: 6,
               decoration: InputDecoration(
                 hintText: "Enter Description",
-                hintStyle: const TextStyle(
-                  color: Color.fromARGB(150, 255, 255, 255),
+                hintStyle: TextStyle(
+                  color: theme.subText,
                   fontSize: 15,
                   fontFamily: 'Roboto',
                 ),
@@ -305,7 +314,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
                   borderSide: BorderSide.none,
                 ),
                 filled: true,
-                fillColor: const Color(0X3F607D8B),
+                fillColor: theme.toDoCardBackground,
                 isDense: true,
                 contentPadding: const EdgeInsets.all(12),
               ),
@@ -319,7 +328,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
     );
   }
 
-  Widget _buildRecurringSection(BuildContext context) {
+  Widget _buildRecurringSection(BuildContext context, CustomThemeData theme) {
     return Container(
       width: double.maxFinite,
       margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -336,7 +345,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
                     height: 60,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0X3F607D8B),
+                        backgroundColor: theme.toDoCardBackground,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -347,14 +356,14 @@ class _TodayEditPageState extends State<TodayEditPage> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Container(
-                            child: const Icon(Icons.refresh_outlined,
-                                color: Colors.white, size: 28),
+                            child: Icon(Icons.refresh_outlined,
+                                color: theme.welcomeText, size: 28),
                           ),
                           const SizedBox(width: 12),
-                          const Text(
+                          Text(
                             "Recurring",
                             style: TextStyle(
-                              color: Color(0XFFFFFFFF),
+                              color: theme.welcomeText,
                               fontSize: 17,
                               fontFamily: 'Roboto',
                             ),
@@ -371,7 +380,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
                     height: 60,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0X3F607D8B),
+                        backgroundColor: theme.toDoCardBackground,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -388,13 +397,13 @@ class _TodayEditPageState extends State<TodayEditPage> {
                           builder: (BuildContext context, Widget? child) {
                             return Theme(
                               data: ThemeData.dark().copyWith(
-                                colorScheme: const ColorScheme.dark(
-                                  primary: Color(0XFF03DAC6),
+                                colorScheme: ColorScheme.dark(
+                                  primary: theme.checkBoxActiveColor,
                                   onPrimary: Colors.black,
-                                  surface: Color(0XFF1E1E1E),
-                                  onSurface: Colors.white,
+                                  surface: theme.background,
+                                  onSurface: theme.welcomeText,
                                 ),
-                                dialogBackgroundColor: const Color(0XFF1E1E1E),
+                                dialogBackgroundColor: theme.background,
                               ),
                               child: child!,
                             );
@@ -409,14 +418,14 @@ class _TodayEditPageState extends State<TodayEditPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.access_time, color: Colors.white),
+                          Icon(Icons.access_time, color: theme.welcomeText),
                           const SizedBox(width: 12),
                           Text(
                             selectedTime != null
                                 ? selectedTime!.format(context)
                                 : "Select Time",
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: theme.welcomeText,
                               fontSize: 17,
                               fontFamily: 'Roboto',
                             ),
@@ -434,7 +443,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
     );
   }
 
-  Widget _buildDaySelectionSection(BuildContext context) {
+  Widget _buildDaySelectionSection(BuildContext context, CustomThemeData theme) {
     return Container(
       alignment: Alignment.center,
       width: MediaQuery.of(context).size.width * 0.8,
@@ -447,21 +456,20 @@ class _TodayEditPageState extends State<TodayEditPage> {
           return FilterChip(
             label: Text(
               _getDayName(index + 1),
-              style: const TextStyle(
-                  color: Color.fromARGB(255, 255, 255, 255), fontSize: 18),
+              style: TextStyle(color: theme.welcomeText, fontSize: 18),
             ),
             selected: selectedDays.contains(index + 1),
             onSelected: null, // Günlerin değiştirilemez olmasını sağlamak için
-            backgroundColor: const Color(0XFF607D8B),
-            selectedColor: const Color.fromARGB(255, 90, 92, 92),
-            disabledColor: const Color.fromARGB(255, 90, 92, 92),
+            backgroundColor: theme.checkBoxBorderColor,
+            selectedColor: theme.checkBoxActiveColor,
+            disabledColor: theme.checkBoxActiveColor,
           );
         }),
       ),
     );
   }
 
-  Widget _buildUpdateButton(BuildContext context) {
+  Widget _buildUpdateButton(BuildContext context, CustomThemeData theme) {
     return GestureDetector(
       onTap: _updateTodo,
       child: Container(
@@ -470,10 +478,10 @@ class _TodayEditPageState extends State<TodayEditPage> {
         width: 70,
         padding: const EdgeInsets.all(0),
         decoration: BoxDecoration(
-          color: const Color(0XFF03DAC6),
+          color: theme.addButton,
           borderRadius: BorderRadius.circular(16),
         ),
-        child: const Icon(Icons.update, color: Colors.white, size: 45),
+        child: Icon(Icons.update, color: theme.addButtonIcon, size: 45),
       ),
     );
   }
@@ -486,7 +494,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          backgroundColor: const Color(0XFF1E1E1E),
+          backgroundColor: const Color(0xFF1E1E1E),
           child: Container(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -515,7 +523,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
                         _updateTask(false);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0XFF03DAC6),
+                        backgroundColor: const Color(0xFF03DAC6),
                         padding: const EdgeInsets.symmetric(
                           vertical: 12,
                           horizontal: 24,
@@ -536,7 +544,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
                         _updateTask(true);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0XFF03DAC6),
+                        backgroundColor: const Color(0xFF03DAC6),
                         padding: const EdgeInsets.symmetric(
                           vertical: 12,
                           horizontal: 24,
@@ -597,22 +605,24 @@ class _TodayEditPageState extends State<TodayEditPage> {
   }
 
   void _showRecurringDialog() {
+    final theme = Provider.of<ThemeProvider>(context, listen: false).currentTheme;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return Theme(
           data: ThemeData.dark().copyWith(
-            colorScheme: const ColorScheme.dark(
-              primary: Color(0XFF03DAC6),
+            colorScheme: ColorScheme.dark(
+              primary: theme.checkBoxActiveColor,
               onPrimary: Colors.black,
-              surface: Color(0XFF1E1E1E),
-              onSurface: Colors.white,
+              surface: theme.background,
+              onSurface: theme.welcomeText,
             ),
-            dialogBackgroundColor: const Color(0XFF1E1E1E),
+            dialogBackgroundColor: theme.background,
           ),
           child: AlertDialog(
-            title: const Text("Select Recurrence",
-                style: TextStyle(color: Colors.white)),
+            title: Text("Select Recurrence",
+                style: TextStyle(color: theme.welcomeText)),
             content: DropdownButton<String>(
               value: selectedRecurrence,
               items: [
@@ -633,8 +643,8 @@ class _TodayEditPageState extends State<TodayEditPage> {
                 });
                 Navigator.of(context).pop();
               },
-              dropdownColor: const Color(0XFF1E1E1E),
-              style: const TextStyle(color: Colors.white),
+              dropdownColor: theme.background,
+              style: TextStyle(color: theme.welcomeText),
             ),
           ),
         );
@@ -642,7 +652,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
     );
   }
 
-  Widget _buildDeleteButton(BuildContext context) {
+  Widget _buildDeleteButton(BuildContext context, CustomThemeData theme) {
     return GestureDetector(
       onTap: () => _confirmDeleteTask(),
       child: Container(
@@ -651,27 +661,29 @@ class _TodayEditPageState extends State<TodayEditPage> {
         width: 70,
         padding: const EdgeInsets.all(0),
         decoration: BoxDecoration(
-          color: const Color(0XFFCF6679),
+          color: theme.habitIcons,
           borderRadius: BorderRadius.circular(16),
         ),
-        child: const Icon(Icons.delete_outline, color: Colors.white, size: 45),
+        child: Icon(Icons.delete_outline, color: theme.welcomeText, size: 45),
       ),
     );
   }
 
   void _confirmDeleteTask() {
+    final theme = Provider.of<ThemeProvider>(context, listen: false).currentTheme;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: const Color(0XFF1E1E1E),
+          backgroundColor: theme.background,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          title: const Text(
+          title: Text(
             "Görevi Sil",
             style: TextStyle(
-                color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                color: theme.welcomeText, fontSize: 20, fontWeight: FontWeight.bold),
           ),
           content: const Text(
             "Bu görevi mi yoksa tüm tekrarlanan görevleri mi silmek istiyorsunuz?",
@@ -687,15 +699,15 @@ class _TodayEditPageState extends State<TodayEditPage> {
                     _deleteTask(false);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0XFF03DAC6),
+                    backgroundColor: theme.checkBoxActiveColor,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     "Sadece Bu Görev",
-                    style: TextStyle(fontSize: 16, color: Colors.black),
+                    style: TextStyle(fontSize: 16, color: theme.welcomeText),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -705,15 +717,15 @@ class _TodayEditPageState extends State<TodayEditPage> {
                     _deleteTask(true);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0XFF03DAC6),
+                    backgroundColor: theme.checkBoxActiveColor,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     "Tüm Tekrarlanan Görevler",
-                    style: TextStyle(fontSize: 16, color: Colors.black),
+                    style: TextStyle(fontSize: 16, color: theme.welcomeText),
                   ),
                 ),
               ],

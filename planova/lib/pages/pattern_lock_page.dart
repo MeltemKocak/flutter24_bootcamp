@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:planova/utilities/theme.dart';
 import 'private_journal_page.dart'; // Import PrivateJournalPage
+import 'package:provider/provider.dart';
 
 class PatternLockPage extends StatefulWidget {
   @override
@@ -51,27 +53,29 @@ class _PatternLockPageState extends State<PatternLockPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Enter Pattern'),
-        backgroundColor: const Color(0xFF1E1E1E),
+        backgroundColor: theme.appBar,
       ),
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: theme.background,
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
             Text(
               'Draw your pattern to unlock',
-              style: TextStyle(color: Colors.white, fontSize: 18),
+              style: TextStyle(color: theme.welcomeText, fontSize: 18),
             ),
             SizedBox(height: 20),
-            _buildPatternLock(),
+            _buildPatternLock(theme),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: _verifyPattern,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0XFF03DAC6),
+                backgroundColor: theme.addButton,
               ),
               child: Text('Verify Pattern'),
             ),
@@ -89,7 +93,7 @@ class _PatternLockPageState extends State<PatternLockPage> {
     );
   }
 
-  Widget _buildPatternLock() {
+  Widget _buildPatternLock(CustomThemeData theme) {
     return AspectRatio(
       aspectRatio: 1,
       child: GridView.builder(
@@ -104,7 +108,7 @@ class _PatternLockPageState extends State<PatternLockPage> {
             child: Container(
               margin: EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: isSelected ? Colors.blue : Colors.grey,
+                color: isSelected ? theme.addButtonIcon : theme.borderColor,
                 shape: BoxShape.circle,
               ),
             ),

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:planova/pages/pattern_lock_page.dart';
+import 'package:planova/utilities/theme.dart';
 import 'pattern_setup_page.dart'; // Import PatternSetupPage
+import 'package:provider/provider.dart';
 
 class PinSetupPage extends StatefulWidget {
   @override
@@ -53,12 +55,14 @@ class _PinSetupPageState extends State<PinSetupPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Set Up PIN'),
-        backgroundColor: const Color(0xFF1E1E1E),
+        backgroundColor: theme.appBar,
       ),
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: theme.background,
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -66,15 +70,15 @@ class _PinSetupPageState extends State<PinSetupPage> {
             TextField(
               controller: _pinController,
               obscureText: true,
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: theme.welcomeText),
               decoration: InputDecoration(
                 labelText: 'PIN',
-                labelStyle: TextStyle(color: Colors.white),
+                labelStyle: TextStyle(color: theme.welcomeText),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
+                  borderSide: BorderSide(color: theme.welcomeText),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
+                  borderSide: BorderSide(color: theme.welcomeText),
                 ),
               ),
             ),
@@ -82,15 +86,15 @@ class _PinSetupPageState extends State<PinSetupPage> {
             TextField(
               controller: _confirmPinController,
               obscureText: true,
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: theme.welcomeText),
               decoration: InputDecoration(
                 labelText: 'Confirm PIN',
-                labelStyle: TextStyle(color: Colors.white),
+                labelStyle: TextStyle(color: theme.welcomeText),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
+                  borderSide: BorderSide(color: theme.welcomeText),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
+                  borderSide: BorderSide(color: theme.welcomeText),
                 ),
               ),
             ),
@@ -98,7 +102,7 @@ class _PinSetupPageState extends State<PinSetupPage> {
             ElevatedButton(
               onPressed: _setupPin,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0XFF03DAC6),
+                backgroundColor: theme.addButton,
               ),
               child: Text('Confirm PIN'),
             ),

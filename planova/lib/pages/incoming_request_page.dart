@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:planova/utilities/theme.dart';
+import 'package:provider/provider.dart';
 
 class IncomingRequestsPage extends StatefulWidget {
   @override
@@ -18,9 +20,12 @@ class _IncomingRequestsPageState extends State<IncomingRequestsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Gelen İstekler'),
+        backgroundColor: theme.appBar,
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('habits')
@@ -29,15 +34,15 @@ class _IncomingRequestsPageState extends State<IncomingRequestsPage> {
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
-            return const Center(child: Text('Something went wrong', style: TextStyle(color: Colors.white)));
+            return Center(child: Text('Something went wrong', style: TextStyle(color: theme.welcomeText)));
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator(color: Color(0XFF03DAC6)));
+            return Center(child: CircularProgressIndicator(color: theme.checkBoxActiveColor));
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('No incoming requests', style: TextStyle(color: Colors.white)));
+            return Center(child: Text('No incoming requests', style: TextStyle(color: theme.welcomeText)));
           }
 
           return ListView(
@@ -51,7 +56,7 @@ class _IncomingRequestsPageState extends State<IncomingRequestsPage> {
 
               return Card(
                 margin: const EdgeInsets.only(bottom: 16),
-                color: Colors.blueGrey,
+                color: theme.toDoCardBackground,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -65,8 +70,8 @@ class _IncomingRequestsPageState extends State<IncomingRequestsPage> {
                         children: [
                           Text(
                             data['name'] ?? 'No name',
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: theme.toDoTitle,
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
@@ -76,7 +81,7 @@ class _IncomingRequestsPageState extends State<IncomingRequestsPage> {
                               _acceptHabit(document);
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0XFF03DAC6),
+                              backgroundColor: theme.addButton,
                             ),
                             child: const Text('Accept'),
                           ),
@@ -85,8 +90,8 @@ class _IncomingRequestsPageState extends State<IncomingRequestsPage> {
                       const SizedBox(height: 5),
                       Text(
                         data['description'] ?? 'No description',
-                        style: const TextStyle(
-                          color: Colors.grey,
+                        style: TextStyle(
+                          color: theme.subText,
                           fontSize: 14,
                         ),
                       ),

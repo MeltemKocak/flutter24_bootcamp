@@ -281,7 +281,7 @@ class _HabitPageState extends State<HabitPage> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: theme.weeklyStatsBackgroundColor,
+                        color: theme.habitActiveDay,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
