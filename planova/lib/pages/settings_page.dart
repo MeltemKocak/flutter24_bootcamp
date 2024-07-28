@@ -137,34 +137,34 @@ void _showThemeDialog() {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Provider.of<ThemeProvider>(context).currentTheme.cardBackground, // Tema rengi
-          title: Text('Select Theme', style: TextStyle(color: Provider.of<ThemeProvider>(context).currentTheme.dayNumTextColor)), // Başlık rengi
+          backgroundColor: Provider.of<ThemeProvider>(context).currentTheme.background, // Tema rengi
+          title: Text('Select Theme', style: TextStyle(color: Provider.of<ThemeProvider>(context).currentTheme.welcomeText)), // Başlık rengi
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                title: Text('Light Theme', style: TextStyle(color: Provider.of<ThemeProvider>(context).currentTheme.dayNumTextColor)),
+                title: Text('Light Theme', style: TextStyle(color: Provider.of<ThemeProvider>(context).currentTheme.welcomeText)),
                 onTap: () {
                   Provider.of<ThemeProvider>(context, listen: false).setThemeValue(1);
                   Navigator.of(context).pop();
                 },
               ),
               ListTile(
-                title: Text('Dark Theme', style: TextStyle(color: Provider.of<ThemeProvider>(context).currentTheme.dayNumTextColor)),
+                title: Text('Dark Theme', style: TextStyle(color: Provider.of<ThemeProvider>(context).currentTheme.welcomeText)),
                 onTap: () {
                   Provider.of<ThemeProvider>(context, listen: false).setThemeValue(2);
                   Navigator.of(context).pop();
                 },
               ),
               ListTile(
-                title: Text('Blue Theme', style: TextStyle(color: Provider.of<ThemeProvider>(context).currentTheme.dayNumTextColor)),
+                title: Text('Blue Theme', style: TextStyle(color: Provider.of<ThemeProvider>(context).currentTheme.welcomeText)),
                 onTap: () {
                   Provider.of<ThemeProvider>(context, listen: false).setThemeValue(3);
                   Navigator.of(context).pop();
                 },
               ),
               ListTile(
-                title: Text('Purple Theme', style: TextStyle(color: Provider.of<ThemeProvider>(context).currentTheme.dayNumTextColor)),
+                title: Text('Purple Theme', style: TextStyle(color: Provider.of<ThemeProvider>(context).currentTheme.welcomeText)),
                 onTap: () {
                   Provider.of<ThemeProvider>(context, listen: false).setThemeValue(4);
                   Navigator.of(context).pop();

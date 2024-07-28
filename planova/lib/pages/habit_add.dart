@@ -1,7 +1,10 @@
+// habitAddPage.dart
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:planova/utilities/theme.dart';
 
 class HabitAddPage extends StatefulWidget {
   const HabitAddPage({super.key});
@@ -43,7 +46,7 @@ class _HabitAddPageState extends State<HabitAddPage> {
         'user_id': user.uid,
         'days': _generateHabitDays(),
         'completed_days': {},
-        'friend_email': _friendEmailController.text, // Friend email ekleniyor
+        'friend_email': _friendEmailController.text,
         'friends': [],
         'isPending': false,
       };
@@ -61,11 +64,10 @@ class _HabitAddPageState extends State<HabitAddPage> {
           String friendId = userSnapshot.id;
           habitData['friends'].add(friendId);
           _sendNotificationToFriend(friendId);
-          // Arkadaşın hesabına da aynı alışkanlığı ekle, ancak isPending true olarak
           FirebaseFirestore.instance.collection('habits').add({
             ...habitData,
             'user_id': friendId,
-            'friends': [user.uid], // X kişisinin id'si friends alanına eklenir
+            'friends': [user.uid],
             'isPending': true,
           });
         }
@@ -77,7 +79,7 @@ class _HabitAddPageState extends State<HabitAddPage> {
           .then((value) {
         Navigator.pop(context);
       }).catchError((error) {
-        // Hata işleme kodları
+        // Error handling
       });
     }
   }
@@ -108,6 +110,9 @@ class _HabitAddPageState extends State<HabitAddPage> {
 
   void _selectDate(BuildContext context, TextEditingController controller,
       {DateTime? firstDate}) async {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    CustomThemeData theme = ThemeColors.getTheme(themeProvider.themeValue);
+
     DateTime initialDate = DateTime.now();
     if (controller == _endDateController &&
         _startDateController.text.isNotEmpty) {
@@ -122,13 +127,13 @@ class _HabitAddPageState extends State<HabitAddPage> {
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.dark().copyWith(
-            colorScheme: const ColorScheme.dark(
-              primary: Color(0XFF03DAC6),
-              onPrimary: Colors.white,
-              surface: Color(0XFF1E1E1E),
-              onSurface: Colors.white,
+            colorScheme: ColorScheme.dark(
+              primary: theme.focusDayColor,
+              onPrimary: theme.calenderNumbers,
+              surface: theme.background,
+              onSurface: theme.calenderNumbers,
             ),
-            dialogBackgroundColor: const Color(0XFF1E1E1E),
+            dialogBackgroundColor: theme.background,
           ),
           child: child!,
         );
@@ -165,70 +170,70 @@ class _HabitAddPageState extends State<HabitAddPage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    CustomThemeData theme = ThemeColors.getTheme(themeProvider.themeValue);
+
     return Container(
       padding: const EdgeInsets.all(20.0),
-      decoration: const BoxDecoration(
-        color: Color(0XFF1E1E1E),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+      decoration: BoxDecoration(
+        color: theme.background,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
       ),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildTextField(_nameController, "Habit Name", _isNameEmpty),
+            _buildTextField(_nameController, "Habit Name", _isNameEmpty, theme),
             const SizedBox(height: 20),
-            _buildTextField(_descriptionController, "Description", false,
+            _buildTextField(_descriptionController, "Description", false, theme,
                 maxLines: 3),
             const SizedBox(height: 20),
-            _buildTextField(_friendEmailController, "Friend's Email", false),
+            _buildTextField(_friendEmailController, "Friend's Email", false, theme),
             const SizedBox(height: 20),
             Row(
               children: [
                 Expanded(
-                    child: _buildDateField(_startDateController, "Start Date")),
+                    child: _buildDateField(_startDateController, "Start Date", theme)),
                 const SizedBox(width: 20),
                 Expanded(
-                    child: _buildDateField(_endDateController, "End Date")),
+                    child: _buildDateField(_endDateController, "End Date", theme)),
               ],
             ),
             const SizedBox(height: 20),
             Text(
               "Target Days: $_targetDays",
-              style: const TextStyle(color: Colors.white, fontSize: 16),
+              style: TextStyle(color: theme.subText, fontSize: 16),
             ),
             const SizedBox(height: 20),
-            _buildDaySelectionSection(),
+            _buildDaySelectionSection(theme),
             const SizedBox(height: 30),
-            _buildConfirmButton(),
+            _buildConfirmButton(theme),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildTextField(
-      TextEditingController controller, String label, bool isEmpty,
-      {int maxLines = 1}) {
+  Widget _buildTextField(TextEditingController controller, String label, bool isEmpty, CustomThemeData theme, {int maxLines = 1}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: const TextStyle(
-              color: Colors.white, fontSize: 15, fontWeight: FontWeight.w300),
+          style: TextStyle(
+              color: theme.subText, fontSize: 15, fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 2),
         TextFormField(
           controller: controller,
-          style: const TextStyle(color: Colors.white),
+          style: TextStyle(color: theme.welcomeText),
           maxLines: maxLines,
           decoration: InputDecoration(
             hintText: "Enter $label",
-            hintStyle:
-                const TextStyle(color: Color.fromARGB(150, 255, 255, 255)),
+            hintStyle: TextStyle(color: theme.welcomeText.withOpacity(0.6)),
             filled: true,
-            fillColor: const Color(0X3F607D8B),
+            fillColor: theme.toDoCardBackground.withOpacity(0.25),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20),
               borderSide: isEmpty
@@ -253,14 +258,14 @@ class _HabitAddPageState extends State<HabitAddPage> {
     );
   }
 
-  Widget _buildDateField(TextEditingController controller, String label) {
+  Widget _buildDateField(TextEditingController controller, String label, CustomThemeData theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: const TextStyle(
-              color: Colors.white, fontSize: 15, fontWeight: FontWeight.w300),
+          style: TextStyle(
+              color: theme.subText, fontSize: 15, fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 2),
         GestureDetector(
@@ -273,12 +278,12 @@ class _HabitAddPageState extends State<HabitAddPage> {
             width: MediaQuery.of(context).size.width * 0.45,
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             decoration: BoxDecoration(
-              color: const Color(0X3F607D8B),
+              color: theme.toDoCardBackground.withOpacity(0.25),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Text(
               controller.text.isEmpty ? "Select Date" : controller.text,
-              style: const TextStyle(color: Colors.white),
+              style: TextStyle(color: theme.welcomeText),
             ),
           ),
         ),
@@ -286,7 +291,7 @@ class _HabitAddPageState extends State<HabitAddPage> {
     );
   }
 
-  Widget _buildDaySelectionSection() {
+  Widget _buildDaySelectionSection(CustomThemeData theme) {
     return Wrap(
       spacing: 8,
       runSpacing: 8,
@@ -294,7 +299,7 @@ class _HabitAddPageState extends State<HabitAddPage> {
         return FilterChip(
           label: Text(
             DateFormat.E().format(DateTime(2021, 1, index + 3)),
-            style: const TextStyle(color: Colors.white),
+            style: TextStyle(color: theme.welcomeText),
           ),
           selected: _selectedDays[index],
           onSelected: (bool selected) {
@@ -303,25 +308,25 @@ class _HabitAddPageState extends State<HabitAddPage> {
               _calculateTargetDays();
             });
           },
-          backgroundColor: const Color(0XFF607D8B),
-          selectedColor: const Color(0XFF03DAC6),
+          backgroundColor: theme.toDoCardBackground,
+          selectedColor: theme.focusDayColor,
         );
       }),
     );
   }
 
-  Widget _buildConfirmButton() {
+  Widget _buildConfirmButton(CustomThemeData theme) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0XFF03DAC6),
+          backgroundColor: theme.addButton,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
         ),
         onPressed: _addHabit,
-        child: const Text("Confirm Habit"),
+        child: Text("Confirm Habit", style: TextStyle(color: theme.addButtonIcon)),
       ),
     );
   }

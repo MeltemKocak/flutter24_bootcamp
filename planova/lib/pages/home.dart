@@ -1,3 +1,4 @@
+// home.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -239,12 +240,12 @@ class _NavigationExampleState extends State<NavigationExample> {
     CustomThemeData theme = ThemeColors.getTheme(themeProvider.themeValue);
 
     return Scaffold(
-      backgroundColor: theme.cardBackground,
+      backgroundColor: theme.background,
       appBar: AppBar(
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: const Icon(Icons.menu, color: Colors.white),
+              icon: Icon(Icons.menu, color: theme.appBar),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
@@ -258,13 +259,13 @@ class _NavigationExampleState extends State<NavigationExample> {
           children: [
             SizedBox(width: MediaQuery.of(context).size.width * 0.08),
             Text(appBarTitles[currentPageIndex],
-                style: const TextStyle(color: Colors.white)),
+                style: TextStyle(color: theme.appBar)),
           ],
         ),
         actions: [
           if (currentPageIndex == 2)  
           IconButton(
-            icon: const Icon(Icons.lock, color: Colors.white), // Kilit ikonu
+            icon: Icon(Icons.lock, color: theme.appBar), // Kilit ikonu
             onPressed: () {
               Navigator.push(
                 context,
@@ -276,7 +277,7 @@ class _NavigationExampleState extends State<NavigationExample> {
           ),
           if (currentPageIndex != 0)
             IconButton(
-              icon: const Icon(Icons.book_outlined, color: Colors.white),
+              icon: Icon(Icons.book_outlined, color: theme.appBar),
               onPressed: () async {
                 if (user != null && user.isAnonymous) {
                   _showAnonymousAlertDialog(context);
@@ -295,23 +296,23 @@ class _NavigationExampleState extends State<NavigationExample> {
             ),
           if (currentPageIndex == 3)
             IconButton(
-              icon: const Icon(Icons.settings_outlined, color: Colors.white),
+              icon: Icon(Icons.settings_outlined, color: theme.appBar),
               onPressed: null,
             ),
           
           if (currentPageIndex == 0)
             IconButton(
-              icon: const Icon(Icons.filter_list, color: Colors.white),
+              icon: Icon(Icons.filter_list, color: theme.appBar),
               onPressed: _openFilterDialog,
             ),
           if (currentPageIndex == 0)
             IconButton(
-              icon: const Icon(Icons.calendar_today, color: Colors.white),
+              icon: Icon(Icons.calendar_today, color: theme.appBar),
               onPressed: _openCalendarBottomSheet,
             ),
           if (currentPageIndex == 1)
             IconButton(
-              icon: const Icon(Icons.inbox, color: Colors.white),
+              icon: Icon(Icons.inbox, color: theme.appBar),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -323,13 +324,13 @@ class _NavigationExampleState extends State<NavigationExample> {
         ],
       ),
       drawer: Drawer(
-        backgroundColor: const Color(0xFF333333),
+        backgroundColor: theme.bottomBarBackground,
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
-              decoration: const BoxDecoration(
-                color: Color(0xFF333333),
+              decoration: BoxDecoration(
+                color: theme.bottomBarBackground,
               ),
               child: Row(
                 children: [
@@ -358,8 +359,8 @@ class _NavigationExampleState extends State<NavigationExample> {
                         if (snapshot.hasData) {
                           return Text(
                             snapshot.data!,
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: theme.welcomeText,
                               fontSize: 18,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -367,8 +368,8 @@ class _NavigationExampleState extends State<NavigationExample> {
                         } else {
                           return Text(
                             (user?.email) ?? 'Anonymous User',
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: theme.welcomeText,
                               fontSize: 18,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -381,8 +382,8 @@ class _NavigationExampleState extends State<NavigationExample> {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.list, color: Colors.white),
-              title: const Text('Today', style: TextStyle(color: Colors.white)),
+              leading: Icon(Icons.list, color: theme.bottomBarIcon),
+              title: Text('Today', style: TextStyle(color: theme.bottomBarText)),
               onTap: () {
                 setState(() {
                   currentPageIndex = 0;
@@ -391,8 +392,8 @@ class _NavigationExampleState extends State<NavigationExample> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.check_circle, color: Colors.white),
-              title: const Text('Habits', style: TextStyle(color: Colors.white)),
+              leading: Icon(Icons.check_circle, color: theme.bottomBarIcon),
+              title: Text('Habits', style: TextStyle(color: theme.bottomBarText)),
               onTap: () {
                 setState(() {
                   currentPageIndex = 1;
@@ -401,9 +402,8 @@ class _NavigationExampleState extends State<NavigationExample> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.star, color: Colors.white),
-              title: const Text('Important Task',
-                  style: TextStyle(color: Colors.white)),
+              leading: Icon(Icons.star, color: theme.bottomBarIcon),
+              title: Text('Important Task', style: TextStyle(color: theme.bottomBarText)),
               onTap: () {
                 setState(() {
                   currentPageIndex = 2;
@@ -412,9 +412,8 @@ class _NavigationExampleState extends State<NavigationExample> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.delete, color: Colors.white),
-              title:
-                  const Text('Deleted', style: TextStyle(color: Colors.white)),
+              leading: Icon(Icons.delete, color: theme.bottomBarIcon),
+              title: Text('Deleted', style: TextStyle(color: theme.bottomBarText)),
               onTap: () {
                 Navigator.push(
                   context,
@@ -423,9 +422,8 @@ class _NavigationExampleState extends State<NavigationExample> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.book, color: Colors.white),
-              title: const Text('User Stories',
-                  style: TextStyle(color: Colors.white)),
+              leading: Icon(Icons.book, color: theme.bottomBarIcon),
+              title: Text('User Stories', style: TextStyle(color: theme.bottomBarText)),
               onTap: () async {
                 if (user != null && user.isAnonymous) {
                   _showAnonymousAlertDialog(context);
@@ -444,18 +442,18 @@ class _NavigationExampleState extends State<NavigationExample> {
             ),
             const Divider(color: Colors.grey),
             ListTile(
-              leading: const Icon(Icons.settings, color: Colors.white),
-              title: const Text('Settings', style: TextStyle(color: Colors.white)),
+              leading: Icon(Icons.settings, color: theme.bottomBarIcon),
+              title: Text('Settings', style: TextStyle(color: theme.bottomBarText)),
               onTap: () {
                 Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SettingsPage()),
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsPage()),
                 );
               },
             ),
             ListTile(
-              leading: const Icon(Icons.logout, color: Colors.red),
-              title: const Text('Logout', style: TextStyle(color: Colors.red)),
+              leading: Icon(Icons.logout, color: Colors.red),
+              title: Text('Logout', style: TextStyle(color: Colors.red)),
               onTap: () async {
                 await Auth().signOut(context: context);
               },
@@ -506,16 +504,16 @@ class _NavigationExampleState extends State<NavigationExample> {
                   default:
                 }
               },
-              backgroundColor: theme.activeColor,
-              child: const Icon(
+              backgroundColor: theme.addButton,
+              child: Icon(
                 Icons.add,
                 size: 32,
-                color: Colors.black,
+                color: theme.addButtonIcon,
               ),
             ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       bottomNavigationBar: NavigationBar(
-        backgroundColor: theme.cardBackground,
+        backgroundColor: theme.bottomBarBackground,
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         onDestinationSelected: (int index) {
           setState(() {
@@ -523,16 +521,16 @@ class _NavigationExampleState extends State<NavigationExample> {
           });
         },
         selectedIndex: currentPageIndex,
-        destinations: const <Widget>[
+        destinations: [
           NavigationDestination(
             selectedIcon: Icon(
               Icons.calendar_month_outlined,
-              color: Colors.black,
+              color: theme.bottomBarActiveIcon,
               size: 20,
             ),
             icon: Icon(
               Icons.calendar_month_outlined,
-              color: Colors.white,
+              color: theme.bottomBarIcon,
               size: 20,
             ),
             label: 'Today',
@@ -540,12 +538,12 @@ class _NavigationExampleState extends State<NavigationExample> {
           NavigationDestination(
             selectedIcon: Icon(
               Icons.flag_outlined,
-              color: Colors.black,
+              color: theme.bottomBarActiveIcon,
               size: 20,
             ),
             icon: Icon(
               Icons.flag_outlined,
-              color: Colors.white,
+              color: theme.bottomBarIcon,
               size: 20,
             ),
             label: 'Habits',
@@ -553,12 +551,12 @@ class _NavigationExampleState extends State<NavigationExample> {
           NavigationDestination(
             selectedIcon: Icon(
               Icons.library_books_outlined,
-              color: Colors.black,
+              color: theme.bottomBarActiveIcon,
               size: 20,
             ),
             icon: Icon(
               Icons.library_books_outlined,
-              color: Colors.white,
+              color: theme.bottomBarIcon,
               size: 20,
             ),
             label: 'Journal',
@@ -566,12 +564,12 @@ class _NavigationExampleState extends State<NavigationExample> {
           NavigationDestination(
             selectedIcon: Icon(
               Icons.person_outline,
-              color: Colors.black,
+              color: theme.bottomBarActiveIcon,
               size: 20,
             ),
             icon: Icon(
               Icons.person_outline,
-              color: Colors.white,
+              color: theme.bottomBarIcon,
               size: 20,
             ),
             label: 'Profile',

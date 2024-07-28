@@ -122,7 +122,7 @@ class _ProfilePageState extends State<ProfilePage> {
       builder: (context, themeProvider, child) {
         CustomThemeData theme = ThemeColors.getTheme(themeProvider.themeValue);
         return Card(
-          color: theme.cardBackground,
+          color: theme.background,
           margin: const EdgeInsets.all(4),
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -135,7 +135,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: [
                     CircleAvatar(
                       radius: 80,
-                      backgroundColor: theme.activeColor,
+                      backgroundColor: theme.checkBoxActiveColor,
                       child: CircleAvatar(
                         radius: 78,
                         backgroundImage: _image != null
@@ -154,7 +154,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         onPressed: selectImage,
                         icon: Icon(
                           Icons.add_a_photo,
-                          color: theme.activeColor,
+                          color: theme.checkBoxActiveColor,
                         ),
                       ),
                     ),
@@ -164,7 +164,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Text(
                   user?.email ?? 'Anonymous User',
                   style: TextStyle(
-                    color: theme.dayNumTextColor,
+                    color: theme.calenderNumbers,
                     fontSize: 16,
                   ),
                 ),
@@ -175,11 +175,11 @@ class _ProfilePageState extends State<ProfilePage> {
                     children: [
                       TextField(
                         controller: nameController,
-                        style: TextStyle(color: theme.dayNumTextColor),
+                        style: TextStyle(color: theme.calenderNumbers),
                         decoration: InputDecoration(
                           hintText: 'Enter Name',
                           hintStyle: TextStyle(
-                              color: theme.dayNumTextColor.withOpacity(0.7)),
+                              color: theme.calenderNumbers.withOpacity(0.7)),
                           contentPadding: const EdgeInsets.all(10),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -193,18 +193,18 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: theme.activeColor),
+                            borderSide: BorderSide(color: theme.checkBoxActiveColor),
                           ),
                         ),
                       ),
                       const SizedBox(height: 16),
                       TextField(
                         controller: bioController,
-                        style: TextStyle(color: theme.dayNumTextColor),
+                        style: TextStyle(color: theme.calenderNumbers),
                         decoration: InputDecoration(
                           hintText: 'Enter Bio',
                           hintStyle: TextStyle(
-                              color: theme.dayNumTextColor.withOpacity(0.7)),
+                              color: theme.calenderNumbers.withOpacity(0.7)),
                           contentPadding: const EdgeInsets.all(10),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -218,7 +218,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: theme.activeColor),
+                            borderSide: BorderSide(color: theme.checkBoxActiveColor),
                           ),
                         ),
                       ),
@@ -228,16 +228,16 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 ElevatedButton.icon(
                   onPressed: saveProfile,
-                  icon: Icon(Icons.save, color: theme.cardBackground),
+                  icon: Icon(Icons.save, color: theme.toDoCardBackground),
                   label: Text(
                     'Save Profile',
                     style: TextStyle(
-                        color: theme.cardBackground,
+                        color: theme.toDoCardBackground,
                         fontSize: 20,
                         fontWeight: FontWeight.bold),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: theme.activeColor,
+                    backgroundColor: theme.checkBoxActiveColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -251,7 +251,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Text(
                   "Daily Task Overview",
                   style: TextStyle(
-                      color: theme.dayNumTextColor,
+                      color: theme.calenderNumbers,
                       fontWeight: FontWeight.bold,
                       fontSize: 23),
                 ),
@@ -273,7 +273,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Text(
                   "Weekly Task Statistics",
                   style: TextStyle(
-                      color: theme.dayNumTextColor,
+                      color: theme.calenderNumbers,
                       fontWeight: FontWeight.bold,
                       fontSize: 23),
                 ),
@@ -287,7 +287,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Text(
                   "Habits Overview",
                   style: TextStyle(
-                      color: theme.dayNumTextColor,
+                      color: theme.calenderNumbers,
                       fontWeight: FontWeight.bold,
                       fontSize: 23),
                 ),
@@ -337,7 +337,7 @@ class TaskCard extends StatelessWidget {
       builder: (context, themeProvider, child) {
         CustomThemeData theme = ThemeColors.getTheme(themeProvider.themeValue);
         return Card(
-          color: theme.todoCardBackground,
+          color: theme.toDoCardBackground,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
           ),
@@ -352,7 +352,7 @@ class TaskCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 48,
                     fontWeight: FontWeight.bold,
-                    color: theme.activeColor,
+                    color: theme.checkBoxActiveColor,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -361,7 +361,7 @@ class TaskCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: theme.dayNumTextColor,
+                    color: theme.calenderNumbers,
                   ),
                 ),
               ],
@@ -392,7 +392,7 @@ class HabitOverviewCard extends StatelessWidget {
         CustomThemeData theme = ThemeColors.getTheme(themeProvider.themeValue);
         return Card(
           margin: const EdgeInsets.all(18),
-          color: theme.todoCardBackground,
+          color: theme.toDoCardBackground,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
           ),
@@ -406,7 +406,7 @@ class HabitOverviewCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: theme.dayNumTextColor,
+                    color: theme.calenderNumbers,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -436,11 +436,11 @@ class HabitOverviewCard extends StatelessWidget {
         children: [
           Text(
             label,
-            style: TextStyle(color: theme.dayNumTextColor.withOpacity(0.7)),
+            style: TextStyle(color: theme.calenderNumbers.withOpacity(0.7)),
           ),
           Text(
             value,
-            style: TextStyle(color: theme.dayNumTextColor),
+            style: TextStyle(color: theme.calenderNumbers),
           ),
         ],
       ),
@@ -552,7 +552,7 @@ class WeeklyStatsWidget extends StatelessWidget {
 
               return Container(
                 decoration: BoxDecoration(
-                  color: theme.todoCardBackground,
+                  color: theme.toDoCardBackground,
                   borderRadius: BorderRadius.circular(15.0),
                 ),
                 padding: const EdgeInsets.all(12.0),
@@ -563,8 +563,8 @@ class WeeklyStatsWidget extends StatelessWidget {
                       child: Text(
                         ' ',
                         style: TextStyle(
-                          color: theme.dayNumTextColor,
-                          fontSize:1,
+                          color: theme.calenderNumbers,
+                          fontSize: 1,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -589,19 +589,19 @@ class WeeklyStatsWidget extends StatelessWidget {
                               getTitlesWidget: (value, meta) {
                                 switch (value.toInt()) {
                                   case 0:
-                                    return Text('Mon', style: TextStyle(color: theme.dayNumTextColor, fontSize: 12));
+                                    return Text('Mon', style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
                                   case 1:
-                                    return Text('Tue', style: TextStyle(color: theme.dayNumTextColor, fontSize: 12));
+                                    return Text('Tue', style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
                                   case 2:
-                                    return Text('Wed', style: TextStyle(color: theme.dayNumTextColor, fontSize: 12));
+                                    return Text('Wed', style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
                                   case 3:
-                                    return Text('Thu', style: TextStyle(color: theme.dayNumTextColor, fontSize: 12));
+                                    return Text('Thu', style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
                                   case 4:
-                                    return Text('Fri', style: TextStyle(color: theme.dayNumTextColor, fontSize: 12));
+                                    return Text('Fri', style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
                                   case 5:
-                                    return Text('Sat', style: TextStyle(color: theme.dayNumTextColor, fontSize: 12));
+                                    return Text('Sat', style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
                                   case 6:
-                                    return Text('Sun', style: TextStyle(color: theme.dayNumTextColor, fontSize: 12));
+                                    return Text('Sun', style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
                                   default:
                                     return Text('');
                                 }
@@ -622,7 +622,7 @@ class WeeklyStatsWidget extends StatelessWidget {
                                   BarChartRodStackItem(
                                     0,
                                     taskCounts != null ? taskCounts[weekDays[i]]!['completed']!.toDouble() : 0,
-                                    theme.activeColor,
+                                    theme.checkBoxActiveColor,
                                   ),
                                 ],
                               ),

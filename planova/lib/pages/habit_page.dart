@@ -3,7 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:planova/pages/habit_detail_screen.dart';
-import 'package:planova/pages/incoming_request_page.dart';
+import 'package:provider/provider.dart';
+import 'package:planova/utilities/theme.dart';
 
 class HabitPage extends StatefulWidget {
   const HabitPage({super.key});
@@ -150,7 +151,7 @@ class _HabitPageState extends State<HabitPage> {
     });
   }
 
-  Widget _buildHabitCard(DocumentSnapshot document, bool isSharedHabit) {
+  Widget _buildHabitCard(DocumentSnapshot document, bool isSharedHabit, CustomThemeData theme) {
     Map<String, dynamic>? data = document.data() as Map<String, dynamic>?;
 
     if (data == null) {
@@ -196,7 +197,7 @@ class _HabitPageState extends State<HabitPage> {
           );
         },
         child: Card(
-          color: const Color.fromRGBO(42, 46, 55, 1),
+          color: theme.habitCardBackground,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -213,8 +214,8 @@ class _HabitPageState extends State<HabitPage> {
                       children: [
                         Text(
                           data['name'] ?? 'No name',
-                          style: const TextStyle(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: theme.habitTitle,
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
@@ -222,8 +223,8 @@ class _HabitPageState extends State<HabitPage> {
                         const SizedBox(height: 5),
                         Text(
                           data['description'] ?? 'No description',
-                          style: const TextStyle(
-                            color: Colors.grey,
+                          style: TextStyle(
+                            color: theme.subText,
                             fontSize: 14,
                           ),
                         ),
@@ -239,28 +240,28 @@ class _HabitPageState extends State<HabitPage> {
                           : (bool? value) {
                               _showAlertDialog(context);
                             },
-                      checkColor: Colors.white,
-                      activeColor: const Color(0XFF03DAC6),
+                      checkColor: theme.checkBoxBorderColor,
+                      activeColor: theme.checkBoxActiveColor,
                     ),
                   ],
                 ),
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    const Icon(Icons.list, color: Colors.grey, size: 18),
+                    Icon(Icons.list, color: theme.habitIcons, size: 18),
                     const SizedBox(width: 5),
                     Text(
                       'Progress',
-                      style: const TextStyle(
-                        color: Colors.grey,
+                      style: TextStyle(
+                        color: theme.habitIcons,
                         fontSize: 14,
                       ),
                     ),
                     Spacer(),
                     Text(
                       '$completedCount/$targetDays days',
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: theme.habitTitle,
                         fontSize: 14,
                       ),
                     ),
@@ -269,9 +270,8 @@ class _HabitPageState extends State<HabitPage> {
                 const SizedBox(height: 10),
                 LinearProgressIndicator(
                   value: targetDays > 0 ? completedCount / targetDays : 0,
-                  backgroundColor: const Color(0XFF1E1E1E),
-                  valueColor:
-                      const AlwaysStoppedAnimation<Color>(Color(0XFF03DAC6)),
+                  backgroundColor: theme.habitDetailEditBackground,
+                  valueColor: AlwaysStoppedAnimation<Color>(theme.habitProgress),
                 ),
                 const SizedBox(height: 20),
                 Row(
@@ -281,7 +281,7 @@ class _HabitPageState extends State<HabitPage> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: const Color.fromRGBO(60, 63, 65, 1),
+                        color: theme.weeklyStatsBackgroundColor,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
@@ -289,8 +289,8 @@ class _HabitPageState extends State<HabitPage> {
                             ? 'Aktif Gün'
                             : DateFormat('dd MMM yyyy')
                                 .format(DateTime.parse(displayDate)),
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: theme.habitActiveDayText,
                           fontSize: 12,
                         ),
                       ),
@@ -306,17 +306,17 @@ class _HabitPageState extends State<HabitPage> {
                           ),
                           Text(
                             userName,
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: theme.habitTitle,
                               fontSize: 12,
                             ),
                           ),
                         ],
                       )
                     else
-                      const CircleAvatar(
+                      CircleAvatar(
                         radius: 14,
-                        child: Icon(Icons.person, color: Colors.white),
+                        child: Icon(Icons.person, color: theme.habitIcons),
                       ),
                     if (isSharedHabit)
                       FutureBuilder<List<Widget>>(
@@ -338,8 +338,8 @@ class _HabitPageState extends State<HabitPage> {
                                   ),
                                   Text(
                                     friendName,
-                                    style: const TextStyle(
-                                      color: Colors.white,
+                                    style: TextStyle(
+                                      color: theme.habitTitle,
                                       fontSize: 12,
                                     ),
                                   ),
@@ -353,8 +353,8 @@ class _HabitPageState extends State<HabitPage> {
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return const CircularProgressIndicator(
-                                color: Color(0XFF03DAC6));
+                            return CircularProgressIndicator(
+                                color: theme.checkBoxActiveColor);
                           }
                           if (snapshot.hasError) {
                             return const SizedBox.shrink();
@@ -377,8 +377,11 @@ class _HabitPageState extends State<HabitPage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    CustomThemeData theme = ThemeColors.getTheme(themeProvider.themeValue);
+
     return Card(
-      color: const Color.fromARGB(255, 30, 30, 30),
+      color: theme.background,
       shadowColor: Colors.transparent,
       child: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
@@ -388,20 +391,20 @@ class _HabitPageState extends State<HabitPage> {
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
-            return const Center(
+            return Center(
                 child: Text('Something went wrong',
-                    style: TextStyle(color: Colors.white)));
+                    style: TextStyle(color: theme.habitTitle)));
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-                child: CircularProgressIndicator(color: Color(0XFF03DAC6)));
+            return Center(
+                child: CircularProgressIndicator(color: theme.habitProgress));
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(
+            return Center(
                 child: Text('No habits available',
-                    style: TextStyle(color: Colors.white)));
+                    style: TextStyle(color: theme.habitTitle)));
           }
 
           return ListView(
@@ -417,7 +420,7 @@ class _HabitPageState extends State<HabitPage> {
               bool isSharedHabit = data.containsKey('friends') &&
                   (data['friends'] as List).isNotEmpty;
 
-              return _buildHabitCard(document, isSharedHabit);
+              return _buildHabitCard(document, isSharedHabit, theme);
             }).toList(),
           );
         },

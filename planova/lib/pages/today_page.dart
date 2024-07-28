@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:planova/pages/habit_detail_screen.dart';
 import 'package:planova/pages/today_edit.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:provider/provider.dart';
+import 'package:planova/utilities/theme.dart';
 
 class TodayPage extends StatefulWidget {
   final EasyInfiniteDateTimelineController controller;
@@ -105,8 +107,11 @@ class _TodayPageState extends State<TodayPage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    CustomThemeData theme = ThemeColors.getTheme(themeProvider.themeValue);
+
     return Card(
-      color: const Color.fromARGB(255, 30, 30, 30),
+      color: theme.background,
       shadowColor: Colors.transparent,
       child: Column(
         children: [
@@ -123,27 +128,27 @@ class _TodayPageState extends State<TodayPage> {
                 widget.onDateChange(date);
                 setState(() {});
               },
-              activeColor: const Color.fromARGB(255, 3, 218, 75),
-              dayProps: const EasyDayProps(
+              activeColor: theme.focusDayColor,
+              dayProps: EasyDayProps(
                 todayStyle: DayStyle(
                   decoration: BoxDecoration(
-                    color: Color.fromARGB(99, 43, 158, 87),
+                    color: theme.activeDayColor.withOpacity(0.4),
                     borderRadius: BorderRadius.all(Radius.circular(18)),
                   ),
                 ),
                 activeDayStyle: DayStyle(
                   decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 3, 218, 182),
+                    color: theme.focusDayColor,
                     borderRadius: BorderRadius.all(Radius.circular(18)),
                   ),
                 ),
-                borderColor: Color.fromARGB(0, 0, 255, 242),
+                borderColor: Colors.transparent,
                 height: 60.0,
                 width: 50,
                 dayStructure: DayStructure.dayStrDayNum,
                 inactiveDayStyle: DayStyle(
                   borderRadius: 18,
-                  dayNumStyle: TextStyle(fontSize: 18.0, color: Colors.white),
+                  dayNumStyle: TextStyle(fontSize: 18.0, color: theme.calenderDays),
                 ),
               ),
             ),
@@ -164,7 +169,7 @@ class _TodayPageState extends State<TodayPage> {
                 if (snapshots.hasError) {
                   return Text(
                     'Error: ${snapshots.error}',
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(color: theme.toDoTitle),
                   );
                 }
 
@@ -236,9 +241,9 @@ class _TodayPageState extends State<TodayPage> {
                 return ListView(
                   children: [
                     _buildTaskSection(
-                        'Incomplete', incompleteTasks, _showIncomplete),
+                        'Incomplete', incompleteTasks, _showIncomplete, theme),
                     _buildTaskSection(
-                        'Completed', completedTasks, _showCompleted),
+                        'Completed', completedTasks, _showCompleted, theme),
                   ],
                 );
               },
@@ -285,7 +290,7 @@ class _TodayPageState extends State<TodayPage> {
   }
 
   Widget _buildTaskSection(
-      String title, List<DocumentSnapshot> tasks, bool isExpanded) {
+      String title, List<DocumentSnapshot> tasks, bool isExpanded, CustomThemeData theme) {
     return Column(
       children: [
         InkWell(
@@ -304,8 +309,8 @@ class _TodayPageState extends State<TodayPage> {
               children: [
                 Text(
                   '$title (${tasks.length})',
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: theme.toDoTitle,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -315,18 +320,18 @@ class _TodayPageState extends State<TodayPage> {
                   isExpanded
                       ? Icons.keyboard_arrow_up
                       : Icons.keyboard_arrow_down,
-                  color: Colors.white,
+                  color: theme.toDoIcons,
                 ),
               ],
             ),
           ),
         ),
-        if (isExpanded) ...tasks.map((task) => _buildTaskCard(task)),
+        if (isExpanded) ...tasks.map((task) => _buildTaskCard(task, theme)),
       ],
     );
   }
 
-  Widget _buildTaskCard(DocumentSnapshot task) {
+  Widget _buildTaskCard(DocumentSnapshot task, CustomThemeData theme) {
     final data = task.data() as Map<String, dynamic>;
     final isHabit = data.containsKey('completed_days');
     final taskName = isHabit ? data['name'] : data['taskName'];
@@ -401,11 +406,8 @@ class _TodayPageState extends State<TodayPage> {
             }
           },
           child: Card(
-            color: isHabit
-                ? const Color.fromARGB(200, 39, 79, 94)
-                : const Color.fromARGB(120, 96, 125, 139),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            color: isHabit ? theme.toDoCardBackground : theme.habitCardBackground,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             child: Padding(
               padding: const EdgeInsets.all(12),
               child: Row(
@@ -414,8 +416,7 @@ class _TodayPageState extends State<TodayPage> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(4.0),
                     ),
-                    side: const BorderSide(
-                        color: Color.fromARGB(200, 3, 218, 198)),
+                    side: BorderSide(color: theme.checkBoxBorderColor),
                     value: taskCompletionStatus,
                     onChanged: isHabit
                         ? (isToday
@@ -441,7 +442,7 @@ class _TodayPageState extends State<TodayPage> {
                               });
                             }
                           },
-                    activeColor: const Color.fromARGB(150, 3, 218, 198),
+                    activeColor: theme.checkBoxActiveColor.withOpacity(0.6),
                   ),
                   Expanded(
                     child: Column(
@@ -449,20 +450,18 @@ class _TodayPageState extends State<TodayPage> {
                       children: [
                         Text(
                           taskName,
-                          style: const TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
+                          style: TextStyle(color: theme.toDoTitle, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 4),
                         if (!isHabit)
                           Row(
                             children: [
                               if (data['taskRecurring'] != 'Tekrar yapma')
-                                const Padding(
-                                  padding: EdgeInsets.only(right: 10),
-                                  child: Icon(Icons.repeat,
-                                      color: Colors.white70, size: 16),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 10),
+                                  child: Icon(Icons.repeat, color: theme.toDoIcons, size: 16),
                                 ),
-                              _timeShow(task)
+                              _timeShow(task, theme)
                             ],
                           ),
                       ],
@@ -474,7 +473,7 @@ class _TodayPageState extends State<TodayPage> {
                         : (data['isFavorite'] == true)
                             ? Icons.star
                             : Icons.person_outlined,
-                    color: Colors.white70,
+                    color: theme.toDoIcons,
                   ),
                 ],
               ),
@@ -586,7 +585,7 @@ class _TodayPageState extends State<TodayPage> {
     );
   }
 
-  Widget _timeShow(DocumentSnapshot task) {
+  Widget _timeShow(DocumentSnapshot task, CustomThemeData theme) {
     String selectedDate = DateFormat('yyyy-MM-dd').format(_focusDate!);
     Map<String, dynamic> taskData = task.data() as Map<String, dynamic>;
     String taskTime = taskData.containsKey('taskTimes')
@@ -604,7 +603,7 @@ class _TodayPageState extends State<TodayPage> {
             padding: const EdgeInsets.only(left: 4),
             child: Text(
               taskTime,
-              style: const TextStyle(color: Colors.white70, fontSize: 16),
+              style: TextStyle(color: theme.toDoIcons, fontSize: 16),
             ),
           ),
         ],

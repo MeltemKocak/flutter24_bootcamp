@@ -1,6 +1,9 @@
+// bottom_sheet_calendar.dart
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
+import 'package:provider/provider.dart';
+import 'package:planova/utilities/theme.dart';
 
 class BottomSheetCalendar extends StatefulWidget {
   final EasyInfiniteDateTimelineController controller;
@@ -19,11 +22,14 @@ class _BottomSheetCalendarState extends State<BottomSheetCalendar> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    CustomThemeData theme = ThemeColors.getTheme(themeProvider.themeValue);
+
     return Container(
       height: MediaQuery.of(context).size.height * 0.5,
-      decoration: const BoxDecoration(
-        color: Color.fromARGB(255, 30, 30, 30),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: theme.background,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
         children: [
@@ -32,7 +38,7 @@ class _BottomSheetCalendarState extends State<BottomSheetCalendar> {
             width: 40,
             height: 5,
             decoration: BoxDecoration(
-              color: Colors.grey[600],
+              color: theme.borderColor,
               borderRadius: BorderRadius.circular(2.5),
             ),
           ),
@@ -63,28 +69,28 @@ class _BottomSheetCalendarState extends State<BottomSheetCalendar> {
                 _focusedDay = focusedDay;
               },
               calendarStyle: CalendarStyle(
-                defaultTextStyle: const TextStyle(color: Colors.white),
-                weekendTextStyle: const TextStyle(color: Colors.white70),
-                outsideTextStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
-                selectedDecoration: const BoxDecoration(
-                  color: Color.fromARGB(255, 3, 218, 182),
+                defaultTextStyle: TextStyle(color: theme.calenderDays),
+                weekendTextStyle: TextStyle(color: theme.calenderDays.withOpacity(0.7)),
+                outsideTextStyle: TextStyle(color: theme.calenderDays.withOpacity(0.5)),
+                selectedDecoration: BoxDecoration(
+                  color: theme.focusDayColor,
                   shape: BoxShape.circle,
                 ),
-                todayDecoration: const BoxDecoration(
-                  color: Color.fromARGB(99, 43, 158, 87),
+                todayDecoration: BoxDecoration(
+                  color: theme.activeDayColor.withOpacity(0.5),
                   shape: BoxShape.circle,
                 ),
               ),
-              headerStyle: const HeaderStyle(
+              headerStyle: HeaderStyle(
                 formatButtonVisible: false,
                 titleCentered: true,
-                titleTextStyle: TextStyle(color: Colors.white, fontSize: 18),
-                leftChevronIcon: Icon(Icons.chevron_left, color: Colors.white),
-                rightChevronIcon: Icon(Icons.chevron_right, color: Colors.white),
+                titleTextStyle: TextStyle(color: theme.calenderNumbers, fontSize: 18),
+                leftChevronIcon: Icon(Icons.chevron_left, color: theme.calenderNumbers),
+                rightChevronIcon: Icon(Icons.chevron_right, color: theme.calenderNumbers),
               ),
-              daysOfWeekStyle: const DaysOfWeekStyle(
-                weekdayStyle: TextStyle(color: Colors.white),
-                weekendStyle: TextStyle(color: Colors.white70),
+              daysOfWeekStyle: DaysOfWeekStyle(
+                weekdayStyle: TextStyle(color: theme.calenderDays),
+                weekendStyle: TextStyle(color: theme.calenderDays.withOpacity(0.7)),
               ),
             ),
           ),

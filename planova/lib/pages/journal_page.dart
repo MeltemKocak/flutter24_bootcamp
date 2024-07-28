@@ -6,6 +6,8 @@ import 'package:planova/pages/journal_detail_page.dart';
 import 'package:planova/pages/journal_edit_page.dart';
 import 'package:planova/pages/photo_view_page.dart';
 import 'package:planova/pages/pin_entry_page.dart'; // Import PinEntryPage
+import 'package:provider/provider.dart';
+import 'package:planova/utilities/theme.dart';
 
 class JournalPage extends StatefulWidget {
   const JournalPage({super.key});
@@ -18,17 +20,22 @@ class _JournalPageState extends State<JournalPage> {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    CustomThemeData theme = ThemeColors.getTheme(themeProvider.themeValue);
+
     if (user == null) {
-      return const Card(
-        color: Color(0xFF1E1E1E),
-        child: Center(child: Text('Please sign in', style: TextStyle(color: Colors.white))),
+      return Card(
+        color: theme.background,
+        child: Center(
+          child: Text('Please sign in', style: TextStyle(color: theme.toDoTitle)),
+        ),
       );
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: theme.background,
       body: Card(
-        color: const Color(0xFF1E1E1E),
+        color: theme.background,
         child: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
               .collection('journal')
@@ -38,13 +45,19 @@ class _JournalPageState extends State<JournalPage> {
               .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator(color: Color(0XFF03DAC6)));
+              return Center(
+                child: CircularProgressIndicator(color: theme.habitProgress),
+              );
             }
             if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}', style: const TextStyle(color: Colors.white)));
+              return Center(
+                child: Text('Error: ${snapshot.error}', style: TextStyle(color: theme.toDoTitle)),
+              );
             }
             if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-              return const Center(child: Text('No entries found', style: TextStyle(color: Colors.white)));
+              return Center(
+                child: Text('No entries found', style: TextStyle(color: theme.toDoTitle)),
+              );
             }
 
             return ListView.builder(
@@ -85,7 +98,7 @@ class _JournalPageState extends State<JournalPage> {
                     },
                     child: Card(
                       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                      color: const Color(0xFF2A2A2A),
+                      color: theme.toDoCardBackground,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
@@ -98,17 +111,17 @@ class _JournalPageState extends State<JournalPage> {
                               children: [
                                 Text(
                                   formattedDate,
-                                  style: const TextStyle(
-                                    color: Color(0XFF03DAC6),
+                                  style: TextStyle(
+                                    color: theme.habitProgress,
                                     fontSize: 24,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
                                 const Spacer(),
                                 if (audioUrl != null && audioUrl.isNotEmpty)
-                                  const Icon(Icons.audiotrack, color: Color(0XFF03DAC6)),
+                                  Icon(Icons.audiotrack, color: theme.habitProgress),
                                 IconButton(
-                                  icon: const Icon(Icons.edit, color: Color(0XFF03DAC6)),
+                                  icon: Icon(Icons.edit, color: theme.habitProgress),
                                   onPressed: () {
                                     Navigator.push(
                                       context,
@@ -123,8 +136,8 @@ class _JournalPageState extends State<JournalPage> {
                             const SizedBox(height: 10),
                             Text(
                               data['name'],
-                              style: const TextStyle(
-                                color: Colors.white,
+                              style: TextStyle(
+                                color: theme.toDoTitle,
                                 fontSize: 22,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -132,8 +145,8 @@ class _JournalPageState extends State<JournalPage> {
                             const SizedBox(height: 10),
                             Text(
                               description.length > 100 ? '${description.substring(0, 100)}...' : description,
-                              style: const TextStyle(
-                                color: Colors.white70,
+                              style: TextStyle(
+                                color: theme.toDoIcons,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w300,
                               ),
