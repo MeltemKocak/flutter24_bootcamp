@@ -1,7 +1,9 @@
 // home.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:planova/localization_checker.dart';
 import 'package:planova/pages/bottom_sheet_calendar.dart';
 import 'package:planova/pages/habit_add.dart';
 import 'package:planova/pages/habit_page.dart';
@@ -78,7 +80,7 @@ class _NavigationExampleState extends State<NavigationExample> {
   }
 
   static int currentPageIndex = 0;
-  final List<String> appBarTitles = ['Today', 'Habits', 'Journal', 'Profile'];
+  final List<String> appBarTitles = [tr("Today"), tr("Habits"), tr("Journal"), tr("Profile")];
 
   final EasyInfiniteDateTimelineController _controller =
       EasyInfiniteDateTimelineController();
@@ -108,7 +110,7 @@ class _NavigationExampleState extends State<NavigationExample> {
         return AlertDialog(
           backgroundColor: theme.background,
           title: Text(
-            'Filtrele',
+            'Filter',
             style: TextStyle(color: theme.welcomeText),
           ),
           content: SingleChildScrollView(
@@ -379,7 +381,7 @@ class _NavigationExampleState extends State<NavigationExample> {
                               fontSize: 18,
                               overflow: TextOverflow.ellipsis,
                             ),
-                          );
+                          ).tr();
                         }
                       },
                     ),
@@ -470,6 +472,17 @@ class _NavigationExampleState extends State<NavigationExample> {
                 await Auth().signOut(context: context);
               },
             ),
+
+            ListTile(
+              leading: const Icon(Icons.settings, color: Colors.white),
+              title:
+                  const Text("Languages", style: TextStyle(color: Colors.white)).tr(),
+              onTap: () {
+                LocalizationChecker.changeLanguge(context);
+              },
+            ),
+            
+
           ],
         ),
       ),

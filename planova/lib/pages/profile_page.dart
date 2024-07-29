@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -99,7 +100,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void saveProfile() async {
     String name = nameController.text;
     String bio = bioController.text;
-    String email = user?.email ?? 'Anonymous User';
+    String email =  user?.email ?? tr('Anonymous User');
     if (_image != null) {
       imageUrl = await _uploadImageToStorage(_image!);
     }
@@ -163,7 +164,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  user?.email ?? 'Anonymous User',
+                user?.email ?? tr('Anonymous User'),
                   style: TextStyle(
                     color: theme.calenderNumbers,
                     fontSize: 16,
@@ -178,7 +179,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         controller: nameController,
                         style: TextStyle(color: theme.calenderNumbers),
                         decoration: InputDecoration(
-                          hintText: 'Enter Name',
+                        hintText: tr('Enter Name'),
                           hintStyle: TextStyle(
                               color: theme.calenderNumbers.withOpacity(0.7)),
                           contentPadding: const EdgeInsets.all(10),
@@ -203,7 +204,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         controller: bioController,
                         style: TextStyle(color: theme.calenderNumbers),
                         decoration: InputDecoration(
-                          hintText: 'Enter Bio',
+                        hintText: tr('Enter Bio'),
                           hintStyle: TextStyle(
                               color: theme.calenderNumbers.withOpacity(0.7)),
                           contentPadding: const EdgeInsets.all(10),
@@ -231,7 +232,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   onPressed: saveProfile,
                   icon: Icon(Icons.save, color: theme.toDoCardBackground),
                   label: Text(
-                    'Save Profile',
+                  tr('Save Profile'),
                     style: TextStyle(
                         color: theme.toDoCardBackground,
                         fontSize: 20,
@@ -250,7 +251,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 const SizedBox(height: 60),
                 Text(
-                  "Daily Task Overview",
+              tr("Daily Task Overview"),
                   style: TextStyle(
                       color: theme.calenderNumbers,
                       fontWeight: FontWeight.bold,
@@ -261,18 +262,18 @@ class _ProfilePageState extends State<ProfilePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     TaskCard(
-                      title: 'Incomplete Task',
+                  title: tr('Incomplete Task'),
                       count: _incompleteTasks,
                     ),
                     TaskCard(
-                      title: 'Completed Task',
+                  title: tr('Completed Task'),
                       count: _completedTasks,
                     ),
                   ],
                 ),
                 const SizedBox(height: 40),
                 Text(
-                  "Weekly Task Statistics",
+              tr("Daily Task Statistics"),
                   style: TextStyle(
                       color: theme.calenderNumbers,
                       fontWeight: FontWeight.bold,
@@ -291,7 +292,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       color: theme.calenderNumbers,
                       fontWeight: FontWeight.bold,
                       fontSize: 23),
-                ),
+                ).tr(),
                 Column(
                   children: habits
                       .map((habit) => HabitOverviewCard(habit: habit))
@@ -311,7 +312,7 @@ class _ProfilePageState extends State<ProfilePage> {
     if (pickedFile != null) {
       return await pickedFile.readAsBytes();
     } else {
-      throw Exception('No image selected');
+      throw Exception(tr('No image selected'));
     }
   }
 
@@ -411,16 +412,16 @@ class HabitOverviewCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-                _buildStatRow('Current Streak', '$currentStreak days', theme),
-                _buildStatRow('Longest Streak', '$longestStreak days', theme),
+                _buildStatRow(tr('Current Streak'), "$currentStreak "+ tr("days"), theme),
+                _buildStatRow(tr('Longest Streak'), "$longestStreak "+ tr("days"), theme),
                 _buildStatRow(
-                    'Completion',
-                    '$completion% ($completedCount days of $targetDays days)',
+                    tr('Completion'),
+                    '$completion% ($completedCount / $targetDays)',
                     theme),
                 _buildStatRow(
-                    'Start Date', _formatDate(habit['start_date']), theme),
+                    tr('Start Date'), _formatDate(habit['start_date']), theme),
                 _buildStatRow(
-                    'End Date', _formatDate(habit['end_date']), theme),
+                    tr('End Date'), _formatDate(habit['end_date']), theme),
               ],
             ),
           ),
@@ -537,7 +538,7 @@ class WeeklyStatsWidget extends StatelessWidget {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
+              return Text("Error"+":"+" ${snapshot.error}");
             } else {
               Map<String, Map<String, int>>? taskCounts = snapshot.data;
 
@@ -590,19 +591,19 @@ class WeeklyStatsWidget extends StatelessWidget {
                               getTitlesWidget: (value, meta) {
                                 switch (value.toInt()) {
                                   case 0:
-                                    return Text('Mon', style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
+                                    return Text(tr('Mon'), style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
                                   case 1:
-                                    return Text('Tue', style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
+                                    return Text(tr('Tue'), style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
                                   case 2:
-                                    return Text('Wed', style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
+                                    return Text(tr('Wed'), style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
                                   case 3:
-                                    return Text('Thu', style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
+                                    return Text(tr('Thu'), style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
                                   case 4:
-                                    return Text('Fri', style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
+                                    return Text(tr('Fri'), style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
                                   case 5:
-                                    return Text('Sat', style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
+                                    return Text(tr('Sat'), style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
                                   case 6:
-                                    return Text('Sun', style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
+                                    return Text(tr('Sun'), style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
                                   default:
                                     return Text('');
                                 }
@@ -656,5 +657,5 @@ class WeeklyStatsWidget extends StatelessWidget {
     return taskCounts;
   }
 
-  static const List<String> weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  static List<String> weekDays = [tr('Mon'), tr('Tue'), tr('Wed'), tr('Thu'), tr('Fri'),tr('Sat') ,tr('Sun') ];
 }

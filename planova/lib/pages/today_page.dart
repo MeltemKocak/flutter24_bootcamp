@@ -1,4 +1,5 @@
 import 'package:easy_date_timeline/easy_date_timeline.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -170,7 +171,7 @@ class _TodayPageState extends State<TodayPage> {
               builder: (context, snapshots) {
                 if (snapshots.hasError) {
                   return Text(
-                    'Error: ${snapshots.error}',
+                    "Error"+":"+" ${snapshots.error}",
                     style: TextStyle(color: theme.toDoTitle),
                   );
                 }
@@ -243,9 +244,9 @@ class _TodayPageState extends State<TodayPage> {
                 return ListView(
                   children: [
                     _buildTaskSection(
-                        'Incomplete', incompleteTasks, _showIncomplete, theme),
+                        tr("Incomplete"), incompleteTasks, _showIncomplete, theme),
                     _buildTaskSection(
-                        'Completed', completedTasks, _showCompleted, theme),
+                        tr("Completed"), completedTasks, _showCompleted, theme),
                   ],
                 );
               },
@@ -535,18 +536,18 @@ class _TodayPageState extends State<TodayPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: const Color(0xFF1E1E1E),
-          title: const Text(
-            'Hata',
+          title: Text(
+            tr("Error"),
             style: TextStyle(color: Colors.white),
           ),
-          content: const Text(
-            'Yalnızca tasklar favori olarak işaretlenebilir.',
+          content: Text(
+            tr("Only tasks can be marked as favorites."),
             style: TextStyle(color: Colors.white70),
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text(
-                'Tamam',
+              child: Text(
+                tr("Okay"),
                 style: TextStyle(color: Color(0xFF03DAC6)),
               ),
               onPressed: () {
@@ -571,12 +572,12 @@ class _TodayPageState extends State<TodayPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Geçersiz İşlem"),
+          title: const Text("Invalid Transaction").tr(),
           content:
-              const Text("Sadece güncel tarihteki görevler tamamlanabilir."),
+              const Text("Only quests with the current date can be completed.").tr(),
           actions: <Widget>[
             TextButton(
-              child: const Text("Tamam"),
+              child: const Text("Okay").tr(),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -621,16 +622,16 @@ class _TodayPageState extends State<TodayPage> {
         return AlertDialog(
           backgroundColor: const Color(0xFF1E1E1E),
           title: const Text(
-            'Tekrarlı Görev',
+            "Repetitive Task",
             style: TextStyle(color: Colors.white),
-          ),
+          ).tr(),
           content: SingleChildScrollView(
             child: ListBody(
-              children: const <Widget>[
+              children: <Widget>[
                 Text(
-                  'Bu görev tekrarlı bir görevdir.',
+                  "Repetitive Task",
                   style: TextStyle(color: Colors.white70),
-                ),
+                ).tr(),
                 Text(
                   'Tüm tekrarlı görevleri silmek için görev detaylarına gidiniz.',
                   style: TextStyle(color: Colors.white70),
@@ -641,9 +642,9 @@ class _TodayPageState extends State<TodayPage> {
           actions: <Widget>[
             TextButton(
               child: const Text(
-                'Tamam',
+                "Okay",
                 style: TextStyle(color: Color(0xFF03DAC6)),
-              ),
+              ).tr(),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -696,28 +697,28 @@ class _TodayPageState extends State<TodayPage> {
         return AlertDialog(
           backgroundColor: const Color(0xFF1E1E1E),
           title: const Text(
-            'Sil',
+            "Delete",
             style: TextStyle(color: Colors.white),
-          ),
+          ).tr(),
           content: const Text(
-            'Bu görevi silmek istediğinizden emin misiniz?',
+            "Are you sure you want to delete this task?",
             style: TextStyle(color: Colors.white70),
-          ),
+          ).tr(),
           actions: <Widget>[
             TextButton(
               child: const Text(
-                'İptal',
+                "Cancel",
                 style: TextStyle(color: Color(0xFF03DAC6)),
-              ),
+              ).tr(),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
             ),
             TextButton(
               child: const Text(
-                'Sil',
+                "Delete",
                 style: TextStyle(color: Colors.red),
-              ),
+              ).tr(),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },

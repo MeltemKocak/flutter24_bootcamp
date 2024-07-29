@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -42,7 +43,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
         _isPinIncorrect = true;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Incorrect PIN')),
+        SnackBar(content: Text('Incorrect PIN').tr()),
       );
     }
   }
@@ -98,7 +99,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
               obscureText: true,
               style: TextStyle(color: theme.welcomeText),
               decoration: InputDecoration(
-                labelText: 'PIN',
+                labelText: tr('PIN'),
                 labelStyle: TextStyle(color: theme.welcomeText),
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: _isPinIncorrect ? theme.activeDayColor : theme.welcomeText),
@@ -114,13 +115,13 @@ class _PinEntryPageState extends State<PinEntryPage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: theme.addButton,
               ),
-              child: Text('Submit PIN'),
+              child: Text('Submit PIN').tr(),
             ),
             SizedBox(height: 10),
             TextButton(
               onPressed: _navigateToPatternLock,
               child: Text(
-                'Use Pattern',
+                tr('Use Pattern'),
                 style: TextStyle(color: theme.subText),
               ),
             ),

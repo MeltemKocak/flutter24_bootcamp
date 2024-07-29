@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:planova/utilities/theme.dart';
@@ -125,7 +126,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             fontFamily: 'Lato',
             fontWeight: FontWeight.w600,
           ),
-        ),
+        ).tr(),
       ),
     );
   }
@@ -151,7 +152,7 @@ class WelcomesliderItemWidget extends StatelessWidget {
                 fontFamily: 'Lato',
                 fontWeight: FontWeight.w700,
               ),
-            ),
+            ).tr(),
             const SizedBox(height: 8),
             Text(
               "Here’s a good place for a brief overview\nof the app or it’s key features.",
@@ -164,7 +165,7 @@ class WelcomesliderItemWidget extends StatelessWidget {
                 fontFamily: 'Lato',
                 fontWeight: FontWeight.w400,
               ),
-            ),
+            ).tr(),
           ],
         );
       case 1:
@@ -178,10 +179,10 @@ class WelcomesliderItemWidget extends StatelessWidget {
                 fontFamily: 'Lato',
                 fontWeight: FontWeight.w700,
               ),
-            ),
-            const SizedBox(height: 8),
+            ).tr(),
+             SizedBox(height: 8),
             Text(
-              "Explore the various features\nthat make our app unique.",
+              "Explore the various features"+"\n"+"that make our app unique.",
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
@@ -191,7 +192,7 @@ class WelcomesliderItemWidget extends StatelessWidget {
                 fontFamily: 'Lato',
                 fontWeight: FontWeight.w400,
               ),
-            ),
+            ).tr(),
           ],
         );
       case 2:
@@ -205,7 +206,7 @@ class WelcomesliderItemWidget extends StatelessWidget {
                 fontFamily: 'Lato',
                 fontWeight: FontWeight.w700,
               ),
-            ),
+            ).tr(),
             const SizedBox(height: 8),
             Text(
               "Sign up and start using\nthe app today.",
@@ -218,7 +219,7 @@ class WelcomesliderItemWidget extends StatelessWidget {
                 fontFamily: 'Lato',
                 fontWeight: FontWeight.w400,
               ),
-            ),
+            ).tr(),
           ],
         );
       default:

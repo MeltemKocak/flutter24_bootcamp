@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:planova/utilities/theme.dart';
@@ -116,11 +117,11 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Warning'),
-          content: const Text('You cannot check this habit today.'),
+          title: const Text('Warning').tr(),
+          content: const Text("You cannot check this habit today").tr(),
           actions: <Widget>[
             TextButton(
-              child: const Text('OK'),
+              child: const Text('OK').tr(),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -139,7 +140,7 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
       return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text('Loading...'),
+          title: const Text('Loading...').tr(),
           backgroundColor: theme.appBar,
         ),
         body: const Center(
@@ -152,7 +153,7 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
       return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text('Habit Details'),
+          title: const Text('Habit Details').tr(),
           backgroundColor: theme.appBar,
         ),
         body: const Center(

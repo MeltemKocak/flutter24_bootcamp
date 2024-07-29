@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
@@ -14,7 +15,7 @@ class UserStoriesPage extends StatefulWidget {
 
 class _UserStoriesPageState extends State<UserStoriesPage> {
   late final Gemini gemini;
-  String response = "Hey! Create Your Story.";
+  String response = tr("Hey! Create Your Story.");
   bool _isLoading = false;
   String userName = "";
   bool storyExists = false;
@@ -75,7 +76,7 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
 
     if (user_data.isEmpty) {
       setState(() {
-        response = "Start Using Planova to Create Your Story!";
+        response = tr("Start Using Planova to Create Your Story!");
         _isLoading = false;
       });
     } else {

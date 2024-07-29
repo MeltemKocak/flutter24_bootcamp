@@ -1,4 +1,5 @@
 // habitAddPage.dart
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -87,7 +88,7 @@ class _HabitAddPageState extends State<HabitAddPage> {
   Future<void> _sendNotificationToFriend(String friendId) async {
     FirebaseFirestore.instance.collection('notifications').add({
       'toUserId': friendId,
-      'message': 'You have been invited to join a habit!',
+      'message': tr("You have been invited to join a habit!"),
       'timestamp': FieldValue.serverTimestamp(),
     });
   }
@@ -184,25 +185,25 @@ class _HabitAddPageState extends State<HabitAddPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildTextField(_nameController, "Habit Name", _isNameEmpty, theme),
+            _buildTextField(_nameController, tr("Habit Name"), _isNameEmpty, theme),
             const SizedBox(height: 20),
-            _buildTextField(_descriptionController, "Description", false, theme,
+            _buildTextField(_descriptionController,tr("Description") , false, theme,
                 maxLines: 3),
             const SizedBox(height: 20),
-            _buildTextField(_friendEmailController, "Friend's Email", false, theme),
+            _buildTextField(_friendEmailController, tr("Friend's Email"), false, theme),
             const SizedBox(height: 20),
             Row(
               children: [
                 Expanded(
-                    child: _buildDateField(_startDateController, "Start Date", theme)),
+                    child: _buildDateField(_startDateController, tr("Start Date"), theme)),
                 const SizedBox(width: 20),
                 Expanded(
-                    child: _buildDateField(_endDateController, "End Date", theme)),
+                    child: _buildDateField(_endDateController, tr("End Date"), theme)),
               ],
             ),
             const SizedBox(height: 20),
             Text(
-              "Target Days: $_targetDays",
+              tr("Target Days:")+" $_targetDays",
               style: TextStyle(color: theme.subText, fontSize: 16),
             ),
             const SizedBox(height: 20),
@@ -230,7 +231,7 @@ class _HabitAddPageState extends State<HabitAddPage> {
           style: TextStyle(color: theme.welcomeText),
           maxLines: maxLines,
           decoration: InputDecoration(
-            hintText: "Enter $label",
+            hintText: tr("Enter")+ " $label",
             hintStyle: TextStyle(color: theme.welcomeText.withOpacity(0.6)),
             filled: true,
             fillColor: theme.toDoCardBackground.withOpacity(1),
@@ -282,7 +283,7 @@ class _HabitAddPageState extends State<HabitAddPage> {
               borderRadius: BorderRadius.circular(10),
             ),
             child: Text(
-              controller.text.isEmpty ? "Select Date" : controller.text,
+              controller.text.isEmpty ? tr("Select Date") : controller.text,
               style: TextStyle(color: theme.welcomeText),
             ),
           ),
@@ -326,7 +327,7 @@ class _HabitAddPageState extends State<HabitAddPage> {
           ),
         ),
         onPressed: _addHabit,
-        child: Text("Confirm Habit", style: TextStyle(color: theme.addButtonIcon)),
+        child: Text("Confirm Habit", style: TextStyle(color: theme.addButtonIcon)).tr(),
       ),
     );
   }

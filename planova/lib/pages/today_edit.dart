@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -134,7 +135,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
                     fontFamily: 'Roboto',
                     fontWeight: FontWeight.w300,
                   ),
-                ),
+                ).tr(),
                 Align(
                   alignment: Alignment.center,
                   child: Padding(
@@ -176,7 +177,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
                     fontFamily: 'Roboto',
                     fontWeight: FontWeight.w300,
                   ),
-                ),
+                ).tr(),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(
@@ -204,7 +205,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
                 color: theme.welcomeText,
               ),
               decoration: InputDecoration(
-                hintText: "Enter Task Name",
+                hintText: tr("Enter Task Name"),
                 hintStyle: TextStyle(
                   color: theme.subText,
                   fontSize: 15,
@@ -263,7 +264,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
                       fontFamily: 'Roboto',
                       fontWeight: FontWeight.w300,
                     ),
-                  ),
+                  ).tr(),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 6),
@@ -291,7 +292,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
               textInputAction: TextInputAction.done,
               maxLines: 6,
               decoration: InputDecoration(
-                hintText: "Enter Description",
+                hintText: tr("Enter Description"),
                 hintStyle: TextStyle(
                   color: theme.subText,
                   fontSize: 15,
@@ -367,7 +368,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
                               fontSize: 17,
                               fontFamily: 'Roboto',
                             ),
-                          )
+                          ).tr()
                         ],
                       ),
                     ),
@@ -423,7 +424,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
                           Text(
                             selectedTime != null
                                 ? selectedTime!.format(context)
-                                : "Select Time",
+                                : tr("Select Time"),
                             style: TextStyle(
                               color: theme.welcomeText,
                               fontSize: 17,
@@ -502,18 +503,18 @@ class _TodayEditPageState extends State<TodayEditPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  "Saat Güncelleme",
+                  "Hour Update",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
-                ),
+                ).tr(),
                 const SizedBox(height: 10),
                 const Text(
-                  "Bu görevin saatini mi yoksa tüm tekrarlanan görevlerin saatini mi güncellemek istiyorsunuz?",
+                  "Do you want to update the time for this task or for all recurring tasks?",
                   style: TextStyle(color: Colors.white70),
-                ),
+                ).tr(),
                 const SizedBox(height: 20),
                 Column(
                   children: [
@@ -533,9 +534,9 @@ class _TodayEditPageState extends State<TodayEditPage> {
                         ),
                       ),
                       child: const Text(
-                        "Sadece Bu Görev",
+                        "Only This Task",
                         style: TextStyle(fontSize: 16, color: Colors.black),
-                      ),
+                      ).tr(),
                     ),
                     const SizedBox(height: 10),
                     ElevatedButton(
@@ -554,9 +555,9 @@ class _TodayEditPageState extends State<TodayEditPage> {
                         ),
                       ),
                       child: const Text(
-                        "Tüm Tekrarlanan Görevler",
+                        "All Recurring Tasks",
                         style: TextStyle(fontSize: 16, color: Colors.black),
-                      ),
+                      ).tr(),
                     ),
                   ],
                 ),
@@ -594,12 +595,12 @@ class _TodayEditPageState extends State<TodayEditPage> {
       'taskTimes': taskTimes,
     }).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Task updated successfully')),
+        SnackBar(content: Text('Task updated successfully').tr()),
       );
       Navigator.pop(context);
     }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error updating task: $error')),
+        SnackBar(content: Text("Error updating task:"+" $error").tr()),
       );
     });
   }
@@ -622,7 +623,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
           ),
           child: AlertDialog(
             title: Text("Select Recurrence",
-                style: TextStyle(color: theme.welcomeText)),
+                style: TextStyle(color: theme.welcomeText)).tr(),
             content: DropdownButton<String>(
               value: selectedRecurrence,
               items: [
@@ -634,7 +635,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
               ].map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
-                  child: Text(value),
+                  child: Text(value).tr(),
                 );
               }).toList(),
               onChanged: (String? newValue) {
@@ -681,14 +682,14 @@ class _TodayEditPageState extends State<TodayEditPage> {
             borderRadius: BorderRadius.circular(20),
           ),
           title: Text(
-            "Görevi Sil",
+            "Delete Task",
             style: TextStyle(
                 color: theme.welcomeText, fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+          ).tr(),
           content: const Text(
-            "Bu görevi mi yoksa tüm tekrarlanan görevleri mi silmek istiyorsunuz?",
+            "Do you want to delete this task or all recurring tasks?",
             style: TextStyle(color: Colors.white70),
-          ),
+          ).tr(),
           actions: <Widget>[
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -706,9 +707,9 @@ class _TodayEditPageState extends State<TodayEditPage> {
                     ),
                   ),
                   child: Text(
-                    "Sadece Bu Görev",
+                    "Only This Task",
                     style: TextStyle(fontSize: 16, color: theme.welcomeText),
-                  ),
+                  ).tr(),
                 ),
                 const SizedBox(height: 10),
                 ElevatedButton(
@@ -724,9 +725,9 @@ class _TodayEditPageState extends State<TodayEditPage> {
                     ),
                   ),
                   child: Text(
-                    "Tüm Tekrarlanan Görevler",
+                    "All Recurring Tasks",
                     style: TextStyle(fontSize: 16, color: theme.welcomeText),
-                  ),
+                  ).tr(),
                 ),
               ],
             ),
@@ -771,12 +772,12 @@ class _TodayEditPageState extends State<TodayEditPage> {
 
     _moveTaskToTrash(widget.task.id, taskCompletionStatus, taskTimes, deletedTasks, deleteAll).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Görev başarıyla silindi.')),
+        SnackBar(content: Text("The task was deleted successfully.").tr()),
       );
       Navigator.pop(context);
     }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Görev silinirken hata oluştu: $error')),
+        SnackBar(content: Text("Error while deleting task:"+" $error").tr()),
       );
     });
   }
@@ -820,19 +821,19 @@ class _TodayEditPageState extends State<TodayEditPage> {
   String _getDayName(int day) {
     switch (day) {
       case 1:
-        return 'Pzt';
+        return tr("Mon");
       case 2:
-        return 'Sal';
+        return tr("Tues") ;
       case 3:
-        return 'Çar';
+        return tr("Wed");
       case 4:
-        return 'Per';
+        return tr("Thurs");
       case 5:
-        return 'Cum';
+        return tr("Fri");
       case 6:
-        return 'Cmt';
+        return tr("Sat");
       case 7:
-        return 'Paz';
+        return tr("Sun");
       default:
         return '';
     }

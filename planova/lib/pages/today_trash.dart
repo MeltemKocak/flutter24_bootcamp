@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -39,13 +40,13 @@ class _TrashPageState extends State<TrashPage> {
                     size: 28,
                   ),
                   Text(
-                    'Geri',
+                    "Back",
                     style: TextStyle(
                       fontFamily: 'Lato',
                       color: theme.loginTextAndBorder,
                       fontSize: 17,
                     ),
-                  ),
+                  ).tr(),
                 ],
               ),
               onPressed: () {
@@ -178,12 +179,12 @@ class _TrashPageState extends State<TrashPage> {
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
                     style: ElevatedButton.styleFrom(backgroundColor: theme.subText),
-                    child: Text('İptal', style: TextStyle(color: theme.welcomeText)),
+                    child: Text("Cancel", style: TextStyle(color: theme.welcomeText)).tr(),
                   ),
                   ElevatedButton(
                     onPressed: () => _restoreTask(taskData),
                     style: ElevatedButton.styleFrom(backgroundColor: theme.checkBoxActiveColor),
-                    child: Text('Geri Getir', style: TextStyle(color: theme.addButtonIcon)),
+                    child: Text("Bring Back", style: TextStyle(color: theme.addButtonIcon)).tr(),
                   ),
                 ],
               ),
@@ -201,20 +202,20 @@ class _TrashPageState extends State<TrashPage> {
         return AlertDialog(
           backgroundColor: theme.background,
           title: Text(
-            'Sil',
+            "Delete",
             style: TextStyle(color: theme.welcomeText),
-          ),
+          ).tr(),
           content: Text(
-            'Bu öğeyi kalıcı olarak silmek istediğinize emin misiniz?',
+            "Are you sure you want to permanently delete this item?",
             style: TextStyle(color: theme.subText),
-          ),
+          ).tr(),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: Text(
-                'İptal',
+                "Cancel",
                 style: TextStyle(color: theme.checkBoxActiveColor),
-              ),
+              ).tr(),
             ),
             TextButton(
               onPressed: () {
@@ -222,9 +223,9 @@ class _TrashPageState extends State<TrashPage> {
                 _deleteTaskPermanently(taskData);
               },
               child: Text(
-                'Sil',
+                "Delete",
                 style: TextStyle(color: theme.checkBoxActiveColor),
-              ),
+              ).tr(),
             ),
           ],
         );
@@ -239,13 +240,13 @@ class _TrashPageState extends State<TrashPage> {
         return AlertDialog(
           backgroundColor: theme.background,
           title: Text(
-            'Tümünü Sil',
+            "Delete All",
             style: TextStyle(color: theme.welcomeText),
-          ),
+          ).tr(),
           content: Text(
-            'Tüm silinmiş öğeleri kalıcı olarak silmek istediğinize emin misiniz?',
+            "Are you sure you want to permanently delete all deleted items?",
             style: TextStyle(color: theme.subText),
-          ),
+          ).tr(),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -260,9 +261,9 @@ class _TrashPageState extends State<TrashPage> {
                 _deleteAllTasksPermanently();
               },
               child: Text(
-                'Sil',
+                "Delete",
                 style: TextStyle(color: theme.checkBoxActiveColor),
-              ),
+              ).tr(),
             ),
           ],
         );
@@ -282,7 +283,7 @@ class _TrashPageState extends State<TrashPage> {
     await FirebaseFirestore.instance.collection('deleted_tasks').doc(taskData.id).delete();
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Öğe kalıcı olarak silindi')),
+      SnackBar(content: Text("Deleted").tr()),
     );
   }
 
@@ -305,7 +306,7 @@ class _TrashPageState extends State<TrashPage> {
     }
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Tüm silinmiş öğeler kalıcı olarak silindi')),
+      SnackBar(content: Text("Deleted").tr()),
     );
   }
 
@@ -322,7 +323,7 @@ class _TrashPageState extends State<TrashPage> {
     await FirebaseFirestore.instance.collection('deleted_tasks').doc(taskData.id).delete();
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Görev başarıyla geri getirildi')),
+        SnackBar(content: Text("Mission successfully brought back").tr()),
     );
   }
 }

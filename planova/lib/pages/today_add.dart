@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -104,7 +105,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                     fontFamily: 'Roboto',
                     fontWeight: FontWeight.w300,
                   ),
-                ),
+                ).tr(),
                 Align(
                   alignment: Alignment.center,
                   child: Padding(
@@ -146,7 +147,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                     fontFamily: 'Roboto',
                     fontWeight: FontWeight.w300,
                   ),
-                ),
+                ).tr(),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(
@@ -174,7 +175,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                 color: theme.welcomeText,
               ),
               decoration: InputDecoration(
-                hintText: "Enter Task Name",
+                hintText: tr("Enter Task Name"),
                 hintStyle: TextStyle(
                   color: theme.subText,
                   fontSize: 15,
@@ -241,7 +242,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                       fontFamily: 'Roboto',
                       fontWeight: FontWeight.w300,
                     ),
-                  ),
+                  ).tr(),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 6),
@@ -269,7 +270,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
               textInputAction: TextInputAction.done,
               maxLines: 6,
               decoration: InputDecoration(
-                hintText: "Enter Description",
+                hintText: tr("Enter Description"),
                 hintStyle: TextStyle(
                   color: theme.subText,
                   fontSize: 15,
@@ -345,7 +346,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                               fontSize: 17,
                               fontFamily: 'Roboto',
                             ),
-                          )
+                          ).tr()
                         ],
                       ),
                     ),
@@ -407,7 +408,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                               fontSize: 17,
                               fontFamily: 'Roboto',
                             ),
-                          ),
+                          ).tr(),
                         ],
                       ),
                     ),
@@ -490,7 +491,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
           ),
           child: AlertDialog(
             title: Text("Select Recurrence",
-                style: TextStyle(color: theme.welcomeText)),
+                style: TextStyle(color: theme.welcomeText)).tr(),
             content: DropdownButton<String>(
               value: selectedRecurrence,
               items: [
@@ -502,7 +503,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
               ].map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
-                  child: Text(value),
+                  child: Text(value).tr(),
                 );
               }).toList(),
               onChanged: (String? newValue) {
@@ -523,7 +524,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
   void _addTodo() {
     if (_user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('You must be logged in to add a task')),
+        SnackBar(content: Text('You must be logged in to add a task').tr()),
       );
       return;
     }
@@ -534,7 +535,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
 
     if (isTaskNameEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Task name cannot be empty')),
+        SnackBar(content: Text("Task name cannot be empty").tr()),
       );
       return;
     }
@@ -584,12 +585,12 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
 
     FirebaseFirestore.instance.collection('todos').add(taskData).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Task added successfully')),
+        SnackBar(content: Text('Task added successfully').tr()),
       );
       Navigator.pop(context);
     }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error adding task: $error')),
+        SnackBar(content: Text(tr("Error")+" $error")),
       );
     });
   }
