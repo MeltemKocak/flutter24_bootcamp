@@ -243,6 +243,7 @@ class _HabitEditPageState extends State<HabitEditPage> {
     final theme = Provider.of<ThemeProvider>(context).currentTheme;
 
     return Card(
+      color: theme.habitDetailEditBackground,
       child: isLoading
           ? Center(
               child: CircularProgressIndicator(color: theme.checkBoxActiveColor),
@@ -250,7 +251,7 @@ class _HabitEditPageState extends State<HabitEditPage> {
           : Container(
               padding: const EdgeInsets.all(20.0),
               decoration: BoxDecoration(
-                color: theme.habitDetailEditBackground,
+                color: theme.background,
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
               ),
               child: SingleChildScrollView(
@@ -416,7 +417,7 @@ class _HabitEditPageState extends State<HabitEditPage> {
               _calculateTargetDays();
             });
           },
-          backgroundColor: theme.toDoCardBackground,
+          backgroundColor: theme.background,
           selectedColor: theme.focusDayColor,
         );
       }),

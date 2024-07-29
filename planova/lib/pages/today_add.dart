@@ -183,13 +183,13 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide(
-                    color: isTaskNameEmpty ? Colors.red : theme.borderColor,
+                    color: isTaskNameEmpty ? Colors.red : theme.toDoCardBackground,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide(
-                    color: isTaskNameEmpty ? Colors.red : theme.borderColor,
+                    color: isTaskNameEmpty ? Colors.red : theme.toDoCardBackground,
                   ),
                 ),
                 disabledBorder: OutlineInputBorder(
@@ -466,7 +466,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
           color: theme.addButton,
           borderRadius: BorderRadius.circular(16),
         ),
-        child: Icon(Icons.psychology_outlined,
+        child: Icon(Icons.check,
             color: theme.addButtonIcon, size: 45),
       ),
     );

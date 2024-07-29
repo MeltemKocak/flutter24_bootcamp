@@ -62,6 +62,7 @@ class _ProfilePageState extends State<ProfilePage> {
       QuerySnapshot habitsSnapshot = await FirebaseFirestore.instance
           .collection('habits')
           .where('user_id', isEqualTo: user!.uid)
+          .where('isPending', isEqualTo: false)
           .get();
 
       habits = habitsSnapshot.docs.map((doc) {

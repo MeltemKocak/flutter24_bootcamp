@@ -58,7 +58,7 @@ class _PatternLockPageState extends State<PatternLockPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Enter Pattern'),
-        backgroundColor: theme.appBar,
+        backgroundColor: theme.background,
       ),
       backgroundColor: theme.background,
       body: Padding(
@@ -77,7 +77,9 @@ class _PatternLockPageState extends State<PatternLockPage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: theme.addButton,
               ),
-              child: Text('Verify Pattern'),
+              child: Text('Verify Pattern',
+              style: TextStyle(color: theme.addButtonIcon),)
+              ,
             ),
             if (_isPatternIncorrect)
               Padding(
@@ -108,7 +110,7 @@ class _PatternLockPageState extends State<PatternLockPage> {
             child: Container(
               margin: EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: isSelected ? theme.addButtonIcon : theme.borderColor,
+                color: isSelected ? theme.welcomeDotActive : theme.welcomeDot,
                 shape: BoxShape.circle,
               ),
             ),

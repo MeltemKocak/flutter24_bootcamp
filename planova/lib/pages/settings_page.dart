@@ -14,10 +14,10 @@ class _SettingsPageState extends State<SettingsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: theme.appBar,
+        backgroundColor: theme.background,
         title: null,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: theme.loginTextAndBorder),
+          icon: Icon(Icons.arrow_back_ios, color: theme.welcomeText),
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -33,7 +33,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   style: TextStyle(
                     fontSize: 25,
                     fontWeight: FontWeight.normal,
-                    color: theme.loginTextAndBorder,
+                    color: theme.welcomeText,
                   ),
                 ),
               ),

@@ -97,7 +97,7 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
           builder: (BuildContext context, ScrollController scrollController) {
             return Container(
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
+                color: Provider.of<ThemeProvider>(context).currentTheme.habitDetailEditBackground,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
@@ -193,7 +193,7 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
                   Navigator.of(context).pop();
                 },
               ),
-              backgroundColor: theme.appBar,
+              backgroundColor: theme.background,
             ),
             body: Container(
               color: theme.background,
@@ -211,8 +211,8 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
                               icon: const Icon(Icons.edit),
                               label: const Text('Edit'),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.grey[800],
-                                foregroundColor: Colors.white,
+                                backgroundColor: theme.habitCardBackground,
+                                foregroundColor: theme.habitIcons,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
@@ -226,8 +226,8 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
                               icon: const Icon(Icons.notifications),
                               label: const Text('Reminder'),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.grey[800],
-                                foregroundColor: Colors.white,
+                                backgroundColor: theme.habitCardBackground,
+                                foregroundColor: theme.habitIcons,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
@@ -343,6 +343,8 @@ class TwoWeekProgress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
+
     return FutureBuilder<List<Map<String, bool>>>(
       future: _fetchTwoWeekProgress(),
       builder: (BuildContext context, AsyncSnapshot<List<Map<String, bool>>> snapshot) {
@@ -363,7 +365,7 @@ class TwoWeekProgress extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 6.0),
           padding: const EdgeInsets.all(15.0),
           decoration: BoxDecoration(
-            color: const Color.fromRGBO(96, 125, 139, 0.25),
+            color: theme.weeklyStatsBackgroundColor.withOpacity(0.25),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Column(
@@ -741,8 +743,6 @@ class _MonthlyStatsState extends State<MonthlyStats> {
     super.initState();
     _loadHabitData();
     _dataFuture = _loadHabitData();
-
-    
   }
 
   Future<void> _loadHabitData() async {

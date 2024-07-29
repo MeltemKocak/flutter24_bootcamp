@@ -260,8 +260,8 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
           begin: Alignment(-1, 0),
           end: Alignment(1, 0),
           colors: <Color>[
-            theme.habitProgress,
-            theme.habitActiveDayText,
+            theme.habitDetailEditBackground,
+            theme.habitCardBackground,
             theme.habitCardBackground,
             theme.habitDetailEditBackground,
           ],

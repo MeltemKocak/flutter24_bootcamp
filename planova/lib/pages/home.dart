@@ -14,24 +14,27 @@ import 'package:planova/pages/today_trash.dart';
 import 'package:planova/pages/user_stories_page.dart';
 import 'package:planova/pages/welcome_screen.dart';
 import 'package:planova/pages/journal_add.dart';
-import 'package:planova/pages/pin_entry_page.dart'; // Import PinEntryPage
+import 'package:planova/pages/pin_entry_page.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:provider/provider.dart';
 import 'package:planova/utilities/theme.dart';
-import 'settings_page.dart'; // Import the SettingsPage
+import 'settings_page.dart';
 
 class Homes extends StatelessWidget {
   const Homes({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    CustomThemeData theme = ThemeColors.getTheme(themeProvider.themeValue);
+
     return MaterialApp(
       theme: ThemeData(
         useMaterial3: true,
         navigationBarTheme: NavigationBarThemeData(
-          indicatorColor: const Color.fromARGB(255, 3, 218, 198),
+          indicatorColor: theme.addButton,
           labelTextStyle: MaterialStateProperty.all(
-            const TextStyle(color: Colors.white),
+            TextStyle(color: theme.welcomeText),
           ),
         ),
       ),
@@ -52,7 +55,7 @@ class _NavigationExampleState extends State<NavigationExample> {
   late String userId = user!.uid;
   String? userProfileImageUrl;
   String userName = "";
-  String filter = 'All Tasks'; // Default filter
+  String filter = 'All Tasks';
 
   @override
   void initState() {
@@ -101,19 +104,21 @@ class _NavigationExampleState extends State<NavigationExample> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        final theme = Provider.of<ThemeProvider>(context).currentTheme;
         return AlertDialog(
-          backgroundColor: const Color(0xFF1E1E1E),
-          title: const Text(
+          backgroundColor: theme.background,
+          title: Text(
             'Filtrele',
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: theme.welcomeText),
           ),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
                 RadioListTile<String>(
-                  title: const Text(
+                  activeColor: theme.welcomeDotActive,
+                  title: Text(
                     'All Tasks',
-                    style: TextStyle(color: Colors.white70),
+                    style: TextStyle(color: theme.welcomeText),
                   ),
                   value: 'All Tasks',
                   groupValue: filter,
@@ -125,9 +130,10 @@ class _NavigationExampleState extends State<NavigationExample> {
                   },
                 ),
                 RadioListTile<String>(
-                  title: const Text(
+                  activeColor: theme.welcomeDotActive,
+                  title: Text(
                     'Favorite Tasks',
-                    style: TextStyle(color: Colors.white70),
+                    style: TextStyle(color: theme.welcomeText),
                   ),
                   value: 'Favorite Tasks',
                   groupValue: filter,
@@ -139,9 +145,10 @@ class _NavigationExampleState extends State<NavigationExample> {
                   },
                 ),
                 RadioListTile<String>(
-                  title: const Text(
+                  activeColor: theme.welcomeDotActive,
+                  title: Text(
                     'Habits',
-                    style: TextStyle(color: Colors.white70),
+                    style: TextStyle(color: theme.welcomeText),
                   ),
                   value: 'Habits',
                   groupValue: filter,
@@ -263,18 +270,18 @@ class _NavigationExampleState extends State<NavigationExample> {
           ],
         ),
         actions: [
-          if (currentPageIndex == 2)  
-          IconButton(
-            icon: Icon(Icons.lock, color: theme.appBar), // Kilit ikonu
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => PinEntryPage(),
-                ),
-              );
-            },
-          ),
+          if (currentPageIndex == 2)
+            IconButton(
+              icon: Icon(Icons.lock, color: theme.appBar),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PinEntryPage(),
+                  ),
+                );
+              },
+            ),
           if (currentPageIndex != 0)
             IconButton(
               icon: Icon(Icons.book_outlined, color: theme.appBar),
@@ -299,7 +306,6 @@ class _NavigationExampleState extends State<NavigationExample> {
               icon: Icon(Icons.settings_outlined, color: theme.appBar),
               onPressed: null,
             ),
-          
           if (currentPageIndex == 0)
             IconButton(
               icon: Icon(Icons.filter_list, color: theme.appBar),
@@ -383,7 +389,8 @@ class _NavigationExampleState extends State<NavigationExample> {
             ),
             ListTile(
               leading: Icon(Icons.list, color: theme.bottomBarIcon),
-              title: Text('Today', style: TextStyle(color: theme.bottomBarText)),
+              title:
+                  Text('Today', style: TextStyle(color: theme.bottomBarText)),
               onTap: () {
                 setState(() {
                   currentPageIndex = 0;
@@ -393,7 +400,8 @@ class _NavigationExampleState extends State<NavigationExample> {
             ),
             ListTile(
               leading: Icon(Icons.check_circle, color: theme.bottomBarIcon),
-              title: Text('Habits', style: TextStyle(color: theme.bottomBarText)),
+              title: Text('Habits',
+                  style: TextStyle(color: theme.bottomBarText)),
               onTap: () {
                 setState(() {
                   currentPageIndex = 1;
@@ -403,7 +411,8 @@ class _NavigationExampleState extends State<NavigationExample> {
             ),
             ListTile(
               leading: Icon(Icons.star, color: theme.bottomBarIcon),
-              title: Text('Important Task', style: TextStyle(color: theme.bottomBarText)),
+              title: Text('Important Task',
+                  style: TextStyle(color: theme.bottomBarText)),
               onTap: () {
                 setState(() {
                   currentPageIndex = 2;
@@ -413,7 +422,8 @@ class _NavigationExampleState extends State<NavigationExample> {
             ),
             ListTile(
               leading: Icon(Icons.delete, color: theme.bottomBarIcon),
-              title: Text('Deleted', style: TextStyle(color: theme.bottomBarText)),
+              title: Text('Deleted',
+                  style: TextStyle(color: theme.bottomBarText)),
               onTap: () {
                 Navigator.push(
                   context,
@@ -423,7 +433,8 @@ class _NavigationExampleState extends State<NavigationExample> {
             ),
             ListTile(
               leading: Icon(Icons.book, color: theme.bottomBarIcon),
-              title: Text('User Stories', style: TextStyle(color: theme.bottomBarText)),
+              title: Text('User Stories',
+                  style: TextStyle(color: theme.bottomBarText)),
               onTap: () async {
                 if (user != null && user.isAnonymous) {
                   _showAnonymousAlertDialog(context);
@@ -443,7 +454,8 @@ class _NavigationExampleState extends State<NavigationExample> {
             const Divider(color: Colors.grey),
             ListTile(
               leading: Icon(Icons.settings, color: theme.bottomBarIcon),
-              title: Text('Settings', style: TextStyle(color: theme.bottomBarText)),
+              title:
+                  Text('Settings', style: TextStyle(color: theme.bottomBarText)),
               onTap: () {
                 Navigator.push(
                   context,
@@ -457,60 +469,78 @@ class _NavigationExampleState extends State<NavigationExample> {
               onTap: () async {
                 await Auth().signOut(context: context);
               },
-            ),  
+            ),
           ],
         ),
       ),
       floatingActionButton: currentPageIndex == 3
-          ? null
-          : FloatingActionButton(
-              onPressed: () async {
-                if (currentPageIndex == 1 || currentPageIndex == 2) {
-                  if (user != null && user.isAnonymous) {
-                    _showAnonymousAlertDialog(context);
-                    return;
-                  }
-                  bool userExists = await _isUserInCollection(userId);
-                  if (!userExists) {
-                    _showProfileAlertDialog(context);
-                    return;
-                  }
-                }
-                switch (currentPageIndex) {
-                  case 0:
+    ? null
+    : FloatingActionButton(
+        onPressed: () async {
+          if (currentPageIndex == 1 || currentPageIndex == 2) {
+            if (user != null && user.isAnonymous) {
+              _showAnonymousAlertDialog(context);
+              return;
+            }
+            bool userExists = await _isUserInCollection(userId);
+            if (!userExists) {
+              _showProfileAlertDialog(context);
+              return;
+            }
+          }
+          switch (currentPageIndex) {
+            case 0:
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (context) =>
+                    TodayAddSubPage(focusDate: _focusDate),
+              );
+              break;
+            case 1:
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (context) => const HabitAddPage(),
+              );
+              break;
+            case 2:
                     showModalBottomSheet(
                       context: context,
                       isScrollControlled: true,
                       backgroundColor: Colors.transparent,
-                      builder: (context) => TodayAddSubPage(focusDate: _focusDate),
+                      builder: (context) => DraggableScrollableSheet(
+                        initialChildSize: 0.9,
+                        minChildSize: 0.9,
+                        maxChildSize: 0.9,
+                        builder: (BuildContext context, ScrollController scrollController) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.surface,
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20),
+                              ),
+                            ),
+                            child: JournalAddSubPage(),
+                          );
+                        },
+                      ),
                     );
-                    break;
-                  case 1:
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      builder: (context) => const HabitAddPage(),
-                    );
-                    break;
-                  case 2:
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      builder: (context) => const JournalAddSubPage(),
-                    );
-                    break;
-                  default:
-                }
-              },
-              backgroundColor: theme.addButton,
-              child: Icon(
-                Icons.add,
-                size: 32,
-                color: theme.addButtonIcon,
-              ),
-            ),
+              break;
+            default:
+          }
+        },
+        backgroundColor: theme.addButton,
+        child: Icon(
+          Icons.add,
+          size: 32,
+          color: theme.addButtonIcon,
+        ),
+      ),
+
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       bottomNavigationBar: NavigationBar(
         backgroundColor: theme.bottomBarBackground,

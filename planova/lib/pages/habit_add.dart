@@ -129,7 +129,7 @@ class _HabitAddPageState extends State<HabitAddPage> {
           data: ThemeData.dark().copyWith(
             colorScheme: ColorScheme.dark(
               primary: theme.focusDayColor,
-              onPrimary: theme.calenderNumbers,
+              onPrimary: theme.addButtonIcon,
               surface: theme.background,
               onSurface: theme.calenderNumbers,
             ),
@@ -233,7 +233,7 @@ class _HabitAddPageState extends State<HabitAddPage> {
             hintText: "Enter $label",
             hintStyle: TextStyle(color: theme.welcomeText.withOpacity(0.6)),
             filled: true,
-            fillColor: theme.toDoCardBackground.withOpacity(0.25),
+            fillColor: theme.toDoCardBackground.withOpacity(1),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20),
               borderSide: isEmpty
@@ -278,7 +278,7 @@ class _HabitAddPageState extends State<HabitAddPage> {
             width: MediaQuery.of(context).size.width * 0.45,
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             decoration: BoxDecoration(
-              color: theme.toDoCardBackground.withOpacity(0.25),
+              color: theme.toDoCardBackground.withOpacity(1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Text(
@@ -299,7 +299,7 @@ class _HabitAddPageState extends State<HabitAddPage> {
         return FilterChip(
           label: Text(
             DateFormat.E().format(DateTime(2021, 1, index + 3)),
-            style: TextStyle(color: theme.welcomeText),
+            style: TextStyle(color: theme.addButtonIcon),
           ),
           selected: _selectedDays[index],
           onSelected: (bool selected) {

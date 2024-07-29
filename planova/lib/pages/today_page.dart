@@ -41,6 +41,7 @@ class TodayPage extends StatefulWidget {
     final habitsSnapshot = await FirebaseFirestore.instance
         .collection('habits')
         .where('user_id', isEqualTo: user.uid)
+        .where('isPending', isEqualTo: false)
         .get();
 
     int incompleteCount = 0;
@@ -163,6 +164,7 @@ class _TodayPageState extends State<TodayPage> {
                 FirebaseFirestore.instance
                     .collection('habits')
                     .where('user_id', isEqualTo: _user!.uid)
+                    .where('isPending', isEqualTo: false)
                     .snapshots(),
               ]),
               builder: (context, snapshots) {
@@ -406,7 +408,7 @@ class _TodayPageState extends State<TodayPage> {
             }
           },
           child: Card(
-            color: isHabit ? theme.toDoCardBackground : theme.habitCardBackground,
+            color: isHabit ? theme.habitCardBackground : theme.toDoCardBackground,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             child: Padding(
               padding: const EdgeInsets.all(12),

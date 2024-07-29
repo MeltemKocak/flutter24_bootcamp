@@ -18,7 +18,11 @@ class JournalEditPage extends StatefulWidget {
   final Map<String, dynamic> data;
   final bool playAudioOnStart;
 
-  const JournalEditPage({required this.docId, required this.data, this.playAudioOnStart = false, super.key});
+  const JournalEditPage(
+      {required this.docId,
+      required this.data,
+      this.playAudioOnStart = false,
+      super.key});
 
   @override
   _JournalEditPageState createState() => _JournalEditPageState();
@@ -50,7 +54,8 @@ class _JournalEditPageState extends State<JournalEditPage> {
   void initState() {
     super.initState();
     nameController = TextEditingController(text: widget.data['name']);
-    descriptionController = TextEditingController(text: widget.data['description']);
+    descriptionController =
+        TextEditingController(text: widget.data['description']);
     _existingImageUrls = List<String>.from(widget.data['imageUrls'] ?? []);
     // Handle the date conversion properly
     _dateTime = widget.data['date'] is Timestamp
@@ -119,7 +124,8 @@ class _JournalEditPageState extends State<JournalEditPage> {
   Future<void> _startRecording() async {
     try {
       Directory appDirectory = await getApplicationDocumentsDirectory();
-      String filePath = '${appDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.aac';
+      String filePath =
+          '${appDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.aac';
       await _soundRecorder!.startRecorder(
         toFile: filePath,
         codec: Codec.aacADTS,
@@ -203,7 +209,10 @@ class _JournalEditPageState extends State<JournalEditPage> {
       audioUrl = await _uploadAudio(_recordedFilePath!);
     }
 
-    await FirebaseFirestore.instance.collection('journal').doc(widget.docId).update({
+    await FirebaseFirestore.instance
+        .collection('journal')
+        .doc(widget.docId)
+        .update({
       'name': nameController.text,
       'description': descriptionController.text,
       'date': _dateTime,
@@ -216,7 +225,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
     setState(() {
       _isSaving = false;
     });
-  
+
     Navigator.pop(context, {
       'name': nameController.text,
       'description': descriptionController.text,
@@ -233,8 +242,10 @@ class _JournalEditPageState extends State<JournalEditPage> {
     if (user == null) return '';
 
     File file = File(image.path);
-    String fileName = 'journalPics/${user.uid}/${DateTime.now().millisecondsSinceEpoch}.jpg';
-    UploadTask task = FirebaseStorage.instance.ref().child(fileName).putFile(file);
+    String fileName =
+        'journalPics/${user.uid}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+    UploadTask task =
+        FirebaseStorage.instance.ref().child(fileName).putFile(file);
     TaskSnapshot snapshot = await task;
     return await snapshot.ref.getDownloadURL();
   }
@@ -244,8 +255,10 @@ class _JournalEditPageState extends State<JournalEditPage> {
     if (user == null) return '';
 
     File file = File(filePath);
-    String fileName = 'journalPics/${user.uid}/${DateTime.now().millisecondsSinceEpoch}.aac';
-    UploadTask task = FirebaseStorage.instance.ref().child(fileName).putFile(file);
+    String fileName =
+        'journalPics/${user.uid}/${DateTime.now().millisecondsSinceEpoch}.aac';
+    UploadTask task =
+        FirebaseStorage.instance.ref().child(fileName).putFile(file);
     TaskSnapshot snapshot = await task;
     return await snapshot.ref.getDownloadURL();
   }
@@ -292,12 +305,20 @@ class _JournalEditPageState extends State<JournalEditPage> {
         return Theme(
           data: ThemeData.dark().copyWith(
             colorScheme: ColorScheme.dark(
-              primary: Provider.of<ThemeProvider>(context).currentTheme.focusDayColor,
-              onPrimary: Provider.of<ThemeProvider>(context).currentTheme.calenderNumbers,
-              surface: Provider.of<ThemeProvider>(context).currentTheme.background,
-              onSurface: Provider.of<ThemeProvider>(context).currentTheme.calenderNumbers,
+              primary: Provider.of<ThemeProvider>(context)
+                  .currentTheme
+                  .focusDayColor,
+              onPrimary: Provider.of<ThemeProvider>(context)
+                  .currentTheme
+                  .calenderNumbers,
+              surface:
+                  Provider.of<ThemeProvider>(context).currentTheme.background,
+              onSurface: Provider.of<ThemeProvider>(context)
+                  .currentTheme
+                  .calenderNumbers,
             ),
-            dialogBackgroundColor: Provider.of<ThemeProvider>(context).currentTheme.background,
+            dialogBackgroundColor:
+                Provider.of<ThemeProvider>(context).currentTheme.background,
           ),
           child: child!,
         );
@@ -323,7 +344,8 @@ class _JournalEditPageState extends State<JournalEditPage> {
         .collection('journal')
         .doc(widget.docId)
         .get();
-    Map<String, dynamic> journalData = journalDoc.data() as Map<String, dynamic>;
+    Map<String, dynamic> journalData =
+        journalDoc.data() as Map<String, dynamic>;
 
     await FirebaseFirestore.instance.collection('deleted_tasks').add({
       'name': journalData['name'],
@@ -335,7 +357,10 @@ class _JournalEditPageState extends State<JournalEditPage> {
       'data': journalData,
     });
 
-    await FirebaseFirestore.instance.collection('journal').doc(widget.docId).delete();
+    await FirebaseFirestore.instance
+        .collection('journal')
+        .doc(widget.docId)
+        .delete();
 
     Navigator.pop(context);
   }
@@ -346,7 +371,13 @@ class _JournalEditPageState extends State<JournalEditPage> {
     String formattedDate = DateFormat('MM/dd/yyyy').format(_dateTime);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: theme.appBar,
+        backgroundColor: theme.background,
+        leading: IconButton(
+        icon: Icon(Icons.arrow_back, color: theme.calenderNumbers),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      ),
         actions: [
           IconButton(
             icon: Icon(Icons.delete, color: theme.calenderNumbers),
@@ -363,7 +394,8 @@ class _JournalEditPageState extends State<JournalEditPage> {
             children: [
               _buildTextField(nameController, "Header", theme),
               const SizedBox(height: 20),
-              _buildTextField(descriptionController, "Description", theme, maxLines: 3),
+              _buildTextField(descriptionController, "Description", theme,
+                  maxLines: 3),
               const SizedBox(height: 20),
               Row(
                 children: [
@@ -391,13 +423,18 @@ class _JournalEditPageState extends State<JournalEditPage> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String label, CustomThemeData theme, {int maxLines = 1}) {
+  Widget _buildTextField(
+      TextEditingController controller, String label, CustomThemeData theme,
+      {int maxLines = 1}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: TextStyle(color: theme.welcomeText, fontSize: 15, fontWeight: FontWeight.w300),
+          style: TextStyle(
+              color: theme.welcomeText,
+              fontSize: 15,
+              fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 2),
         TextFormField(
@@ -408,7 +445,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
             hintText: "Enter $label",
             hintStyle: TextStyle(color: theme.borderColor.withOpacity(0.6)),
             filled: true,
-            fillColor: theme.habitCardBackground.withOpacity(0.25),
+            fillColor: theme.habitCardBackground.withOpacity(0.5),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide.none,
@@ -425,7 +462,10 @@ class _JournalEditPageState extends State<JournalEditPage> {
       children: [
         Text(
           "Date",
-          style: TextStyle(color: theme.welcomeText, fontSize: 15, fontWeight: FontWeight.w300),
+          style: TextStyle(
+              color: theme.welcomeText,
+              fontSize: 15,
+              fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 2),
         GestureDetector(
@@ -433,7 +473,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             decoration: BoxDecoration(
-              color: theme.habitCardBackground.withOpacity(0.25),
+              color: theme.habitCardBackground.withOpacity(0.5),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
@@ -458,7 +498,10 @@ class _JournalEditPageState extends State<JournalEditPage> {
       children: [
         Text(
           "Images",
-          style: TextStyle(color: theme.welcomeText, fontSize: 15, fontWeight: FontWeight.w300),
+          style: TextStyle(
+              color: theme.welcomeText,
+              fontSize: 15,
+              fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 2),
         SingleChildScrollView(
@@ -466,10 +509,13 @@ class _JournalEditPageState extends State<JournalEditPage> {
           child: Row(
             children: [
               ..._newImages.asMap().entries.map((entry) {
-                return _buildImageThumbnail(entry.value.path, () => _removeImage(entry.key, false), theme);
+                return _buildImageThumbnail(entry.value.path,
+                    () => _removeImage(entry.key, false), theme);
               }),
               ..._existingImageUrls.asMap().entries.map((entry) {
-                return _buildImageThumbnail(entry.value, () => _removeImage(entry.key, true), theme, isNetwork: true);
+                return _buildImageThumbnail(
+                    entry.value, () => _removeImage(entry.key, true), theme,
+                    isNetwork: true);
               }),
               GestureDetector(
                 onTap: _pickImage,
@@ -477,7 +523,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
                   width: 60,
                   height: 60,
                   decoration: BoxDecoration(
-                    color: theme.habitCardBackground.withOpacity(0.25),
+                    color: theme.habitCardBackground.withOpacity(0.5),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(
@@ -493,7 +539,9 @@ class _JournalEditPageState extends State<JournalEditPage> {
     );
   }
 
-  Widget _buildImageThumbnail(String path, VoidCallback onRemove, CustomThemeData theme, {bool isNetwork = false}) {
+  Widget _buildImageThumbnail(
+      String path, VoidCallback onRemove, CustomThemeData theme,
+      {bool isNetwork = false}) {
     return Padding(
       padding: const EdgeInsets.only(right: 8.0),
       child: Stack(
@@ -546,13 +594,16 @@ class _JournalEditPageState extends State<JournalEditPage> {
       children: [
         Text(
           "Audio",
-          style: TextStyle(color: theme.welcomeText, fontSize: 15, fontWeight: FontWeight.w300),
+          style: TextStyle(
+              color: theme.welcomeText,
+              fontSize: 15,
+              fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 10),
         Container(
           height: 50,
           decoration: BoxDecoration(
-            color: theme.habitCardBackground.withOpacity(0.25),
+            color: theme.habitCardBackground.withOpacity(0.5),
             borderRadius: BorderRadius.circular(25),
           ),
           child: Row(
@@ -563,7 +614,8 @@ class _JournalEditPageState extends State<JournalEditPage> {
                     _stopRecording();
                   } else if (_isPlaying) {
                     _stopAudio();
-                  } else if (_recordedFilePath != null || _existingAudioUrl != null) {
+                  } else if (_recordedFilePath != null ||
+                      _existingAudioUrl != null) {
                     _playAudio();
                   } else {
                     _startRecording();
@@ -574,19 +626,31 @@ class _JournalEditPageState extends State<JournalEditPage> {
                   height: 50,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: _isRecording ? theme.checkBoxActiveColor : theme.addButton,
+                    color: _isRecording
+                        ? theme.checkBoxActiveColor
+                        : theme.addButton,
                   ),
                   child: Icon(
-                    _isRecording ? Icons.stop : _isPlaying ? Icons.stop : (_recordedFilePath != null || _existingAudioUrl != null) ? Icons.play_arrow : Icons.mic,
+                    _isRecording
+                        ? Icons.stop
+                        : _isPlaying
+                            ? Icons.stop
+                            : (_recordedFilePath != null ||
+                                    _existingAudioUrl != null)
+                                ? Icons.play_arrow
+                                : Icons.mic,
                     color: theme.welcomeText,
                   ),
                 ),
               ),
               Expanded(
-                child: _isRecording || _recordedFilePath != null || _existingAudioUrl != null
+                child: _isRecording ||
+                        _recordedFilePath != null ||
+                        _existingAudioUrl != null
                     ? CustomPaint(
                         size: const Size(double.infinity, 30),
-                        painter: WaveformPainter(_audioWaveform, theme.addButton),
+                        painter:
+                            WaveformPainter(_audioWaveform, theme.addButton),
                       )
                     : Center(
                         child: Text(
@@ -595,7 +659,8 @@ class _JournalEditPageState extends State<JournalEditPage> {
                         ),
                       ),
               ),
-              if ((_recordedFilePath != null || _existingAudioUrl != null) && !_isRecording)
+              if ((_recordedFilePath != null || _existingAudioUrl != null) &&
+                  !_isRecording)
                 IconButton(
                   icon: Icon(Icons.delete, color: theme.welcomeText),
                   onPressed: _removeAudio,
@@ -623,7 +688,10 @@ class _JournalEditPageState extends State<JournalEditPage> {
       children: [
         Text(
           "Private",
-          style: TextStyle(color: theme.welcomeText, fontSize: 15, fontWeight: FontWeight.w300),
+          style: TextStyle(
+              color: theme.welcomeText,
+              fontSize: 15,
+              fontWeight: FontWeight.w300),
           textAlign: TextAlign.left,
         ),
         SizedBox(height: 2),
@@ -636,14 +704,16 @@ class _JournalEditPageState extends State<JournalEditPage> {
               });
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: _isPrivate ? theme.checkBoxActiveColor.withOpacity(0.6) : theme.addButton,
+              backgroundColor: _isPrivate
+                  ? theme.checkBoxActiveColor.withOpacity(0.6)
+                  : theme.addButton,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
             child: Text(
               _isPrivate ? 'Private' : 'Public',
-              style: TextStyle(color: theme.welcomeText),
+              style: TextStyle(color: theme.addButtonIcon),
             ),
           ),
         ),
@@ -662,7 +732,8 @@ class _JournalEditPageState extends State<JournalEditPage> {
           ),
         ),
         onPressed: _isSaving ? null : _saveJournalEntry,
-        child: Text("Save Changes", style: TextStyle(color: theme.welcomeText)),
+        child:
+            Text("Save Changes", style: TextStyle(color: theme.addButtonIcon)),
       ),
     );
   }

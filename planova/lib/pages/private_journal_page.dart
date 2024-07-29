@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:planova/pages/journal_detail_page.dart';
 import 'package:planova/pages/journal_edit_page.dart';
 import 'package:planova/pages/photo_view_page.dart';
+import 'package:planova/utilities/theme.dart';
+import 'package:provider/provider.dart';
 
 class PrivateJournalPage extends StatefulWidget {
   const PrivateJournalPage({super.key});
@@ -17,37 +19,54 @@ class _PrivateJournalPageState extends State<PrivateJournalPage> {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
+    final themeData = Provider.of<ThemeProvider>(context).currentTheme;
+
     if (user == null) {
-      return const Card(
-        color: Color(0xFF1E1E1E),
-        child: Center(child: Text('Please sign in', style: TextStyle(color: Colors.white))),
+      return Card(
+        color: themeData.background,
+        child: Center(
+            child: Text('Please sign in',
+                style: TextStyle(color: themeData.welcomeText))),
       );
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Private Journal'),
-        backgroundColor: const Color(0xFF1E1E1E),
+        title: Text('Private Journal',
+            style: TextStyle(color: themeData.welcomeText)),
+        backgroundColor: themeData.background,
+         leading: IconButton(
+        icon: Icon(Icons.arrow_back, color: themeData.welcomeText),
+        onPressed: () {
+          Navigator.pop(context);
+        },
       ),
-      backgroundColor: const Color(0xFF1E1E1E),
+      ),
+      backgroundColor: themeData.background,
       body: Card(
-        color: const Color(0xFF1E1E1E),
+        color: themeData.background,
         child: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
               .collection('journal')
               .where('userId', isEqualTo: user.uid)
-              .where('isPrivate', isEqualTo: true) // Only fetch private entries
+              .where('isPrivate', isEqualTo: true)
               .orderBy('date', descending: true)
               .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator(color: Color(0xFF03DAC6)));
+              return Center(
+                  child: CircularProgressIndicator(
+                      color: themeData.focusDayColor));
             }
             if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}', style: const TextStyle(color: Colors.white)));
+              return Center(
+                  child: Text('Error: ${snapshot.error}',
+                      style: TextStyle(color: themeData.welcomeText)));
             }
             if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-              return const Center(child: Text('No entries found', style: TextStyle(color: Colors.white)));
+              return Center(
+                  child: Text('No entries found',
+                      style: TextStyle(color: themeData.welcomeText)));
             }
 
             return ListView.builder(
@@ -57,7 +76,9 @@ class _PrivateJournalPageState extends State<PrivateJournalPage> {
                 var data = doc.data() as Map<String, dynamic>;
                 DateTime date = (data['date'] as Timestamp).toDate();
                 String formattedDate = DateFormat('d MMMM').format(date);
-                List<String> imageUrls = data['imageUrls'] != null ? List<String>.from(data['imageUrls']) : [];
+                List<String> imageUrls = data['imageUrls'] != null
+                    ? List<String>.from(data['imageUrls'])
+                    : [];
                 String? audioUrl = data['audioUrl'];
                 String description = data['description'] ?? '';
 
@@ -69,7 +90,7 @@ class _PrivateJournalPageState extends State<PrivateJournalPage> {
                       alignment: Alignment.centerRight,
                       child: Padding(
                         padding: const EdgeInsets.only(right: 20.0),
-                        child: Icon(Icons.delete, color: Colors.white),
+                        child: Icon(Icons.delete, color: themeData.welcomeText),
                       ),
                     ),
                   ),
@@ -82,13 +103,15 @@ class _PrivateJournalPageState extends State<PrivateJournalPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => JournalDetailPage(docId: doc.id, data: data),
+                          builder: (context) =>
+                              JournalDetailPage(docId: doc.id, data: data),
                         ),
                       );
                     },
                     child: Card(
-                      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                      color: const Color(0xFF2A2A2A),
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 20),
+                      color: themeData.toDoCardBackground,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
@@ -101,22 +124,25 @@ class _PrivateJournalPageState extends State<PrivateJournalPage> {
                               children: [
                                 Text(
                                   formattedDate,
-                                  style: const TextStyle(
-                                    color: Color(0xFF03DAC6),
+                                  style: TextStyle(
+                                    color: themeData.focusDayColor,
                                     fontSize: 24,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
                                 const Spacer(),
                                 if (audioUrl != null && audioUrl.isNotEmpty)
-                                  const Icon(Icons.audiotrack, color: Color(0xFF03DAC6)),
+                                  Icon(Icons.audiotrack,
+                                      color: themeData.focusDayColor),
                                 IconButton(
-                                  icon: const Icon(Icons.edit, color: Color(0xFF03DAC6)),
+                                  icon: Icon(Icons.edit,
+                                      color: themeData.focusDayColor),
                                   onPressed: () {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => JournalEditPage(docId: doc.id, data: data),
+                                        builder: (context) => JournalEditPage(
+                                            docId: doc.id, data: data),
                                       ),
                                     );
                                   },
@@ -126,17 +152,19 @@ class _PrivateJournalPageState extends State<PrivateJournalPage> {
                             const SizedBox(height: 10),
                             Text(
                               data['name'],
-                              style: const TextStyle(
-                                color: Colors.white,
+                              style: TextStyle(
+                                color: themeData.welcomeText,
                                 fontSize: 22,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
                             const SizedBox(height: 10),
                             Text(
-                              description.length > 100 ? '${description.substring(0, 100)}...' : description,
-                              style: const TextStyle(
-                                color: Colors.white70,
+                              description.length > 100
+                                  ? '${description.substring(0, 100)}...'
+                                  : description,
+                              style: TextStyle(
+                                color: themeData.welcomeText.withOpacity(0.7),
                                 fontSize: 16,
                                 fontWeight: FontWeight.w300,
                               ),
@@ -154,11 +182,14 @@ class _PrivateJournalPageState extends State<PrivateJournalPage> {
                                       child: Container(
                                         width: 100,
                                         height: 100,
-                                        margin: const EdgeInsets.only(right: 10),
+                                        margin:
+                                            const EdgeInsets.only(right: 10),
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(10),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
                                           image: DecorationImage(
-                                            image: NetworkImage(imageUrls[index]),
+                                            image:
+                                                NetworkImage(imageUrls[index]),
                                             fit: BoxFit.cover,
                                           ),
                                         ),
@@ -194,7 +225,10 @@ class _PrivateJournalPageState extends State<PrivateJournalPage> {
       'data': data,
     });
 
-    await FirebaseFirestore.instance.collection('private_journal').doc(entry.id).delete();
+    await FirebaseFirestore.instance
+        .collection('private_journal')
+        .doc(entry.id)
+        .delete();
   }
 
   void _viewPhoto(String imageUrl) {

@@ -24,9 +24,11 @@ class _IncomingRequestsPageState extends State<IncomingRequestsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Gelen İstekler'),
-        backgroundColor: theme.appBar,
+        title: Text('Gelen İstekler',style: TextStyle(color: theme.welcomeText),),
+        backgroundColor: theme.background,
+        iconTheme: IconThemeData(color: theme.welcomeText),
       ),
+      backgroundColor: theme.background,
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('habits')
             .where('user_id', isEqualTo: user?.uid)

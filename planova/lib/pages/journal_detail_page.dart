@@ -110,7 +110,7 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: theme.appBar,
+        backgroundColor: theme.background,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: theme.welcomeText),
           onPressed: () {
@@ -137,7 +137,7 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
           ),
         ],
       ),
-      backgroundColor: theme.habitDetailEditBackground,
+      backgroundColor: theme.background,
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(

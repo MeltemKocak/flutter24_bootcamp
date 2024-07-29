@@ -240,7 +240,7 @@ class _HabitPageState extends State<HabitPage> {
                           : (bool? value) {
                               _showAlertDialog(context);
                             },
-                      checkColor: theme.checkBoxBorderColor,
+                      checkColor: theme.habitCardBackground,
                       activeColor: theme.checkBoxActiveColor,
                     ),
                   ],

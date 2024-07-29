@@ -33,7 +33,8 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
   double _decibelLevel = 0.0;
   Duration _recordedDuration = Duration.zero;
   final List<double> _audioWaveform = [];
-  bool _isSaving = false; // Save işlemi devam ederken butonu işlevsiz hale getirmek için değişken
+  bool _isSaving =
+      false; // Save işlemi devam ederken butonu işlevsiz hale getirmek için değişken
   bool _isPrivate = false; // Checkbox state for privacy
 
   @override
@@ -75,7 +76,8 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
   Future<void> _startRecording() async {
     try {
       Directory appDirectory = await getApplicationDocumentsDirectory();
-      String filePath = '${appDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.aac';
+      String filePath =
+          '${appDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.aac';
       await _soundRecorder!.startRecorder(
         toFile: filePath,
         codec: Codec.aacADTS,
@@ -173,8 +175,10 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
     if (user == null) return '';
 
     File file = File(image.path);
-    String fileName = 'journalPics/${user.uid}/${DateTime.now().millisecondsSinceEpoch}.jpg';
-    UploadTask task = FirebaseStorage.instance.ref().child(fileName).putFile(file);
+    String fileName =
+        'journalPics/${user.uid}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+    UploadTask task =
+        FirebaseStorage.instance.ref().child(fileName).putFile(file);
     TaskSnapshot snapshot = await task;
     return await snapshot.ref.getDownloadURL();
   }
@@ -184,8 +188,10 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
     if (user == null) return '';
 
     File file = File(filePath);
-    String fileName = 'journalPics/${user.uid}/${DateTime.now().millisecondsSinceEpoch}.aac';
-    UploadTask task = FirebaseStorage.instance.ref().child(fileName).putFile(file);
+    String fileName =
+        'journalPics/${user.uid}/${DateTime.now().millisecondsSinceEpoch}.aac';
+    UploadTask task =
+        FirebaseStorage.instance.ref().child(fileName).putFile(file);
     TaskSnapshot snapshot = await task;
     return await snapshot.ref.getDownloadURL();
   }
@@ -200,34 +206,37 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
     }
   }
 
-  void _showDatePicker() {
-    showDatePicker(
-      builder: (BuildContext context, Widget? child) {
-        return Theme(
-          data: ThemeData.dark().copyWith(
-            colorScheme: ColorScheme.dark(
-              primary: Theme.of(context).colorScheme.primary,
-              onPrimary: Theme.of(context).colorScheme.onPrimary,
-              surface: Theme.of(context).colorScheme.surface,
-              onSurface: Theme.of(context).colorScheme.onSurface,
-            ),
-            dialogBackgroundColor: Theme.of(context).colorScheme.surface,
+ void _showDatePicker() {
+  final customTheme = Provider.of<ThemeProvider>(context, listen: false).currentTheme;
+
+  showDatePicker(
+    builder: (BuildContext context, Widget? child) {
+      return Theme(
+        data: ThemeData.dark().copyWith(
+          colorScheme: ColorScheme.dark(
+            primary: customTheme.loginTextAndBorder, // CustomThemeData'dan alınan renk
+            onPrimary: customTheme.addButtonIcon, // CustomThemeData'dan alınan renk
+            surface: customTheme.surface, // CustomThemeData'dan alınan renk
+            onSurface: customTheme.welcomeText, // CustomThemeData'dan alınan renk
           ),
-          child: child!,
-        );
-      },
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2050),
-    ).then((value) {
-      if (value != null) {
-        setState(() {
-          _dateTime = value;
-        });
-      }
-    });
-  }
+          dialogBackgroundColor: customTheme.surface, // CustomThemeData'dan alınan renk
+        ),
+        child: child!,
+      );
+    },
+    context: context,
+    initialDate: DateTime.now(),
+    firstDate: DateTime(2000),
+    lastDate: DateTime(2050),
+  ).then((value) {
+    if (value != null) {
+      setState(() {
+        _dateTime = value;
+      });
+    }
+  });
+}
+
 
   Future<void> _playAudio() async {
     if (_recordedFilePath != null) {
@@ -238,7 +247,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
     }
   }
 
-   Future<void> _stopAudio() async {
+  Future<void> _stopAudio() async {
     await _audioPlayer.stop();
     setState(() {
       _isPlaying = false;
@@ -250,10 +259,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
     final theme = Provider.of<ThemeProvider>(context).currentTheme;
     String formattedDate = DateFormat('MM/dd/yyyy').format(_dateTime);
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: theme.appBar,
-      ),
-      backgroundColor: theme.habitDetailEditBackground,
+      backgroundColor: theme.background,
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
@@ -262,7 +268,8 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
             children: [
               _buildTextField(nameController, "Header", theme),
               const SizedBox(height: 20),
-              _buildTextField(descriptionController, "Description", theme, maxLines: 3),
+              _buildTextField(descriptionController, "Description", theme,
+                  maxLines: 3),
               const SizedBox(height: 20),
               Row(
                 children: [
@@ -290,13 +297,18 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String label, CustomThemeData theme, {int maxLines = 1}) {
+  Widget _buildTextField(
+      TextEditingController controller, String label, CustomThemeData theme,
+      {int maxLines = 1}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: TextStyle(color: theme.welcomeText, fontSize: 15, fontWeight: FontWeight.w300),
+          style: TextStyle(
+              color: theme.welcomeText,
+              fontSize: 15,
+              fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 2),
         TextFormField(
@@ -324,7 +336,10 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
       children: [
         Text(
           "Date",
-          style: TextStyle(color: theme.welcomeText, fontSize: 15, fontWeight: FontWeight.w300),
+          style: TextStyle(
+              color: theme.welcomeText,
+              fontSize: 15,
+              fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 2),
         GestureDetector(
@@ -357,7 +372,10 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
       children: [
         Text(
           "Images",
-          style: TextStyle(color: theme.welcomeText, fontSize: 15, fontWeight: FontWeight.w300),
+          style: TextStyle(
+              color: theme.welcomeText,
+              fontSize: 15,
+              fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 2),
         SingleChildScrollView(
@@ -413,7 +431,10 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
       children: [
         Text(
           "Audio",
-          style: TextStyle(color: theme.welcomeText, fontSize: 15, fontWeight: FontWeight.w300),
+          style: TextStyle(
+              color: theme.welcomeText,
+              fontSize: 15,
+              fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 10),
         Container(
@@ -427,7 +448,9 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
               GestureDetector(
                 onTap: _isRecording
                     ? _stopRecording
-                    : (_recordedFilePath != null ? (_isPlaying ? _stopAudio : _playAudio) : _startRecording),
+                    : (_recordedFilePath != null
+                        ? (_isPlaying ? _stopAudio : _playAudio)
+                        : _startRecording),
                 child: Container(
                   width: 50,
                   height: 50,
@@ -486,7 +509,14 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Private", style: TextStyle(color: theme.welcomeText, fontSize: 15, fontWeight: FontWeight.w300), textAlign: TextAlign.left,),
+        Text(
+          "Private",
+          style: TextStyle(
+              color: theme.welcomeText,
+              fontSize: 15,
+              fontWeight: FontWeight.w300),
+          textAlign: TextAlign.left,
+        ),
         const SizedBox(height: 2),
         Container(
           width: double.infinity,
@@ -497,12 +527,16 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
               });
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: _isPrivate ? theme.addButton.withAlpha(150) : theme.addButton,
+              backgroundColor:
+                  _isPrivate ? theme.addButton.withAlpha(150) : theme.addButton,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            child: Text(_isPrivate ? 'Private' : 'Public', style: TextStyle(color: theme.welcomeText),),
+            child: Text(
+              _isPrivate ? 'Private' : 'Public',
+              style: TextStyle(color: theme.addButtonIcon),
+            ),
           ),
         ),
       ],
@@ -519,8 +553,11 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
             borderRadius: BorderRadius.circular(10),
           ),
         ),
-        onPressed: _isSaving ? null : _saveJournalEntry, // İşlem devam ederken butonu devre dışı bırak
-        child: Text("Save Journal Entry", style: TextStyle(color: theme.welcomeText)),
+        onPressed: _isSaving
+            ? null
+            : _saveJournalEntry, // İşlem devam ederken butonu devre dışı bırak
+        child: Text("Save Journal Entry",
+            style: TextStyle(color: theme.addButtonIcon)),
       ),
     );
   }
