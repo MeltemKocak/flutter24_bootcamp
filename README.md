@@ -45,27 +45,35 @@ Sonuç olarak, zamanı doğru yönetmek, yaşamın her alanında başarıya ula�
 
 ### 1. Today(Home)Page
 - **User-Friendly Interface:** The home page has a simple and minimalist design that allows users to easily get used to the application.
-- **Daily Work and Completed Tasks:** Users can see their work for that day, their long-term goals, and whether they have completed them or not in the categorization. This makes daily task management and tracking easier.
-- **Weekly Calendar:** The weekly calendar at the top makes it easy for users to switch between different days.
-
-### 2. Goals Page
-- **Grid View:** All goals are presented in a view where users can easily see their progress.
-- **Goal Details:** By clicking on the goal, the details, start date, completion status and statistics of the goal can be accessed.
-- **Adding and Removing Targets:** New targets can be added or existing targets can be archived.
-- **Data Analysis:** Users can visually see their progress on the goals they set statistically and long-term development with a 365-day grid view
-- **AI-Assisted Planning:** Artificial intelligence helps users plan and break down their goals. It also gives suggestions on how many days the goals should last.
-- **Community Goal tracking:** Users can set common goals with their friends and work on them together.
-    * **Common Goals and Progress Tracking:** Users can track their progress on common goals they set with their friends, with percentages.
-    * **Progress Graphs:** Users can see their own and their friends' progress graphically. These graphics increase users' motivation.
-    * **Goal Details:** Details and progress of the goals set with friends can be viewed on the challenge page. This page also includes buttons for adding and editing goals.
+- **Daily Task and Completed Tasks:** Users can see their work for that day, their long-term goals, and whether they have completed them or not in the categorization. This makes daily task management and tracking easier.
+- **Calendar:** The weekly and monthly calendar at the top allows users to easily navigate between different days and view upcoming goals.
+- **Categorization:** On the home page, users can filter to see only habits or the to-do list for the day. They can also star important items and apply extra filters accordingly.
+- **Adding, Editing, and Deleting Daily Tasks:** The plus button on the home page allows users to easily add daily tasks. For recurring tasks, they can set the frequency and select the days and times they recur. Tasks can be edited or deleted by clicking on them.
+- 
+### 2. Habit Page
+- **Habit Progress View:** All habits are presented in a view where users can easily track their progress.
+- **Habit Details:** Clicking on a habit provides details such as the start date, completion status, and statistics.
+- **Adding and Removing Habits:** New habits can be added easily with the plus button on the habit page, and they can be deleted by swiping left on the main habit page or edited in the detailed view screen.
+- **Data Analysis:** Users can see the long-term progress of their goals statistically and visually with a 12-month calendar view.
+- **Community Habit Tracking:** Users can set common goals with friends and work together on these goals.
+    * **Common Habits and Progress Tracking:** Users can track the progress of common goals set with friends as percentages.
+    * **Adding Habits with Friends:** Users can enter the email addresses of friends using the app while adding or editing goals to send a request to create goals together. 
+    * **Progress Charts:** Users can visually see their and their friends' progress with a 12-month calendar and weekly charts, which help boost motivation.
+    * **Goal Details:** The details and progress of goals set with friends can be viewed by clicking on the goal. This page also includes goal editing buttons.
 
 ### 3. Journal
-- **Daily Notes:** Users can keep a diary and record notes in chronological order. A separate note can be entered for each day.
-- **Adding Images and Text:** In addition to adding text to journal notes, images can also be added. This makes notes richer and more meaningful.
+- **Daily Notes& Journal:** U: Users can keep a journal chronologically and record notes. Multiple notes can be entered for each day using the plus button on the main journal page.
+- **Adding Picture and Voice Records:** In addition to text, users can add visuals and voice recordings to their journal notes, making the notes richer and more meaningful.
+- **Locked Journal Page:** Users can transfer their private notes to a locked journal page to ensure privacy.
 
 ### 4. Profile Page
-- **All Goals and Archive:** All goals and archived data of users are displayed on this page. Users can easily access their past goals and completed tasks.
-- **Detailed Progress Analysis:** Users' personal progress is analyzed graphically and statistically. These analyzes help users better understand their progress.
+- **All Habits and Archive:** All completed and ongoing habits are displayed on this page.
+- **Detailed Progress Analysis:** Users' personal progress is analyzed graphically and statistically on a daily and weekly basis, helping users better understand their development.
+- **Profile Settings:** Users can personalize the app by selecting their profile photo and username.
+
+### 5. AI-Powered Personal Story Tool: 
+- **Creating Personal Stories:** Users can be the main character in stories created based on their data, generate new stories daily, and analyze themselves in a fun way, making time management processes easier.
+- **Easy Access from Every Page:** Users can easily access the Personal Story Tool from the story icon at the top right of every page or create their stories with the create story button on the profile page.
 
 ### 5. Settings
 - **Profile Settings:**
@@ -77,7 +85,16 @@ Sonuç olarak, zamanı doğru yönetmek, yaşamın her alanında başarıya ula�
 - **Notifications:** Users can customize notification settings, including which events trigger notifications.
 - **Themes:** Users can choose from a variety of themes to personalize the appearance of the app.
 
-
+### 6.  Menu Screen
+- **User-Friendly View:** This screen allows users to access today's tasks, habits, or journal pages. They can also access all stories created by the Story Tool or their deleted to-do tasks and goals.
+- **Logout:** Users can log out of the application from this screen.
+- **Settings:**
+  * **Theme:**
+      *	**Theme Change:** Allows using the app in different themes and personalizing it.
+  * **Language:**
+      * **Language Change:** Although the app opens in the language used on the phone, users can change it to other available languages.
+  * **Feedback and Support:** Allows users to provide feedback about the app and receive support.
+  * **About:** Provides information about the app, mission and vision statements, and details about the development team.
 
 
 <details>
@@ -86,36 +103,46 @@ Sonuç olarak, zamanı doğru yönetmek, yaşamın her alanında başarıya ula�
   ### 1. Ana Sayfa(Bugün)
 - **Kullanıcı Dostu Arayüz:** Ana sayfa, kullanıcıların uygulamaya kolayca alışmalarını sağlayan sade ve minimalist bir tasarıma sahiptir.
 - **Günlük İşler ve Tamamlanan Görevler:** Kullanıcılar, o güne ait işlerini, uzun vadede devam ettiği hedeflerini, bunları tamamlayıp tamamlamadıkları kategorizasyonu içinde görebilirler. Bu, günlük görev yönetimini ve takibini kolaylaştırır.
-- **Haftalık Takvim:** Üst kısımda yer alan haftalık takvim, kullanıcıların farklı günler arasında geçişini kolaylaştır.
+- **Haftalık Takvim:** Üst kısımda yer alan haftalık ve aylık takvim, kullanıcıların farklı günler arasında geçişini ve gelecek hedeflerini görebilmesini kolaylaştır.
+- **Kategorizasyon:** Ana sayfada filtreleme yapılarak sadece alışkanlıklar veya o güne ait yapılacak listesi görülebilir. İstenirse kullanıcılar tarafından önemli görülen maddeler yıldızlanabilir ve buna yönelik ekstra filtreleme yapılabilir.
+- **Günlük Görev Ekleme, Düzenleme ve Silme:** Ana sayfada bulunan bulunan artı butonu ile kolayca günlük görev eklenilebilir, tekrarlanan bir günlük görev ise tekrarlanma sıklığını ve tekrarlandığı günler ve saat seçilebilir. Eklenilen görevlerin üstüne tıkladığı zaman günlük görevde düzenleme yapılabilir veya silinebilir. 
+  
 
-### 2. Hedefler Sayfası
-- **Izgara Görünüm:** Tüm hedefler, kullanıcıların ilerlemesini kolayca görebileceği bir görünümde sunulur.
+### 2. Alışkanlıklar Sayfası
+- **Hedef İlerleme Görünümü:** Tüm alışkanlıklar, kullanıcıların ilerlemesini kolayca görebileceği bir görünümde sunulur.
 - **Hedef Detayları:** Hedefe tıklanıldığında, hedefin detaylarına, başlangıç tarihine, tamamlanma durumuna ve istatistiklerine ulaşılabilir.
-- **Hedef Ekleme ve Çıkarma:** Yeni hedefler eklenebilir veya var olan hedefler arşivlenebilir.
-- **Veri Analizi:** Kullanıcıların belirledikleri hedeflerdeki ilerlemeleri istatistiksel olarak ve 365 günlük ızgara görünümle uzun vadeli gelişimi görsel bir şekilde görebilirler
-- **Yapay Zeka Destekli Planlama:** Yapay zeka, kullanıcıların hedeflerini planlamalarına ve parçalara bölmelerine yardımcı olur. Ayrıca, hedeflerin kaç gün sürmesi gerektiği konusunda önerilerde bulunur.
+- **Hedef Ekleme ve Çıkarma:** Yeni hedefler kolayca hedef sayfasındaki artı butonu ile eklenebilir, hedef ana sayfasında sola kaydırarak silinebilir veye detaylı görünüm ekranında düzenlenebilir.
+- **Veri Analizi:** Kullanıcılar tarafından belirledikleri hedeflerindeki uzun vadeli gelişim, istatistiksel olarak ve 12 aylık takvim görünümüyle görsel bir şekilde görülebilir.
 - **Toplulukla Hedef takibi:** Kullanıcılar, arkadaşlarıyla ortak hedefler belirleyebilir ve bu hedefler üzerinde birlikte çalışabilirler.
     * **Ortak Hedefler ve İlerleme Takibi:** Kullanıcılar, arkadaşlarıyla belirledikleri ortak hedeflerdeki ilerlemelerini yüzdelerle takip edebilirler.
-    * **İlerleme Grafikleri:** Kullanıcılar, kendi ve arkadaşlarının ilerlemelerini grafiksel olarak görebilirler. Bu grafikler, kullanıcıların motivasyonlarını artırır.
-    * **Hedef Detayları:** Arkadaşlarla belirlenen hedeflerin detayları ve ilerlemeleri, challenge sayfasında görüntülenebilir. Bu sayfada ayrıca hedef ekleme ve düzenleme butonları bulunur.
+    * **Arkadaşla Hedef Ekleme:** Kullanıcılar, uygulamayı kullanan arkadaşlarının mail adreslerini hedef eklerken veya sonrasında hedef düzenlerken girebilir ve arkadaşlarına birlikte alışkanlık oluşturma isteği gönderebilir.
+    * **İlerleme Grafikleri:** Kullanıcılar, kendi ve arkadaşlarının ilerlemelerini 12 aylık takvim ve haftalık grafiklerinde görsel olarak görebilirler. Bu grafikler, kullanıcıların motivasyonlarını artırır.
+    * **Hedef Detayları:** Arkadaşlarla belirlenen hedeflerin detayları ve ilerlemeleri, hedefe tıklanıldığında detay sayfasında görüntülenebilir. Bu sayfada ayrıca hedef düzenleme butonu bulunur.
  
 ### 3. Günlük
-- **Günlük:** Kullanıcılar, tarih sırasına göre günlük tutabilir, not kaydedebilirler. Her gün için ayrı bir not girişi yapılabilir.
-- **Görsel ve Metin Ekleme:** Günlük notlarına metin eklemenin yanı sıra, görseller de eklenebilir. Bu, notların daha zengin ve anlamlı olmasını sağlar.
+- **Günlük:** Kullanıcılar tarafından, tarih sırasına göre günlük tutulabilir, not kaydededilebilir. Her gün için, günlük ana sayfasında bulunan artı butonu ile birden fazla not girişi yapılabilir.
+- **•	Görsel ve Ses kaydı Ekleme:** Günlük notlarına metin eklemenin yanı sıra, görseller ve ses kayıtları eklenebilir. Bu, notların daha zengin ve anlamlı olmasını sağlar.
+- **Kilitli Günlük Sayfası:** Kullanıcılar özel notlarını kilitli günlük sayfasına aktarabilir ve gizliliklerini koruyabilirler. 
 
 ### 4. Profil Sayfası
-- **Tüm Hedefler ve Arşiv:** Kullanıcıların tüm hedefleri ve arşivlenen verileri bu sayfada görüntülenir. Kullanıcılar, geçmiş hedeflerine ve tamamlanan görevlere kolayca ulaşabilirler.
-- **Detaylı İlerleme Analizi:** Kullanıcıların kişisel ilerlemeleri, grafiksel ve istatistiksel olarak analiz edilir. Bu analizler, kullanıcıların gelişimlerini daha iyi anlamalarına yardımcı olur.
+- **Tüm Hedefler ve Arşiv:** Kullanıcıların tamamlanmış ve devam etmekte olan tüm hedeflerine ait verileri bu sayfada görüntülenir. 
+- **Detaylı İlerleme Analizi:** Kullanıcıların kişisel ilerlemeleri, günlük ve haftalık olarak grafiksel ve istatistiksel analiz edilir. Bu analizler, kullanıcıların kendi gelişimlerini daha iyi anlamalarına yardımcı olur.
+- **Profil Ayarları:** Kullanıcılar tarafından kendi profil fotoğrafları ve kullanıcı isimleri seçilerek, ugulama daha kişisel bir hale getirilebilir.
 
-### 5. Ayarlar
-- **Profil ayarları:**
-  * **Profili Düzenle:** Kullanıcıların ad, e-posta adresi ve profil resmi gibi kişisel bilgilerini güncellemesine olanak tanır.
-  * **Hesap Bilgileri:** Üyelik durumu ve hesap oluşturma tarihi dahil olmak üzere ayrıntılı hesap bilgileri sağlar.
-- **Güvenlik ve Gizlilik:**
-  * **Şifreyi Değiştir:** Gelişmiş güvenlik için kullanıcıların hesap şifrelerini değiştirmelerine olanak tanır.
-  * **İki Faktörlü Kimlik Doğrulama:** İkinci bir kimlik doğrulama biçimi gerektirerek ek bir güvenlik katmanı sunar.
-- **Bildirimler:** Kullanıcılar, hangi olayların bildirimleri tetiklediğini de içeren bildirim ayarlarını özelleştirebilir.
-- **Temalar:** Kullanıcılar, uygulamanın görünümünü kişiselleştirmek için çeşitli temalar arasından seçim yapabilir.
+### 5. Yapay Zeka Eklentili Kişisel Hikaye Aracı: 
+- **Kişisel Hikaye Yaratma:** Kullanıcılar; kendi verileri doğrultusunda yaratılan hikayelerinin başrolü olabilir, günlük olarak yeni hikayeler yaratabilir ve bu hikayeler doğrultusunda kendilerini eğlenceli bir biçimde analiz edebilir zaman yönetimi süreçlerini kolaylaştırabilirler.
+- **Her Sayfadan Kolay Erişim:** Kullanıcılar, her sayfada sağ üstte bulunan hikaye simgesiyle kolayca Kişisel Hikaye Aracıı'na ulaşabilir veya profil sayfasında bulunan hikaye yarat butonu ile kendi hikayelerini oluşturabilirler.
+
+### 6. Menü Ekranı
+- **Kullanışlı Görünüm:** Bu ekran ile kullanıcılar, bugünkü görevlerine, alışkanlıklara veya günlük sayfalarına erişim sağlayabilirler. Ayrıca, Hikaye Aracı'nın oluşturduğu tüm hikayelere veya sildikleri günlük yapılacak iş ve hedeflerine erişebilirler.
+- **Çıkış Yapma:** Kullanıcılar, bu ekran üzerinden uygulamadan çıkış yapabilirler.
+- **Ayarlar:**
+  * **Tema:**
+      *	**Tema Değişimi:** Uygulamanın farklı temalarda kullanılmasına ve kişiselleştirilmesine olanak tanır.
+  * **Dil:**
+      * **Dil Değişimi:** Uygulama, telefonda kullanılan dilde açılıyor olsa da kullanıcı tarafından farklı dil seçenekleri ile değişim yapılabilir.
+  * **Geri Bildirim ve Destek:** Kullanıcıların uygulama hakkında geri bildirimde bulunmalarını ve destek almalarını sağlar.
+  * **Hakkında:** Uygulama hakkında bilgiler, misyon ve vizyon açıklamaları, ve geliştirici ekibe dair bilgiler sunar.
   </details>
 
 </details>
@@ -281,7 +308,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 
 - **Sprint Review Participants:**
-    * Melisa Nur Alparslan, Olgun Baran Atik, Meltem Sena Koçak, Oğuzhan Gündüz, Onur Turan
+    * Melisa Nur Alparslan , Olgun Baran Atik, Meltem Sena Koçak, Oğuzhan Gündüz, Onur Turan
 
 - **Sprint Retrospective:**
    * In the second sprint, it was decided to install Firebase first.
