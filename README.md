@@ -75,16 +75,6 @@ Sonuç olarak, zamanı doğru yönetmek, yaşamın her alanında başarıya ula�
 - **Creating Personal Stories:** Users can be the main character in stories created based on their data, generate new stories daily, and analyze themselves in a fun way, making time management processes easier.
 - **Easy Access from Every Page:** Users can easily access the Personal Story Tool from the story icon at the top right of every page or create their stories with the create story button on the profile page.
 
-### 5. Settings
-- **Profile Settings:**
-  * **Edit Profile:** Allows users to update their personal information such as name, email, and profile picture.
-  * **Account Information:** Provides detailed account information including membership status and account creation date.
-- **Security and Privacy:**
-  * **Change Password:** Enables users to change their account password for enhanced security.
-  * **Two-Factor Authentication:** Offers an additional layer of security by requiring a second form of authentication.
-- **Notifications:** Users can customize notification settings, including which events trigger notifications.
-- **Themes:** Users can choose from a variety of themes to personalize the appearance of the app.
-
 ### 6.  Menu Screen
 - **User-Friendly View:** This screen allows users to access today's tasks, habits, or journal pages. They can also access all stories created by the Story Tool or their deleted to-do tasks and goals.
 - **Logout:** Users can log out of the application from this screen.
