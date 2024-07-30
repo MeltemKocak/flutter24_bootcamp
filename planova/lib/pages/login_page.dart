@@ -3,12 +3,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:planova/utilities/theme.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:planova/utilities/auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MyApp());
+  runApp(EasyLocalization(
+    supportedLocales: [Locale('en', 'US'), Locale('tr', 'TR')],
+    path: 'assets/translations', // <-- change the path of the translation files 
+    fallbackLocale: Locale('en', 'US'),
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -24,6 +30,9 @@ class MyApp extends StatelessWidget {
               primarySwatch: Colors.blue,
             ),
             home: LoginScreen(),
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
           );
         },
       ),
@@ -60,7 +69,8 @@ class _LoginScreenState extends State<LoginScreen> {
       isLoading = true;
     });
     try {
-      final methods = await FirebaseAuth.instance.fetchSignInMethodsForEmail(emailController.text);
+      final methods = await FirebaseAuth.instance
+          .fetchSignInMethodsForEmail(emailController.text);
       setState(() {
         isExistingUser = methods.isNotEmpty;
         showPasswordField = true;
@@ -71,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
         isLoading = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Bir hata oluştu: $e')),
+        SnackBar(content: Text('An error occurred: $e')),
       );
     }
   }
@@ -88,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() {
           isPasswordWrong = true;
         });
-        showErrorMessage('Şifre yanlış. Lütfen tekrar deneyin.');
+        showErrorMessage('Incorrect password. Please try again.');
       }
     } else {
       try {
@@ -98,13 +108,14 @@ class _LoginScreenState extends State<LoginScreen> {
           context: context,
         );
       } catch (e) {
-        showErrorMessage('Kayıt hatası: $e');
+        showErrorMessage('Registration error: $e');
       }
     }
   }
 
   void showErrorMessage(String message) {
-    final theme = Provider.of<ThemeProvider>(context, listen: false).currentTheme;
+    final theme =
+        Provider.of<ThemeProvider>(context, listen: false).currentTheme;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
@@ -148,14 +159,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       Icons.arrow_back_ios,
                       color: theme.welcomeDotActive,
                       size: 28,
-                    ),
-                    Text(
-                      'Geri',
-                      style: TextStyle(
-                        fontFamily: 'Lato',
-                        color: theme.welcomeDotActive,
-                        fontSize: 17,
-                      ),
                     ),
                   ],
                 ),
@@ -203,11 +206,11 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(
               height: 40,
               width: 40,
-              child: Image.asset("assets/images/Frame.png"),
+              child: Icon(Icons.email_outlined, size: 40),
             ),
             const SizedBox(height: 10),
             Text(
-              "E-posta ile devam edin",
+              tr("Continue with Email"),
               style: TextStyle(
                 color: theme.welcomeText,
                 fontSize: 20,
@@ -217,7 +220,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              "E-posta adresinin neden gerekli olduğunu açıklamak faydalıdır.",
+              tr("Email is required to save your progress on your account."),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -237,7 +240,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 fontWeight: FontWeight.w400,
               ),
               decoration: InputDecoration(
-                hintText: "E-posta adresi",
+                hintText: tr("Email address"),
                 hintStyle: TextStyle(
                   color: theme.subText,
                   fontSize: 16,
@@ -259,7 +262,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 filled: true,
-                fillColor: theme.welcomeText,
+                fillColor: theme.habitDetailEditBackground,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 14,
@@ -280,7 +283,7 @@ class _LoginScreenState extends State<LoginScreen> {
         children: [
           const SizedBox(height: 20),
           Text(
-            isExistingUser ? "Şifrenizi girin" : "Yeni şifre oluşturun",
+            isExistingUser ? tr("Enter your password") : tr("Create a new password"),
             style: TextStyle(
               color: theme.welcomeText,
               fontSize: 18,
@@ -294,24 +297,28 @@ class _LoginScreenState extends State<LoginScreen> {
             obscureText: true,
             style: TextStyle(color: theme.subText),
             decoration: InputDecoration(
-              hintText: isExistingUser ? "Şifre" : "Yeni şifre",
+              hintText: isExistingUser ? tr("Password") : tr("New password"),
               hintStyle: TextStyle(color: theme.subText),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide(
                   width: 2.5,
-                  color: isPasswordWrong ? theme.welcomeButton : theme.welcomeDotActive,
+                  color: isPasswordWrong
+                      ? theme.welcomeButton
+                      : theme.welcomeDotActive,
                 ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide(
                   width: 2.5,
-                  color: isPasswordWrong ? theme.welcomeButton : theme.welcomeDotActive,
+                  color: isPasswordWrong
+                      ? theme.welcomeButton
+                      : theme.welcomeDotActive,
                 ),
               ),
               filled: true,
-              fillColor: theme.welcomeText,
+              fillColor: theme.habitDetailEditBackground,
             ),
           ),
         ],
@@ -330,7 +337,7 @@ class _LoginScreenState extends State<LoginScreen> {
             );
           },
           child: Text(
-            "Şifremi unuttum",
+            tr("Forgot password"),
             style: TextStyle(
               color: theme.welcomeDotActive,
               fontSize: 15,
@@ -359,24 +366,30 @@ class _LoginScreenState extends State<LoginScreen> {
             borderRadius: BorderRadius.circular(14),
           ),
         ),
-        onPressed: isLoading ? null : () async {
-          if (emailController.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Lütfen e-posta adresinizi girin')),
-            );
-            return;
-          }
-          if (!showPasswordField) {
-            await checkEmail();
-          } else {
-            await signInOrSignUp();
-          }
-        },
+        onPressed: isLoading
+            ? null
+            : () async {
+                if (emailController.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text('Please enter your email address')),
+                  );
+                  return;
+                }
+                if (!showPasswordField) {
+                  await checkEmail();
+                } else {
+                  await signInOrSignUp();
+                }
+              },
         child: Text(
-          isLoading ? "Kontrol ediliyor..." : 
-          showPasswordField ? (isExistingUser ? "Giriş Yap" : "Hesap Oluştur") : "Devam et",
+          isLoading
+              ? tr("Checking...")
+              : showPasswordField
+                  ? (isExistingUser ? tr("Sign In") : tr("Create Account"))
+                  : tr("Continue"),
           style: TextStyle(
-            color: theme.welcomeDotActive,
+            color: theme.welcomeText,
             fontSize: 16,
             fontFamily: 'Lato',
             fontWeight: FontWeight.w600,
@@ -401,14 +414,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       isLoading = true;
     });
     try {
-      await FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text);
+      await FirebaseAuth.instance
+          .sendPasswordResetEmail(email: emailController.text);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Şifre sıfırlama e-postası gönderildi')),
+        const SnackBar(content: Text('Password reset email sent')),
       );
       Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Bir hata oluştu: $e')),
+        SnackBar(content: Text('An error occurred: $e')),
       );
     } finally {
       setState(() {
@@ -438,7 +452,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             },
           ),
           title: Text(
-            "Şifremi Unuttum",
+            tr("Forgot Password"),
             style: TextStyle(
               fontFamily: 'Lato',
               color: theme.welcomeDotActive,
@@ -455,7 +469,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             children: [
               const SizedBox(height: 20),
               Text(
-                "Şifrenizi sıfırlamak için lütfen e-posta adresinizi girin",
+                tr("Please enter your email address to reset your password"),
                 style: TextStyle(
                   color: theme.welcomeText,
                   fontSize: 16,
@@ -473,7 +487,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   fontWeight: FontWeight.w400,
                 ),
                 decoration: InputDecoration(
-                  hintText: "E-posta adresi",
+                  hintText: tr("Email address"),
                   hintStyle: TextStyle(
                     color: theme.subText,
                     fontSize: 16,
@@ -495,7 +509,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     ),
                   ),
                   filled: true,
-                  fillColor: theme.welcomeText,
+                  fillColor: theme.habitDetailEditBackground,
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 14,
@@ -520,9 +534,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   ),
                   onPressed: isLoading ? null : sendPasswordResetEmail,
                   child: Text(
-                    isLoading ? "Gönderiliyor..." : "Şifre Sıfırlama E-postası Gönder",
+                    isLoading
+                        ? tr("Sending...")
+                        : tr("Send Password Reset Email"),
                     style: TextStyle(
-                      color: theme.welcomeDotActive,
+                      color: theme.welcomeText,
                       fontSize: 16,
                       fontFamily: 'Lato',
                       fontWeight: FontWeight.w600,

@@ -3,7 +3,8 @@ import 'package:audioplayers/audioplayers.dart' as ap;
 import 'package:planova/pages/journal_edit_page.dart';
 import 'package:planova/pages/photo_view_page.dart';
 import 'package:planova/utilities/theme.dart';
-import 'package:provider/provider.dart'; // Provider eklendi
+import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class JournalDetailPage extends StatefulWidget {
   final String docId;
@@ -98,7 +99,7 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
     final minutes = twoDigits(duration.inMinutes);
     final seconds = twoDigits(duration.inSeconds.remainder(60));
-    return " Duration:  $minutes:$seconds";
+    return " $minutes:$seconds";
   }
 
   @override
@@ -144,24 +145,24 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildSectionTitle("Journal Header", theme),
+              _buildSectionTitle(tr("Journal Header"), theme),
               const SizedBox(height: 10),
               _buildHeaderSection(theme),
               if (description.isNotEmpty) ...[
                 const SizedBox(height: 20),
-                _buildSectionTitle("Journal Body", theme),
+                _buildSectionTitle(tr("Journal Body"), theme),
                 const SizedBox(height: 10),
                 _buildBodySection(theme),
               ],
               if (imageUrls.isNotEmpty) ...[
                 const SizedBox(height: 20),
-                _buildSectionTitle("Images", theme),
+                _buildSectionTitle(tr("Images"), theme),
                 const SizedBox(height: 10),
                 _buildImageSelection(imageUrls, theme),
               ],
               if (audioUrl != null && audioUrl.isNotEmpty) ...[
                 const SizedBox(height: 20),
-                _buildSectionTitle("Audio", theme),
+                _buildSectionTitle(tr("Audio"), theme),
                 const SizedBox(height: 10),
                 _buildAudioSection(audioUrl, theme),
               ],
@@ -281,7 +282,7 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
                     child: Text(
                       _audioDurations.containsKey(audioUrl)
                           ? _formatDuration(_audioDurations[audioUrl]!)
-                          : "Loading...",
+                          : tr("Loading..."),
                       style: TextStyle(color: theme.welcomeText, fontSize: 12),
                     ),
                   ),
@@ -293,7 +294,7 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
         Text(
           _audioDurations.containsKey(audioUrl)
               ? _formatDuration(_audioDurations[audioUrl]!)
-              : "Loading...",
+              : tr("Loading..."),
           style: TextStyle(color: theme.welcomeText, fontSize: 12),
         ),
       ],

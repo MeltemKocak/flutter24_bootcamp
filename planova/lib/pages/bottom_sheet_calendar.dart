@@ -4,6 +4,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:provider/provider.dart';
 import 'package:planova/utilities/theme.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class BottomSheetCalendar extends StatefulWidget {
   final EasyInfiniteDateTimelineController controller;
@@ -44,6 +45,7 @@ class _BottomSheetCalendarState extends State<BottomSheetCalendar> {
           ),
           Expanded(
             child: TableCalendar(
+              locale: context.locale.toString(), // Set locale dynamically
               firstDay: DateTime.utc(2024, 1, 1),
               lastDay: DateTime.utc(2024, 12, 31),
               focusedDay: _focusedDay,

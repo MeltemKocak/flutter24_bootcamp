@@ -5,6 +5,7 @@ import 'package:planova/pages/pattern_lock_page.dart';
 import 'package:planova/utilities/theme.dart';
 import 'pattern_setup_page.dart'; // Import PatternSetupPage
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class PinSetupPage extends StatefulWidget {
   @override
@@ -22,7 +23,7 @@ class _PinSetupPageState extends State<PinSetupPage> {
 
     if (_pinController.text != _confirmPinController.text) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('PINs do not match')),
+        SnackBar(content: Text('PINs do not match').tr()),
       );
       return;
     }
@@ -59,7 +60,7 @@ class _PinSetupPageState extends State<PinSetupPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Set Up PIN'),
+        title: Text('Set Up PIN').tr(),
         backgroundColor: theme.appBar,
       ),
       backgroundColor: theme.background,
@@ -72,7 +73,7 @@ class _PinSetupPageState extends State<PinSetupPage> {
               obscureText: true,
               style: TextStyle(color: theme.welcomeText),
               decoration: InputDecoration(
-                labelText: 'PIN',
+                labelText: 'PIN'.tr(),
                 labelStyle: TextStyle(color: theme.welcomeText),
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: theme.welcomeText),
@@ -88,7 +89,7 @@ class _PinSetupPageState extends State<PinSetupPage> {
               obscureText: true,
               style: TextStyle(color: theme.welcomeText),
               decoration: InputDecoration(
-                labelText: 'Confirm PIN',
+                labelText: 'Confirm PIN'.tr(),
                 labelStyle: TextStyle(color: theme.welcomeText),
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: theme.welcomeText),
@@ -104,7 +105,7 @@ class _PinSetupPageState extends State<PinSetupPage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: theme.addButton,
               ),
-              child: Text('Confirm PIN'),
+              child: Text('Confirm PIN').tr(),
             ),
           ],
         ),

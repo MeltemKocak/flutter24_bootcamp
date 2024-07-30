@@ -150,7 +150,8 @@ class _TodayPageState extends State<TodayPage> {
                 dayStructure: DayStructure.dayStrDayNum,
                 inactiveDayStyle: DayStyle(
                   borderRadius: 18,
-                  dayNumStyle: TextStyle(fontSize: 18.0, color: theme.calenderDays),
+                  dayNumStyle:
+                      TextStyle(fontSize: 18.0, color: theme.calenderDays),
                 ),
               ),
             ),
@@ -171,7 +172,7 @@ class _TodayPageState extends State<TodayPage> {
               builder: (context, snapshots) {
                 if (snapshots.hasError) {
                   return Text(
-                    "Error"+":"+" ${snapshots.error}",
+                    "Error" + ":" + " ${snapshots.error}",
                     style: TextStyle(color: theme.toDoTitle),
                   );
                 }
@@ -243,8 +244,8 @@ class _TodayPageState extends State<TodayPage> {
 
                 return ListView(
                   children: [
-                    _buildTaskSection(
-                        tr("Incomplete"), incompleteTasks, _showIncomplete, theme),
+                    _buildTaskSection(tr("Incomplete"), incompleteTasks,
+                        _showIncomplete, theme),
                     _buildTaskSection(
                         tr("Completed"), completedTasks, _showCompleted, theme),
                   ],
@@ -292,8 +293,8 @@ class _TodayPageState extends State<TodayPage> {
     }
   }
 
-  Widget _buildTaskSection(
-      String title, List<DocumentSnapshot> tasks, bool isExpanded, CustomThemeData theme) {
+  Widget _buildTaskSection(String title, List<DocumentSnapshot> tasks,
+      bool isExpanded, CustomThemeData theme) {
     return Column(
       children: [
         InkWell(
@@ -409,8 +410,10 @@ class _TodayPageState extends State<TodayPage> {
             }
           },
           child: Card(
-            color: isHabit ? theme.habitCardBackground : theme.toDoCardBackground,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            color:
+                isHabit ? theme.habitCardBackground : theme.toDoCardBackground,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             child: Padding(
               padding: const EdgeInsets.all(12),
               child: Row(
@@ -425,7 +428,8 @@ class _TodayPageState extends State<TodayPage> {
                         ? (isToday
                             ? (bool? value) {
                                 if (value != null) {
-                                  _updateCompletionStatus(task, value, formattedDate);
+                                  _updateCompletionStatus(
+                                      task, value, formattedDate);
                                 }
                               }
                             : (value) {
@@ -453,7 +457,9 @@ class _TodayPageState extends State<TodayPage> {
                       children: [
                         Text(
                           taskName,
-                          style: TextStyle(color: theme.toDoTitle, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              color: theme.toDoTitle,
+                              fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 4),
                         if (!isHabit)
@@ -462,7 +468,8 @@ class _TodayPageState extends State<TodayPage> {
                               if (data['taskRecurring'] != 'Tekrar yapma')
                                 Padding(
                                   padding: const EdgeInsets.only(right: 10),
-                                  child: Icon(Icons.repeat, color: theme.toDoIcons, size: 16),
+                                  child: Icon(Icons.repeat,
+                                      color: theme.toDoIcons, size: 16),
                                 ),
                               _timeShow(task, theme)
                             ],
@@ -487,11 +494,13 @@ class _TodayPageState extends State<TodayPage> {
     );
   }
 
-  Future<void> _updateCompletionStatus(DocumentSnapshot task, bool value, String formattedDate) async {
+  Future<void> _updateCompletionStatus(
+      DocumentSnapshot task, bool value, String formattedDate) async {
     final data = task.data() as Map<String, dynamic>;
     String userId = FirebaseAuth.instance.currentUser!.uid;
 
-    Map<String, dynamic> completedDays = (data['completed_days'] ?? {}).cast<String, dynamic>();
+    Map<String, dynamic> completedDays =
+        (data['completed_days'] ?? {}).cast<String, dynamic>();
     if (!completedDays.containsKey(userId)) {
       completedDays[userId] = {};
     }
@@ -511,7 +520,8 @@ class _TodayPageState extends State<TodayPage> {
             .get();
 
         for (var habit in friendHabits.docs) {
-          Map<String, dynamic> friendCompletedDays = (habit['completed_days'] ?? {}).cast<String, dynamic>();
+          Map<String, dynamic> friendCompletedDays =
+              (habit['completed_days'] ?? {}).cast<String, dynamic>();
 
           if (!friendCompletedDays.containsKey(userId)) {
             friendCompletedDays[userId] = {};
@@ -519,7 +529,10 @@ class _TodayPageState extends State<TodayPage> {
 
           friendCompletedDays[userId][formattedDate] = value;
 
-          await FirebaseFirestore.instance.collection('habits').doc(habit.id).update({
+          await FirebaseFirestore.instance
+              .collection('habits')
+              .doc(habit.id)
+              .update({
             'completed_days': friendCompletedDays,
           });
         }
@@ -574,7 +587,8 @@ class _TodayPageState extends State<TodayPage> {
         return AlertDialog(
           title: const Text("Invalid Transaction").tr(),
           content:
-              const Text("Only quests with the current date can be completed.").tr(),
+              const Text("Only quests with the current date can be completed.")
+                  .tr(),
           actions: <Widget>[
             TextButton(
               child: const Text("Okay").tr(),
@@ -600,7 +614,8 @@ class _TodayPageState extends State<TodayPage> {
         if (taskTime != "boş") ...[
           const Padding(
             padding: EdgeInsets.only(left: 0),
-            child: Icon(Icons.access_time, color: Colors.white70, size: 16),
+            child: Icon(Icons.access_time,
+                color: Color.fromARGB(200, 105, 105, 105), size: 16),
           ),
           Padding(
             padding: const EdgeInsets.only(left: 4),
@@ -683,7 +698,10 @@ class _TodayPageState extends State<TodayPage> {
 
     bool isFavorite = data['isFavorite'] == true;
 
-    await FirebaseFirestore.instance.collection(collection).doc(task.id).update({
+    await FirebaseFirestore.instance
+        .collection(collection)
+        .doc(task.id)
+        .update({
       'isFavorite': !isFavorite,
     });
 

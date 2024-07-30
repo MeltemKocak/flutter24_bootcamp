@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:planova/utilities/theme.dart';
-import 'private_journal_page.dart'; // Import PrivateJournalPage
+import 'private_journal_page.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class PatternLockPage extends StatefulWidget {
   @override
@@ -43,7 +44,7 @@ class _PatternLockPageState extends State<PatternLockPage> {
         _isPatternIncorrect = true;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Incorrect Pattern')),
+        SnackBar(content: Text('Incorrect Pattern').tr()),
       );
       setState(() {
         _pattern = [];
@@ -57,7 +58,7 @@ class _PatternLockPageState extends State<PatternLockPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Enter Pattern'),
+        title: Text('Enter Pattern').tr(),
         backgroundColor: theme.background,
       ),
       backgroundColor: theme.background,
@@ -68,7 +69,7 @@ class _PatternLockPageState extends State<PatternLockPage> {
             Text(
               'Draw your pattern to unlock',
               style: TextStyle(color: theme.welcomeText, fontSize: 18),
-            ),
+            ).tr(),
             SizedBox(height: 20),
             _buildPatternLock(theme),
             SizedBox(height: 20),
@@ -77,9 +78,10 @@ class _PatternLockPageState extends State<PatternLockPage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: theme.addButton,
               ),
-              child: Text('Verify Pattern',
-              style: TextStyle(color: theme.addButtonIcon),)
-              ,
+              child: Text(
+                'Verify Pattern',
+                style: TextStyle(color: theme.addButtonIcon),
+              ).tr(),
             ),
             if (_isPatternIncorrect)
               Padding(
@@ -87,7 +89,7 @@ class _PatternLockPageState extends State<PatternLockPage> {
                 child: Text(
                   'Incorrect Pattern, please try again',
                   style: TextStyle(color: Colors.red),
-                ),
+                ).tr(),
               ),
           ],
         ),

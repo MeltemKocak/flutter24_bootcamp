@@ -6,7 +6,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:planova/utilities/theme.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class TodayEditPage extends StatefulWidget {
   final DocumentSnapshot task;
@@ -37,10 +36,10 @@ class _TodayEditPageState extends State<TodayEditPage> {
     taskNameFocusNode = FocusNode();
     descriptionFocusNode = FocusNode();
     selectedDays = List<int>.from(widget.task['selectedDays'] ?? []);
-    selectedRecurrence = widget.task['taskRecurring'] ?? 'Tekrar yapma';
+    selectedRecurrence = widget.task['taskRecurring'] ?? 'Do not repeat';
     selectedTime = widget.task['taskTimes']
                 [DateFormat('yyyy-MM-dd').format(widget.selectedDate)] !=
-            "boş"
+            "empty"
         ? TimeOfDay(
             hour: int.parse(widget.task['taskTimes']
                     [DateFormat('yyyy-MM-dd').format(widget.selectedDate)]
@@ -83,7 +82,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
                 _buildDescriptionSection(context, theme),
                 const SizedBox(height: 24),
                 _buildRecurringSection(context, theme),
-                if (selectedRecurrence != 'Tekrar yapma')
+                if (selectedRecurrence != 'Do not repeat')
                   _buildDaySelectionSection(context, theme),
                 const SizedBox(height: 150),
               ],
@@ -132,7 +131,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
                   style: TextStyle(
                     color: theme.welcomeText,
                     fontSize: 24,
-                    fontFamily: 'Roboto',
+                    fontFamily: 'Lato',
                     fontWeight: FontWeight.w300,
                   ),
                 ).tr(),
@@ -174,7 +173,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
                   style: TextStyle(
                     color: theme.welcomeText,
                     fontSize: 15,
-                    fontFamily: 'Roboto',
+                    fontFamily: 'Lato',
                     fontWeight: FontWeight.w300,
                   ),
                 ).tr(),
@@ -209,7 +208,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
                 hintStyle: TextStyle(
                   color: theme.subText,
                   fontSize: 15,
-                  fontFamily: 'Roboto',
+                  fontFamily: 'Lato',
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -261,7 +260,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
                     style: TextStyle(
                       color: theme.welcomeText,
                       fontSize: 15,
-                      fontFamily: 'Roboto',
+                      fontFamily: 'Lato',
                       fontWeight: FontWeight.w300,
                     ),
                   ).tr(),
@@ -296,7 +295,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
                 hintStyle: TextStyle(
                   color: theme.subText,
                   fontSize: 15,
-                  fontFamily: 'Roboto',
+                  fontFamily: 'Lato',
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -366,7 +365,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
                             style: TextStyle(
                               color: theme.welcomeText,
                               fontSize: 17,
-                              fontFamily: 'Roboto',
+                              fontFamily: 'Lato',
                             ),
                           ).tr()
                         ],
@@ -428,7 +427,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
                             style: TextStyle(
                               color: theme.welcomeText,
                               fontSize: 17,
-                              fontFamily: 'Roboto',
+                              fontFamily: 'Lato',
                             ),
                           ),
                         ],
@@ -482,7 +481,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
           color: theme.addButton,
           borderRadius: BorderRadius.circular(16),
         ),
-        child: Icon(Icons.update, color: theme.addButtonIcon, size: 45),
+        child: Icon(Icons.check, color: theme.addButtonIcon, size: 45),
       ),
     );
   }
@@ -575,7 +574,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
 
     String selectedDate = DateFormat('yyyy-MM-dd').format(widget.selectedDate);
     String newTime =
-        selectedTime != null ? selectedTime!.format(context) : "boş";
+        selectedTime != null ? selectedTime!.format(context) : "empty";
 
     if (updateAll) {
       // Tüm tekrarlanan görevlerin saatini güncelle
@@ -600,7 +599,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
       Navigator.pop(context);
     }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error updating task:"+" $error").tr()),
+        SnackBar(content: Text("Error updating task:" + " $error").tr()),
       );
     });
   }
@@ -627,11 +626,11 @@ class _TodayEditPageState extends State<TodayEditPage> {
             content: DropdownButton<String>(
               value: selectedRecurrence,
               items: [
-                'Tekrar yapma',
-                '1 hafta tekrar',
-                '2 hafta tekrar',
-                '3 hafta tekrar',
-                '1 ay tekrar'
+                'Do not repeat',
+                'Repeat every week',
+                'Repeat every 2 weeks',
+                'Repeat every 3 weeks',
+                'Repeat every month'
               ].map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
@@ -777,7 +776,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
       Navigator.pop(context);
     }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error while deleting task:"+" $error").tr()),
+        SnackBar(content: Text("Error while deleting task:" + " $error").tr()),
       );
     });
   }
@@ -823,11 +822,11 @@ class _TodayEditPageState extends State<TodayEditPage> {
       case 1:
         return tr("Mon");
       case 2:
-        return tr("Tues") ;
+        return tr("Tue");
       case 3:
         return tr("Wed");
       case 4:
-        return tr("Thurs");
+        return tr("Thu");
       case 5:
         return tr("Fri");
       case 6:

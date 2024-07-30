@@ -1,10 +1,11 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:planova/pages/home.dart';
 import 'package:planova/utilities/theme.dart';
-import 'package:provider/provider.dart'; // Provider eklendi
+import 'package:provider/provider.dart';
 import 'habit_page.dart';
 
 class HabitEditPage extends StatefulWidget {
@@ -115,7 +116,7 @@ class _HabitEditPageState extends State<HabitEditPage> {
         });
         _loadHabitData();
       }).catchError((error) {
-        // Hata işleme kodları
+        // Error handling
       });
     }
   }
@@ -151,7 +152,7 @@ class _HabitEditPageState extends State<HabitEditPage> {
           (Route<dynamic> route) => false,
         );
       }).catchError((error) {
-        // Hata işleme kodları
+        // Error handling
       });
     }
   }
@@ -159,7 +160,7 @@ class _HabitEditPageState extends State<HabitEditPage> {
   Future<void> _sendNotificationToFriend(String friendId) async {
     FirebaseFirestore.instance.collection('notifications').add({
       'toUserId': friendId,
-      'message': 'You have been invited to join a habit!',
+      'message': tr('You have been invited to join a habit!'),
       'habitId': widget.habitId,
       'timestamp': FieldValue.serverTimestamp(),
     });
@@ -260,30 +261,30 @@ class _HabitEditPageState extends State<HabitEditPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     _buildTextField(
-                        _nameController, _isNameEmpty, "Habit Name", theme),
+                        _nameController, _isNameEmpty, tr('Habit Name'), theme),
                     const SizedBox(height: 20),
                     _buildTextField(
-                        _descriptionController, false, "Description", theme,
+                        _descriptionController, false, tr('Description'), theme,
                         maxLines: 3),
                     const SizedBox(height: 20),
                     _buildTextField(
-                        _friendEmailController, false, "Friend's Email", theme,
+                        _friendEmailController, false, tr("Friend's Email"), theme,
                         enabled: false),
                     const SizedBox(height: 20),
                     Row(
                       children: [
                         Expanded(
                             child: _buildDateField(
-                                _startDateController, "Start Date", theme)),
+                                _startDateController, tr('Start Date'), theme)),
                         const SizedBox(width: 20),
                         Expanded(
                             child: _buildDateField(
-                                _endDateController, "End Date", theme)),
+                                _endDateController, tr('End Date'), theme)),
                       ],
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      "Target Days: $_targetDays",
+                      tr("Target Days:")+" $_targetDays",
                       style: TextStyle(color: theme.welcomeText, fontSize: 16),
                     ),
                     const SizedBox(height: 20),
@@ -300,7 +301,8 @@ class _HabitEditPageState extends State<HabitEditPage> {
                             ),
                           ),
                           onPressed: _deleteHabit,
-                          child: const Text("Delete Habit"),
+                          child: Text(tr("Delete Habit"),
+                          style: TextStyle(color: theme.welcomeText)),
                         ),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -310,7 +312,8 @@ class _HabitEditPageState extends State<HabitEditPage> {
                             ),
                           ),
                           onPressed: _editHabit,
-                          child: const Text("Update Habit"),
+                          child: Text(tr("Update Habit"),
+                          style: TextStyle(color: theme.welcomeText)),
                         ),
                       ],
                     ),
@@ -339,7 +342,7 @@ class _HabitEditPageState extends State<HabitEditPage> {
           maxLines: maxLines,
           enabled: enabled,
           decoration: InputDecoration(
-            hintText: "Enter $label",
+            hintText: tr('Enter') + " $label",
             hintStyle: TextStyle(color: theme.welcomeText.withAlpha(150)),
             filled: true,
             fillColor: theme.toDoCardBackground,
@@ -391,7 +394,7 @@ class _HabitEditPageState extends State<HabitEditPage> {
               borderRadius: BorderRadius.circular(10),
             ),
             child: Text(
-              controller.text.isEmpty ? "Select Date" : controller.text,
+              controller.text.isEmpty ? tr('Select Date') : controller.text,
               style: TextStyle(color: theme.welcomeText),
             ),
           ),
@@ -407,7 +410,7 @@ class _HabitEditPageState extends State<HabitEditPage> {
       children: List.generate(7, (index) {
         return FilterChip(
           label: Text(
-            DateFormat.E().format(DateTime(2021, 1, index + 3)),
+            _getDayName(index).tr(),
             style: TextStyle(color: theme.welcomeText),
           ),
           selected: _selectedDays[index],
@@ -422,5 +425,26 @@ class _HabitEditPageState extends State<HabitEditPage> {
         );
       }),
     );
+  }
+
+  String _getDayName(int index) {
+    switch (index) {
+      case 0:
+        return tr("Mon");
+      case 1:
+        return tr("Tue");
+      case 2:
+        return tr("Wed");
+      case 3:
+        return tr("Thu");
+      case 4:
+        return tr("Fri");
+      case 5:
+        return tr("Sat");
+      case 6:
+        return tr("Sun");
+      default:
+        return "";
+    }
   }
 }

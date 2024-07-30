@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:planova/pages/home.dart';
 import 'package:planova/utilities/theme.dart';
 import 'package:provider/provider.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 
 class LoginSubPage extends StatelessWidget {
   LoginSubPage({super.key});
@@ -20,46 +20,55 @@ class LoginSubPage extends StatelessWidget {
     double buttonWidth = MediaQuery.of(context).size.width * 0.8;
     double iconButtonWidth = MediaQuery.of(context).size.width * 0.38;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.background,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20.0),
-          topRight: Radius.circular(20.0),
-        ),
-      ),
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(height: 30),
-          _buildWelcomeSlider(context, theme),
-          const SizedBox(height: 30),
-          _buildContinueSection(context, buttonWidth, iconButtonWidth, theme),
-          const SizedBox(height: 50),
-          Text(
-            "If you are creating a new account,\nTerms & Conditions and Privacy Policy will apply.",
-            maxLines: 2,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: theme.subText,
-              fontSize: 13,
-              fontFamily: 'Lato',
-              fontWeight: FontWeight.w400,
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Container(
+          decoration: BoxDecoration(
+            color: theme.background,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(20.0),
+              topRight: Radius.circular(20.0),
             ),
           ),
-        ],
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 20),
+              _buildWelcomeSlider(context, theme),
+              const SizedBox(height: 10), // Reduced from 20 to 10
+              _buildContinueSection(
+                  context, buttonWidth, iconButtonWidth, theme),
+              const SizedBox(height: 20),
+              Text(
+                "If you are creating a new account,\nTerms & Conditions and Privacy Policy will apply.",
+                maxLines: 2,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: theme.subText,
+                  fontSize: 13,
+                  fontFamily: 'Lato',
+                  fontWeight: FontWeight.w400,
+                ),
+              ).tr(),
+              const SizedBox(height: 10),
+            ],
+          ),
+        ),
       ),
     );
   }
 
   Widget _buildWelcomeSlider(BuildContext context, CustomThemeData theme) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Container(
-      width: double.maxFinite,
-      margin: const EdgeInsets.symmetric(horizontal: 68),
+      width: screenWidth * 0.8, // Adjust this value to set the desired width
+      margin: const EdgeInsets.symmetric(
+          horizontal: 12), // Adjust the horizontal margin as needed
       child: CarouselSlider.builder(
         options: CarouselOptions(
-          height: 88,
+          height: 138,
           initialPage: 0,
           autoPlay: true,
           viewportFraction: 1.0,
@@ -77,10 +86,11 @@ class LoginSubPage extends StatelessWidget {
     );
   }
 
-  Widget _buildContinueSection(BuildContext context, double buttonWidth, double iconButtonWidth, CustomThemeData theme) {
+  Widget _buildContinueSection(BuildContext context, double buttonWidth,
+      double iconButtonWidth, CustomThemeData theme) {
     return Container(
       width: double.maxFinite,
-      padding: const EdgeInsets.symmetric(vertical: 14),
+      padding: const EdgeInsets.symmetric(vertical: 10), // Reduced from 14 to 10
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
       ),
@@ -94,24 +104,26 @@ class LoginSubPage extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14),
               ),
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              minimumSize: Size(buttonWidth, 0), // Genişlik %80
+              padding: const EdgeInsets.symmetric(vertical: 12), // Reduced from 14 to 12
+              minimumSize: Size(buttonWidth, 0), // Width 80%
             ),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => LoginScreen()), // Login ekranına yönlendirme
+                MaterialPageRoute(
+                    builder: (context) =>
+                        LoginScreen()), // Navigate to Login screen
               );
             },
             child: Text(
               "Continue with Email",
               style: TextStyle(
-                color: theme.welcomeDotActive,
+                color: theme.welcomeText,
                 fontSize: 16,
                 fontFamily: 'Lato',
                 fontWeight: FontWeight.w600,
               ),
-            ),
+            ).tr(),
           ),
           const SizedBox(height: 12),
           OutlinedButton(
@@ -124,9 +136,10 @@ class LoginSubPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
               ),
               padding: const EdgeInsets.symmetric(vertical: 14),
-              minimumSize: Size(buttonWidth, 0), // Genişlik %80
+              minimumSize: Size(buttonWidth, 0), // Width 80%
             ),
-            onPressed: () => _signInAnonymously(context), // Anonymous authentication
+            onPressed: () =>
+                _signInAnonymously(context), // Anonymous authentication
             child: Text(
               "Continue as a Guest",
               style: TextStyle(
@@ -135,13 +148,15 @@ class LoginSubPage extends StatelessWidget {
                 fontFamily: 'Lato',
                 fontWeight: FontWeight.w600,
               ),
-            ),
+            ).tr(),
           ),
           const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildIconOutlinedButton(context, "assets/icons/google.ico", buttonWidth, theme, onPressed: () => _signInWithGoogle(context)),
+              _buildIconOutlinedButton(
+                  context, "assets/icons/google.ico", buttonWidth, theme,
+                  onPressed: () => _signInWithGoogle(context)),
             ],
           ),
         ],
@@ -167,11 +182,11 @@ class LoginSubPage extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
         ),
         padding: EdgeInsets.zero,
-        minimumSize: Size(buttonWidth, 60), // Genişlik %40, yükseklik sabit
+        minimumSize: Size(buttonWidth, 60), // Width 40%, fixed height
       ),
       onPressed: onPressed,
       child: SizedBox(
-        width: buttonWidth, // Genişlik %40
+        width: buttonWidth, // Width 40%
         height: 60,
         child: Center(
           child: assetPath != null
@@ -184,10 +199,12 @@ class LoginSubPage extends StatelessWidget {
 
   Future<void> _signInWithGoogle(BuildContext context) async {
     final GoogleSignIn googleSignIn = GoogleSignIn();
-    final theme = Provider.of<ThemeProvider>(context, listen: false).currentTheme;
+    final theme =
+        Provider.of<ThemeProvider>(context, listen: false).currentTheme;
 
     try {
-      final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
+      final GoogleSignInAccount? googleSignInAccount =
+          await googleSignIn.signIn();
 
       if (googleSignInAccount != null) {
         final GoogleSignInAuthentication googleSignInAuthentication =
@@ -210,7 +227,8 @@ class LoginSubPage extends StatelessWidget {
   }
 
   Future<void> _signInAnonymously(BuildContext context) async {
-    final theme = Provider.of<ThemeProvider>(context, listen: false).currentTheme;
+    final theme =
+        Provider.of<ThemeProvider>(context, listen: false).currentTheme;
     try {
       await _firebaseAuth.signInAnonymously();
       Navigator.pushReplacement(
@@ -223,8 +241,15 @@ class LoginSubPage extends StatelessWidget {
   }
 
   void showToast(BuildContext context, {required String message}) {
-    final theme = Provider.of<ThemeProvider>(context, listen: false).currentTheme;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message, style: TextStyle(color: theme.welcomeText),), backgroundColor: theme.welcomeButton,));
+    final theme =
+        Provider.of<ThemeProvider>(context, listen: false).currentTheme;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(
+        message,
+        style: TextStyle(color: theme.welcomeText),
+      ),
+      backgroundColor: theme.welcomeButton,
+    ));
   }
 }
 
@@ -235,6 +260,7 @@ class WelcomesliderItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context).currentTheme;
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           "Login or Sign Up",
@@ -244,19 +270,19 @@ class WelcomesliderItemWidget extends StatelessWidget {
             fontFamily: 'Lato',
             fontWeight: FontWeight.w700,
           ),
-        ),
+        ).tr(),
         const SizedBox(height: 8),
         Text(
           "Please select your preferred method to continue setting up your account",
-          maxLines: 2,
+          maxLines: 3,
           textAlign: TextAlign.center,
           style: TextStyle(
             color: theme.subText,
-            fontSize: 16,
+            fontSize: 18,
             fontFamily: 'Lato',
             fontWeight: FontWeight.w400,
           ),
-        ),
+        ).tr(),
       ],
     );
   }

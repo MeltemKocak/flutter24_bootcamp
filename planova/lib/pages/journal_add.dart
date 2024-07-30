@@ -10,7 +10,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:intl/intl.dart';
 import 'package:audioplayers/audioplayers.dart' as ap;
 import 'package:planova/utilities/theme.dart';
-import 'package:provider/provider.dart'; // Provider eklendi
+import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class JournalAddSubPage extends StatefulWidget {
   const JournalAddSubPage({super.key});
@@ -33,9 +34,8 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
   double _decibelLevel = 0.0;
   Duration _recordedDuration = Duration.zero;
   final List<double> _audioWaveform = [];
-  bool _isSaving =
-      false; // Save işlemi devam ederken butonu işlevsiz hale getirmek için değişken
-  bool _isPrivate = false; // Checkbox state for privacy
+  bool _isSaving = false;
+  bool _isPrivate = false;
 
   @override
   void initState() {
@@ -123,17 +123,17 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
   }
 
   Future<void> _saveJournalEntry() async {
-    if (_isSaving) return; // İşlem devam ederken çık
+    if (_isSaving) return;
     setState(() {
-      _isSaving = true; // İşlem başladığında değiştir
+      _isSaving = true;
     });
 
     if (nameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Header cannot be empty')),
+        SnackBar(content: Text(tr('Header cannot be empty'))),
       );
       setState(() {
-        _isSaving = false; // İşlem tamamlandığında değiştir
+        _isSaving = false;
       });
       return;
     }
@@ -159,12 +159,12 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
       'date': _dateTime,
       'imageUrls': imageUrls,
       'audioUrl': audioUrl,
-      'waveform': _audioWaveform, // Save the waveform data
-      'isPrivate': _isPrivate, // Save privacy state
+      'waveform': _audioWaveform,
+      'isPrivate': _isPrivate,
     });
 
     setState(() {
-      _isSaving = false; // İşlem tamamlandığında değiştir
+      _isSaving = false;
     });
 
     Navigator.pop(context);
@@ -206,37 +206,36 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
     }
   }
 
- void _showDatePicker() {
-  final customTheme = Provider.of<ThemeProvider>(context, listen: false).currentTheme;
+  void _showDatePicker() {
+    final customTheme = Provider.of<ThemeProvider>(context, listen: false).currentTheme;
 
-  showDatePicker(
-    builder: (BuildContext context, Widget? child) {
-      return Theme(
-        data: ThemeData.dark().copyWith(
-          colorScheme: ColorScheme.dark(
-            primary: customTheme.loginTextAndBorder, // CustomThemeData'dan alınan renk
-            onPrimary: customTheme.addButtonIcon, // CustomThemeData'dan alınan renk
-            surface: customTheme.surface, // CustomThemeData'dan alınan renk
-            onSurface: customTheme.welcomeText, // CustomThemeData'dan alınan renk
+    showDatePicker(
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.dark().copyWith(
+            colorScheme: ColorScheme.dark(
+              primary: customTheme.loginTextAndBorder,
+              onPrimary: customTheme.addButtonIcon,
+              surface: customTheme.surface,
+              onSurface: customTheme.welcomeText,
+            ),
+            dialogBackgroundColor: customTheme.surface,
           ),
-          dialogBackgroundColor: customTheme.surface, // CustomThemeData'dan alınan renk
-        ),
-        child: child!,
-      );
-    },
-    context: context,
-    initialDate: DateTime.now(),
-    firstDate: DateTime(2000),
-    lastDate: DateTime(2050),
-  ).then((value) {
-    if (value != null) {
-      setState(() {
-        _dateTime = value;
-      });
-    }
-  });
-}
-
+          child: child!,
+        );
+      },
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2050),
+    ).then((value) {
+      if (value != null) {
+        setState(() {
+          _dateTime = value;
+        });
+      }
+    });
+  }
 
   Future<void> _playAudio() async {
     if (_recordedFilePath != null) {
@@ -266,9 +265,9 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildTextField(nameController, "Header", theme),
+              _buildTextField(nameController, tr('Header'), theme),
               const SizedBox(height: 20),
-              _buildTextField(descriptionController, "Description", theme,
+              _buildTextField(descriptionController, tr('Description'), theme,
                   maxLines: 3),
               const SizedBox(height: 20),
               Row(
@@ -280,7 +279,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
                   const SizedBox(width: 15),
                   Expanded(
                     flex: 2,
-                    child: _buildPrivacyButton(theme), // Add the privacy button
+                    child: _buildPrivacyButton(theme),
                   ),
                 ],
               ),
@@ -316,7 +315,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
           style: TextStyle(color: theme.welcomeText),
           maxLines: maxLines,
           decoration: InputDecoration(
-            hintText: "Enter $label",
+            hintText: tr("Enter") + " $label",
             hintStyle: TextStyle(color: theme.welcomeText.withAlpha(150)),
             filled: true,
             fillColor: theme.toDoCardBackground,
@@ -335,7 +334,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Date",
+          tr("Date"),
           style: TextStyle(
               color: theme.welcomeText,
               fontSize: 15,
@@ -371,7 +370,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Images",
+          tr("Images"),
           style: TextStyle(
               color: theme.welcomeText,
               fontSize: 15,
@@ -430,7 +429,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Audio",
+          tr("Audio"),
           style: TextStyle(
               color: theme.welcomeText,
               fontSize: 15,
@@ -473,7 +472,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
                     ? _buildWaveform(theme)
                     : Center(
                         child: Text(
-                          "Tap to record",
+                          tr("Tap to record"),
                           style: TextStyle(color: theme.welcomeText),
                         ),
                       ),
@@ -490,7 +489,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
-              "Duration: ${_recordedDuration.inMinutes}:${(_recordedDuration.inSeconds % 60).toString().padLeft(2, '0')}",
+              tr("Duration") + ": ${_recordedDuration.inMinutes}:${(_recordedDuration.inSeconds % 60).toString().padLeft(2, '0')}",
               style: TextStyle(color: theme.welcomeText, fontSize: 12),
             ),
           ),
@@ -510,7 +509,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Private",
+          tr("Private"),
           style: TextStyle(
               color: theme.welcomeText,
               fontSize: 15,
@@ -534,7 +533,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
               ),
             ),
             child: Text(
-              _isPrivate ? 'Private' : 'Public',
+              _isPrivate ? tr('Private') : tr('Public'),
               style: TextStyle(color: theme.addButtonIcon),
             ),
           ),
@@ -553,10 +552,8 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
             borderRadius: BorderRadius.circular(10),
           ),
         ),
-        onPressed: _isSaving
-            ? null
-            : _saveJournalEntry, // İşlem devam ederken butonu devre dışı bırak
-        child: Text("Save Journal Entry",
+        onPressed: _isSaving ? null : _saveJournalEntry,
+        child: Text(tr("Save Journal Entry"),
             style: TextStyle(color: theme.addButtonIcon)),
       ),
     );

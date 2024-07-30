@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:planova/utilities/theme.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class PatternSetupPage extends StatefulWidget {
   @override
@@ -45,7 +46,7 @@ class _PatternSetupPageState extends State<PatternSetupPage> {
         _isConfirming = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Patterns do not match, try again')),
+        SnackBar(content: Text('Patterns do not match, try again').tr()),
       );
     }
   }
@@ -62,7 +63,7 @@ class _PatternSetupPageState extends State<PatternSetupPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isConfirming ? 'Confirm Pattern' : 'Set Up Pattern'),
+        title: Text(_isConfirming ? 'Confirm Pattern' : 'Set Up Pattern').tr(),
         backgroundColor: theme.appBar,
       ),
       backgroundColor: theme.background,
@@ -75,7 +76,7 @@ class _PatternSetupPageState extends State<PatternSetupPage> {
                   ? 'Draw the pattern again to confirm'
                   : 'Draw your pattern',
               style: TextStyle(color: theme.welcomeText, fontSize: 18),
-            ),
+            ).tr(),
             SizedBox(height: 20),
             _buildPatternLock(theme),
             SizedBox(height: 20),
@@ -84,7 +85,7 @@ class _PatternSetupPageState extends State<PatternSetupPage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: theme.addButton,
               ),
-              child: Text(_isConfirming ? 'Confirm Pattern' : 'Set Up Pattern'),
+              child: Text(_isConfirming ? 'Confirm Pattern' : 'Set Up Pattern').tr(),
             ),
             if (_isPatternMismatch)
               Padding(
@@ -92,7 +93,7 @@ class _PatternSetupPageState extends State<PatternSetupPage> {
                 child: Text(
                   'Patterns do not match, please try again',
                   style: TextStyle(color: Colors.red),
-                ),
+                ).tr(),
               ),
           ],
         ),

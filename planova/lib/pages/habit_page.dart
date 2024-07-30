@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -43,11 +44,11 @@ class _HabitPageState extends State<HabitPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Warning'),
-          content: const Text('You cannot check this habit today.'),
+          title: const Text('Warning').tr(),
+          content: const Text('You cannot check this habit today.').tr(),
           actions: <Widget>[
             TextButton(
-              child: const Text('OK'),
+              child: const Text('OK').tr(),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -56,6 +57,32 @@ class _HabitPageState extends State<HabitPage> {
         );
       },
     );
+  }
+
+  Future<bool> _showConfirmationDialog(BuildContext context) async {
+    return await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Deletion').tr(),
+          content: const Text('Are you sure you want to delete this habit?').tr(),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel').tr(),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            TextButton(
+              child: const Text('Delete').tr(),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    ) ?? false;
   }
 
   String _findNearestOrTodayDate(Map<String, dynamic> days) {
@@ -90,7 +117,7 @@ class _HabitPageState extends State<HabitPage> {
   Future<String> _getUserName(String userId) async {
     DocumentSnapshot userDoc =
         await FirebaseFirestore.instance.collection('users').doc(userId).get();
-    return userDoc['name'] ?? 'Unknown User';
+    return userDoc['name'] ?? tr('Unknown User');
   }
 
   Future<void> _updateCompletionStatus(
@@ -184,8 +211,13 @@ class _HabitPageState extends State<HabitPage> {
         ),
       ),
       direction: DismissDirection.endToStart,
-      onDismissed: (direction) {
-        _moveHabitToTrash(document);
+      onDismissed: (direction) async {
+        bool? confirmed = await _showConfirmationDialog(context);
+        if (confirmed == true) {
+          _moveHabitToTrash(document);
+        } else {
+          setState(() {});
+        }
       },
       child: GestureDetector(
         onTap: () {
@@ -213,7 +245,7 @@ class _HabitPageState extends State<HabitPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          data['name'] ?? 'No name',
+                          data['name'] ?? tr('No name'),
                           style: TextStyle(
                             color: theme.habitTitle,
                             fontSize: 20,
@@ -222,7 +254,7 @@ class _HabitPageState extends State<HabitPage> {
                         ),
                         const SizedBox(height: 5),
                         Text(
-                          data['description'] ?? 'No description',
+                          data['description'] ?? tr('No description'),
                           style: TextStyle(
                             color: theme.subText,
                             fontSize: 14,
@@ -251,7 +283,7 @@ class _HabitPageState extends State<HabitPage> {
                     Icon(Icons.list, color: theme.habitIcons, size: 18),
                     const SizedBox(width: 5),
                     Text(
-                      'Progress',
+                      tr('Progress'),
                       style: TextStyle(
                         color: theme.habitIcons,
                         fontSize: 14,
@@ -259,7 +291,7 @@ class _HabitPageState extends State<HabitPage> {
                     ),
                     Spacer(),
                     Text(
-                      '$completedCount/$targetDays days',
+                      '$completedCount/$targetDays ${tr('days')}',
                       style: TextStyle(
                         color: theme.habitTitle,
                         fontSize: 14,
@@ -286,7 +318,7 @@ class _HabitPageState extends State<HabitPage> {
                       ),
                       child: Text(
                         isActiveDay
-                            ? 'Aktif Gün'
+                            ? tr('Active day')
                             : DateFormat('dd MMM yyyy')
                                 .format(DateTime.parse(displayDate)),
                         style: TextStyle(
@@ -392,7 +424,7 @@ class _HabitPageState extends State<HabitPage> {
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
             return Center(
-                child: Text('Something went wrong',
+                child: Text(tr('Something went wrong'),
                     style: TextStyle(color: theme.habitTitle)));
           }
 
@@ -403,7 +435,7 @@ class _HabitPageState extends State<HabitPage> {
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return Center(
-                child: Text('No habits available',
+                child: Text(tr('No habits available'),
                     style: TextStyle(color: theme.habitTitle)));
           }
 
@@ -431,7 +463,6 @@ class _HabitPageState extends State<HabitPage> {
   void _moveHabitToTrash(DocumentSnapshot habit) async {
     final data = habit.data() as Map<String, dynamic>;
 
-    // Silinen alışkanlığı 'deleted_tasks' koleksiyonuna taşı
     await FirebaseFirestore.instance.collection('deleted_tasks').add({
       'name': data['name'],
       'description': data['description'],
@@ -442,7 +473,6 @@ class _HabitPageState extends State<HabitPage> {
       'data': data,
     });
 
-    // Alışkanlığı orijinal koleksiyonundan sil
     await FirebaseFirestore.instance
         .collection('habits')
         .doc(habit.id)

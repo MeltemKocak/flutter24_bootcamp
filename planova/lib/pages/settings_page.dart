@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:planova/localization_checker.dart';
 import 'package:planova/utilities/theme.dart';
 import 'package:provider/provider.dart';
 
@@ -82,10 +83,9 @@ class _SettingsPageState extends State<SettingsPage> {
             context,
             title: tr("Language"),
             icon: Icons.language,
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => LanguagePage()),
-            ),
+            onTap: () {
+                LocalizationChecker.changeLanguge(context);
+              },
           ),
           _buildListTile(
             context,

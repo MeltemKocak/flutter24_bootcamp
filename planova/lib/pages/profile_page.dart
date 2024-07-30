@@ -10,6 +10,7 @@ import 'package:planova/pages/today_page.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:planova/utilities/theme.dart';
+import 'package:planova/pages/user_stories_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -25,8 +26,9 @@ class _ProfilePageState extends State<ProfilePage> {
   Uint8List? _image;
   String? imageUrl;
   final TextEditingController nameController = TextEditingController();
-  final TextEditingController bioController = TextEditingController();
   List<Map<String, dynamic>> habits = [];
+  bool storyExists = false;
+  String story = "";
 
   @override
   void initState() {
@@ -35,6 +37,7 @@ class _ProfilePageState extends State<ProfilePage> {
     _fetchUserProfile();
     getTaskCountsForToday();
     _fetchHabits();
+    _checkStory();
   }
 
   Future<void> _fetchUser() async {
@@ -51,7 +54,6 @@ class _ProfilePageState extends State<ProfilePage> {
       if (userProfile.exists) {
         var data = userProfile.data() as Map<String, dynamic>;
         nameController.text = data['name'];
-        bioController.text = data['bio'];
         imageUrl = data['imageUrl'];
         setState(() {});
       }
@@ -82,6 +84,24 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  Future<void> _checkStory() async {
+    if (user != null) {
+      DateTime today = DateTime.now();
+      String todayStr = DateFormat('yyyy-MM-dd').format(today);
+      QuerySnapshot storySnapshot = await FirebaseFirestore.instance
+          .collection('stories')
+          .where('user_id', isEqualTo: user!.uid)
+          .where('date', isEqualTo: todayStr)
+          .get();
+      if (storySnapshot.docs.isNotEmpty) {
+        story = storySnapshot.docs.first['story'];
+      }
+      setState(() {
+        storyExists = storySnapshot.docs.isNotEmpty;
+      });
+    }
+  }
+
   void selectImage() async {
     Uint8List img = await pickImage(ImageSource.gallery);
     setState(() {
@@ -99,15 +119,13 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void saveProfile() async {
     String name = nameController.text;
-    String bio = bioController.text;
-    String email =  user?.email ?? tr('Anonymous User');
+    String email = user?.email ?? tr('Anonymous User');
     if (_image != null) {
       imageUrl = await _uploadImageToStorage(_image!);
     }
 
     await FirebaseFirestore.instance.collection('users').doc(user!.uid).set({
       'name': name,
-      'bio': bio,
       'imageUrl': imageUrl,
       'userId': user!.uid,
       'userEmail': email,
@@ -116,6 +134,13 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       _image = null; // Clear the image after uploading
     });
+  }
+
+  Future<void> _refreshProfile() async {
+    await _fetchUserProfile();
+    await getTaskCountsForToday();
+    await _fetchHabits();
+    await _checkStory();
   }
 
   @override
@@ -131,127 +156,134 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 36),
-                Stack(
-                  alignment: Alignment.center,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CircleAvatar(
-                      radius: 80,
-                      backgroundColor: theme.checkBoxActiveColor,
-                      child: CircleAvatar(
-                        radius: 78,
-                        backgroundImage: _image != null
-                            ? MemoryImage(_image!)
-                            : (imageUrl != null
+                    Stack(
+                      children: [
+                        CircleAvatar(
+                          radius: 60,
+                          backgroundColor: theme.checkBoxActiveColor,
+                          child: CircleAvatar(
+                            radius: 58,
+                            backgroundImage: _image != null
+                                ? MemoryImage(_image!)
+                                : (imageUrl != null
                                     ? NetworkImage(imageUrl!)
                                     : const AssetImage(
-                                        'assets/images/default_profile.png'))
-                                as ImageProvider,
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: IconButton(
-                        onPressed: selectImage,
-                        icon: Icon(
-                          Icons.add_a_photo,
-                          color: theme.checkBoxActiveColor,
+                                            'assets/images/default_profile.png'))
+                                        as ImageProvider,
+                          ),
                         ),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: IconButton(
+                            onPressed: selectImage,
+                            icon: Icon(
+                              Icons.add_a_photo,
+                              color: theme.checkBoxActiveColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(width: 20),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextField(
+                            controller: nameController,
+                            style: TextStyle(color: theme.calenderNumbers),
+                            decoration: InputDecoration(
+                              hintText: tr('Enter Name'),
+                              hintStyle: TextStyle(
+                                  color: theme.calenderNumbers.withOpacity(0.7)),
+                              contentPadding: const EdgeInsets.all(10),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide:
+                                    BorderSide(color: theme.checkBoxBorderColor),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide:
+                                    BorderSide(color: theme.checkBoxBorderColor),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide:
+                                    BorderSide(color: theme.checkBoxActiveColor),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton.icon(
+                            onPressed: saveProfile,
+                            icon: Icon(Icons.save, color: theme.toDoCardBackground),
+                            label: Text(
+                              tr('Save Profile'),
+                              style: TextStyle(
+                                  color: theme.toDoCardBackground,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: theme.checkBoxActiveColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 24, vertical: 12),
+                              textStyle: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 30),
                 Text(
-                user?.email ?? tr('Anonymous User'),
+                  tr("Today's Story"),
                   style: TextStyle(
+                    fontSize: 23,
+                    fontWeight: FontWeight.bold,
                     color: theme.calenderNumbers,
-                    fontSize: 16,
                   ),
+                  textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 24),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      TextField(
-                        controller: nameController,
-                        style: TextStyle(color: theme.calenderNumbers),
-                        decoration: InputDecoration(
-                        hintText: tr('Enter Name'),
-                          hintStyle: TextStyle(
-                              color: theme.calenderNumbers.withOpacity(0.7)),
-                          contentPadding: const EdgeInsets.all(10),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide:
-                                BorderSide(color: theme.checkBoxBorderColor),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide:
-                                BorderSide(color: theme.checkBoxBorderColor),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: theme.checkBoxActiveColor),
-                          ),
+                const SizedBox(height: 20),
+                storyExists
+                    ? GestureDetector(
+                        onTap: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => UserStoriesPage()),
+                          );
+                          _refreshProfile();
+                        },
+                        child: StoryWidget(story: story),
+                      )
+                    : GestureDetector(
+                        onTap: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => UserStoriesPage()),
+                          );
+                          _refreshProfile();
+                        },
+                        child: StoryWidget(
+                          story: tr("Create your story for today"),
                         ),
                       ),
-                      const SizedBox(height: 16),
-                      TextField(
-                        controller: bioController,
-                        style: TextStyle(color: theme.calenderNumbers),
-                        decoration: InputDecoration(
-                        hintText: tr('Enter Bio'),
-                          hintStyle: TextStyle(
-                              color: theme.calenderNumbers.withOpacity(0.7)),
-                          contentPadding: const EdgeInsets.all(10),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide:
-                                BorderSide(color: theme.checkBoxBorderColor),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide:
-                                BorderSide(color: theme.checkBoxBorderColor),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: theme.checkBoxActiveColor),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 35),
-                    ],
-                  ),
-                ),
-                ElevatedButton.icon(
-                  onPressed: saveProfile,
-                  icon: Icon(Icons.save, color: theme.toDoCardBackground),
-                  label: Text(
-                  tr('Save Profile'),
-                    style: TextStyle(
-                        color: theme.toDoCardBackground,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: theme.checkBoxActiveColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 12),
-                    textStyle: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                const SizedBox(height: 60),
+                const SizedBox(height: 30),
                 Text(
-              tr("Daily Task Overview"),
+                  tr("Daily Task Overview"),
                   style: TextStyle(
                       color: theme.calenderNumbers,
                       fontWeight: FontWeight.bold,
@@ -262,18 +294,18 @@ class _ProfilePageState extends State<ProfilePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     TaskCard(
-                  title: tr('Incomplete Task'),
+                      title: tr('Incomplete Task'),
                       count: _incompleteTasks,
                     ),
                     TaskCard(
-                  title: tr('Completed Task'),
+                      title: tr('Completed Task'),
                       count: _completedTasks,
                     ),
                   ],
                 ),
                 const SizedBox(height: 40),
                 Text(
-              tr("Daily Task Statistics"),
+                  tr("Daily Task Statistics"),
                   style: TextStyle(
                       color: theme.calenderNumbers,
                       fontWeight: FontWeight.bold,
@@ -324,6 +356,45 @@ class _ProfilePageState extends State<ProfilePage> {
       _incompleteTasks = counts['incomplete'] ?? 0;
       _completedTasks = counts['completed'] ?? 0;
     });
+  }
+}
+
+class StoryWidget extends StatelessWidget {
+  final String story;
+  static const int maxLength = 200; // Güncellenen uzunluk
+
+  const StoryWidget({required this.story});
+
+  @override
+  Widget build(BuildContext context) {
+    String displayedStory = story.length > maxLength
+        ? story.substring(0, maxLength) + '...'
+        : story;
+
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        CustomThemeData theme = ThemeColors.getTheme(themeProvider.themeValue);
+        return Card(
+          color: theme.toDoCardBackground,
+          margin: const EdgeInsets.all(8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Center(
+              child: Text(
+                displayedStory,
+                style: TextStyle(
+                  color: theme.calenderNumbers,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }
 
@@ -538,7 +609,7 @@ class WeeklyStatsWidget extends StatelessWidget {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
-              return Text("Error"+":"+" ${snapshot.error}");
+              return Text("Error" + ":" + " ${snapshot.error}");
             } else {
               Map<String, Map<String, int>>? taskCounts = snapshot.data;
 
@@ -626,6 +697,11 @@ class WeeklyStatsWidget extends StatelessWidget {
                                     taskCounts != null ? taskCounts[weekDays[i]]!['completed']!.toDouble() : 0,
                                     theme.checkBoxActiveColor,
                                   ),
+                                  BarChartRodStackItem(
+                                    taskCounts != null ? taskCounts[weekDays[i]]!['completed']!.toDouble() : 0,
+                                    taskCounts != null ? taskCounts[weekDays[i]]!['total']!.toDouble() : 0,
+                                    theme.habitDetailEditBackground,
+                                  ),
                                 ],
                               ),
                             ]),
@@ -657,5 +733,5 @@ class WeeklyStatsWidget extends StatelessWidget {
     return taskCounts;
   }
 
-  static List<String> weekDays = [tr('Mon'), tr('Tue'), tr('Wed'), tr('Thu'), tr('Fri'),tr('Sat') ,tr('Sun') ];
+  static List<String> weekDays = [tr('Mon'), tr('Tue'), tr('Wed'), tr('Thu'), tr('Fri'), tr('Sat'), tr('Sun')];
 }

@@ -6,7 +6,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:planova/utilities/theme.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class TodayAddSubPage extends StatefulWidget {
   final DateTime? focusDate;
@@ -32,7 +31,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
   FocusNode taskNameFocusNode = FocusNode();
   FocusNode descriptionFocusNode = FocusNode();
   List<int> selectedDays = [];
-  String selectedRecurrence = 'Tekrar yapma';
+  String selectedRecurrence = 'Do not repeat';
   TimeOfDay? selectedTime;
   bool isTaskNameEmpty = false;
 
@@ -58,7 +57,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                 _buildDescriptionSection(context, theme),
                 const SizedBox(height: 24),
                 _buildRecurringSection(context, theme),
-                if (selectedRecurrence != 'Tekrar yapma')
+                if (selectedRecurrence != 'Do not repeat')
                   _buildDaySelectionSection(context, theme),
                 const SizedBox(height: 150),
               ],
@@ -67,7 +66,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
           Positioned(
             right: 20,
             bottom: 20,
-            child: _buildAiButton(context, theme),
+            child: _buildConfirmTaskButton(context, theme),
           ),
         ],
       ),
@@ -76,51 +75,15 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
 
   Widget _buildColumnVector(BuildContext context, CustomThemeData theme) {
     return Container(
-      width: double.maxFinite,
+      width: double.infinity,
       margin: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: [
           SizedBox(
-            width: double.maxFinite,
+            width: double.infinity,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: SvgPicture.asset(
-                      "assets/images/img_vector.svg",
-                      color: theme.welcomeDot,
-                    ),
-                  ),
-                ),
-                Text(
-                  "Task",
-                  style: TextStyle(
-                    color: theme.welcomeText,
-                    fontSize: 24,
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w300,
-                  ),
-                ).tr(),
-                Align(
-                  alignment: Alignment.center,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: SizedBox(
-                      height: 38,
-                      width: 38,
-                      child: SvgPicture.asset(
-                        "assets/images/img_check.svg",
-                        color: theme.welcomeDot,
-                      ),
-                    ),
-                  ),
-                )
-              ],
             ),
           )
         ],
@@ -130,24 +93,26 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
 
   Widget _buildTaskSection(BuildContext context, CustomThemeData theme) {
     return Container(
-      width: double.maxFinite,
+      width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: double.maxFinite,
+            width: double.infinity,
             child: Row(
               children: [
-                Text(
-                  "Task Name",
-                  style: TextStyle(
-                    color: theme.welcomeText,
-                    fontSize: 15,
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w300,
-                  ),
-                ).tr(),
+                Expanded(
+                  child: Text(
+                    "Task Name",
+                    style: TextStyle(
+                      color: theme.welcomeText,
+                      fontSize: 15,
+                      fontFamily: 'Lato',
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ).tr(),
+                ),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(
@@ -167,7 +132,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
           ),
           const SizedBox(height: 2),
           SizedBox(
-            width: double.maxFinite,
+            width: double.infinity,
             child: TextFormField(
               controller: nameController,
               focusNode: taskNameFocusNode,
@@ -179,7 +144,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                 hintStyle: TextStyle(
                   color: theme.subText,
                   fontSize: 15,
-                  fontFamily: 'Roboto',
+                  fontFamily: 'Lato',
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -222,24 +187,23 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
 
   Widget _buildDescriptionSection(BuildContext context, CustomThemeData theme) {
     return Container(
-      width: double.maxFinite,
+      width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: double.maxFinite,
+            width: double.infinity,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Align(
-                  alignment: Alignment.center,
+                Expanded(
                   child: Text(
                     "Description",
                     style: TextStyle(
                       color: theme.welcomeText,
                       fontSize: 15,
-                      fontFamily: 'Roboto',
+                      fontFamily: 'Lato',
                       fontWeight: FontWeight.w300,
                     ),
                   ).tr(),
@@ -260,7 +224,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
           ),
           const SizedBox(height: 2),
           SizedBox(
-            width: double.maxFinite,
+            width: double.infinity,
             child: TextFormField(
               controller: edittextController,
               focusNode: descriptionFocusNode,
@@ -274,7 +238,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                 hintStyle: TextStyle(
                   color: theme.subText,
                   fontSize: 15,
-                  fontFamily: 'Roboto',
+                  fontFamily: 'Lato',
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -309,18 +273,18 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
 
   Widget _buildRecurringSection(BuildContext context, CustomThemeData theme) {
     return Container(
-      width: double.maxFinite,
+      width: double.infinity,
       margin: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: [
           const SizedBox(height: 10),
           SizedBox(
-            width: double.maxFinite,
+            width: double.infinity,
             child: Row(
               children: [
                 Expanded(
                   child: SizedBox(
-                    width: double.maxFinite,
+                    width: double.infinity,
                     height: 60,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -343,8 +307,8 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                             "Recurring",
                             style: TextStyle(
                               color: theme.welcomeText,
-                              fontSize: 17,
-                              fontFamily: 'Roboto',
+                              fontSize: 16,
+                              fontFamily: 'Lato',
                             ),
                           ).tr()
                         ],
@@ -355,7 +319,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                 const SizedBox(width: 14),
                 Expanded(
                   child: SizedBox(
-                    width: double.maxFinite,
+                    width: double.infinity,
                     height: 60,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -405,8 +369,8 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                                 : "Select Time",
                             style: TextStyle(
                               color: theme.welcomeText,
-                              fontSize: 17,
-                              fontFamily: 'Roboto',
+                              fontSize: 16,
+                              fontFamily: 'Lato',
                             ),
                           ).tr(),
                         ],
@@ -455,20 +419,26 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
     );
   }
 
-  Widget _buildAiButton(BuildContext context, CustomThemeData theme) {
+  Widget _buildConfirmTaskButton(BuildContext context, CustomThemeData theme) {
     return GestureDetector(
       onTap: _addTodo,
       child: Container(
         alignment: Alignment.center,
-        height: 70,
-        width: 70,
+        height: 50,
+        width: 150,
         padding: const EdgeInsets.all(0),
         decoration: BoxDecoration(
           color: theme.addButton,
           borderRadius: BorderRadius.circular(16),
         ),
-        child: Icon(Icons.check,
-            color: theme.addButtonIcon, size: 45),
+        child: Text(
+          'Confirm Task',
+          style: TextStyle(
+            color: theme.addButtonIcon,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ).tr(),
       ),
     );
   }
@@ -495,11 +465,11 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
             content: DropdownButton<String>(
               value: selectedRecurrence,
               items: [
-                'Tekrar yapma',
-                '1 hafta tekrar',
-                '2 hafta tekrar',
-                '3 hafta tekrar',
-                '1 ay tekrar'
+                'Do not repeat',
+                'Repeat every week',
+                'Repeat every 2 weeks',
+                'Repeat every 3 weeks',
+                'Repeat every month'
               ].map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
@@ -542,16 +512,16 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
 
     int recurrenceDays = 0;
     switch (selectedRecurrence) {
-      case '1 hafta tekrar':
+      case 'Repeat every week':
         recurrenceDays = 7;
         break;
-      case '2 hafta tekrar':
+      case 'Repeat every 2 weeks':
         recurrenceDays = 14;
         break;
-      case '3 hafta tekrar':
+      case 'Repeat every 3 weeks':
         recurrenceDays = 21;
         break;
-      case '1 ay tekrar':
+      case 'Repeat every month':
         recurrenceDays = 30;
         break;
     }
@@ -559,7 +529,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
     Map<String, String> taskTimes = {};
     DateTime currentDate = widget.focusDate ?? DateTime.now();
     String taskTime =
-        selectedTime != null ? selectedTime!.format(context) : "boş";
+        selectedTime != null ? selectedTime!.format(context) : "empty";
 
     if (selectedDays.isNotEmpty) {
       for (int i = 0; i < recurrenceDays; i++) {
@@ -590,7 +560,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
       Navigator.pop(context);
     }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(tr("Error")+" $error")),
+        SnackBar(content: Text(tr("Error") + " $error")),
       );
     });
   }
@@ -598,19 +568,19 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
   String _getDayName(int day) {
     switch (day) {
       case 1:
-        return 'Pzt';
+        return 'Mon'.tr();
       case 2:
-        return 'Sal';
+        return 'Tue'.tr();
       case 3:
-        return 'Çar';
+        return 'Wed'.tr();
       case 4:
-        return 'Per';
+        return 'Thu'.tr();
       case 5:
-        return 'Cum';
+        return 'Fri'.tr();
       case 6:
-        return 'Cmt';
+        return 'Sat'.tr();
       case 7:
-        return 'Paz';
+        return 'Sun'.tr();
       default:
         return '';
     }

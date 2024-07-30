@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:planova/utilities/theme.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class IncomingRequestsPage extends StatefulWidget {
   @override
@@ -24,7 +25,10 @@ class _IncomingRequestsPageState extends State<IncomingRequestsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Gelen İstekler',style: TextStyle(color: theme.welcomeText),),
+        title: Text(
+          tr('Incoming Requests'),
+          style: TextStyle(color: theme.welcomeText),
+        ),
         backgroundColor: theme.background,
         iconTheme: IconThemeData(color: theme.welcomeText),
       ),
@@ -36,7 +40,7 @@ class _IncomingRequestsPageState extends State<IncomingRequestsPage> {
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
-            return Center(child: Text('Something went wrong', style: TextStyle(color: theme.welcomeText)));
+            return Center(child: Text(tr('Something went wrong'), style: TextStyle(color: theme.welcomeText)));
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -44,7 +48,7 @@ class _IncomingRequestsPageState extends State<IncomingRequestsPage> {
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(child: Text('No incoming requests', style: TextStyle(color: theme.welcomeText)));
+            return Center(child: Text(tr('No incoming requests'), style: TextStyle(color: theme.welcomeText)));
           }
 
           return ListView(
@@ -71,7 +75,7 @@ class _IncomingRequestsPageState extends State<IncomingRequestsPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            data['name'] ?? 'No name',
+                            data['name'] ?? tr('No name'),
                             style: TextStyle(
                               color: theme.toDoTitle,
                               fontSize: 20,
@@ -85,13 +89,13 @@ class _IncomingRequestsPageState extends State<IncomingRequestsPage> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: theme.addButton,
                             ),
-                            child: const Text('Accept'),
+                            child: Text(tr('Accept')),
                           ),
                         ],
                       ),
                       const SizedBox(height: 5),
                       Text(
-                        data['description'] ?? 'No description',
+                        data['description'] ?? tr('No description'),
                         style: TextStyle(
                           color: theme.subText,
                           fontSize: 14,

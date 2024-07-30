@@ -1,4 +1,3 @@
-// home.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,6 +21,12 @@ import 'package:provider/provider.dart';
 import 'package:planova/utilities/theme.dart';
 import 'settings_page.dart';
 
+class LanguageChangeNotifier extends ChangeNotifier {
+  void notify() {
+    notifyListeners();
+  }
+}
+
 class Homes extends StatelessWidget {
   const Homes({super.key});
 
@@ -30,17 +35,20 @@ class Homes extends StatelessWidget {
     final themeProvider = Provider.of<ThemeProvider>(context);
     CustomThemeData theme = ThemeColors.getTheme(themeProvider.themeValue);
 
-    return MaterialApp(
-      theme: ThemeData(
-        useMaterial3: true,
-        navigationBarTheme: NavigationBarThemeData(
-          indicatorColor: theme.addButton,
-          labelTextStyle: MaterialStateProperty.all(
-            TextStyle(color: theme.welcomeText),
+    return ChangeNotifierProvider(
+      create: (_) => LanguageChangeNotifier(),
+      child: MaterialApp(
+        theme: ThemeData(
+          useMaterial3: true,
+          navigationBarTheme: NavigationBarThemeData(
+            indicatorColor: theme.addButton,
+            labelTextStyle: MaterialStateProperty.all(
+              TextStyle(color: theme.welcomeText),
+            ),
           ),
         ),
+        home: const NavigationExample(),
       ),
-      home: const NavigationExample(),
     );
   }
 }
@@ -57,7 +65,7 @@ class _NavigationExampleState extends State<NavigationExample> {
   late String userId = user!.uid;
   String? userProfileImageUrl;
   String userName = "";
-  String filter = 'All Tasks';
+  String filter = tr('All Tasks');
 
   @override
   void initState() {
@@ -80,7 +88,13 @@ class _NavigationExampleState extends State<NavigationExample> {
   }
 
   static int currentPageIndex = 0;
-  final List<String> appBarTitles = [tr("Today"), tr("Habits"), tr("Journal"), tr("Profile")];
+
+  List<String> get appBarTitles => [
+    tr("Today"),
+    tr("Habits"),
+    tr("Journal"),
+    tr("Profile")
+  ];
 
   final EasyInfiniteDateTimelineController _controller =
       EasyInfiniteDateTimelineController();
@@ -110,7 +124,7 @@ class _NavigationExampleState extends State<NavigationExample> {
         return AlertDialog(
           backgroundColor: theme.background,
           title: Text(
-            'Filter',
+            tr('Filter'),
             style: TextStyle(color: theme.welcomeText),
           ),
           content: SingleChildScrollView(
@@ -119,10 +133,10 @@ class _NavigationExampleState extends State<NavigationExample> {
                 RadioListTile<String>(
                   activeColor: theme.welcomeDotActive,
                   title: Text(
-                    'All Tasks',
+                    tr('All Tasks'),
                     style: TextStyle(color: theme.welcomeText),
                   ),
-                  value: 'All Tasks',
+                  value: tr('All Tasks'),
                   groupValue: filter,
                   onChanged: (value) {
                     setState(() {
@@ -134,10 +148,10 @@ class _NavigationExampleState extends State<NavigationExample> {
                 RadioListTile<String>(
                   activeColor: theme.welcomeDotActive,
                   title: Text(
-                    'Favorite Tasks',
+                    tr('Favorite Tasks'),
                     style: TextStyle(color: theme.welcomeText),
                   ),
-                  value: 'Favorite Tasks',
+                  value: tr('Favorite Tasks'),
                   groupValue: filter,
                   onChanged: (value) {
                     setState(() {
@@ -149,10 +163,10 @@ class _NavigationExampleState extends State<NavigationExample> {
                 RadioListTile<String>(
                   activeColor: theme.welcomeDotActive,
                   title: Text(
-                    'Habits',
+                    tr('Habits'),
                     style: TextStyle(color: theme.welcomeText),
                   ),
-                  value: 'Habits',
+                  value: tr('Habits'),
                   groupValue: filter,
                   onChanged: (value) {
                     setState(() {
@@ -174,9 +188,9 @@ class _NavigationExampleState extends State<NavigationExample> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Uyarı'),
+          title: const Text('Warning').tr(),
           content: const Text(
-              'Habit kısmını misafir ile giriş yapmış iken kullanamazsınız. Lütfen hesap oluşturun.'),
+              'You cannot use the Habit section while logged in as a guest. Please create an account.').tr(),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -185,7 +199,7 @@ class _NavigationExampleState extends State<NavigationExample> {
                 });
                 Navigator.of(context).pop();
               },
-              child: const Text('İptal'),
+              child: const Text('Cancel').tr(),
             ),
             TextButton(
               onPressed: () {
@@ -195,7 +209,7 @@ class _NavigationExampleState extends State<NavigationExample> {
                   (Route<dynamic> route) => false,
                 );
               },
-              child: const Text('Onayla'),
+              child: const Text('Confirm').tr(),
             ),
           ],
         );
@@ -208,9 +222,9 @@ class _NavigationExampleState extends State<NavigationExample> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Uyarı'),
+          title: const Text('Warning').tr(),
           content: const Text(
-              'Bu işleme devam edebilmek için profil oluşturmanız gerekmektedir.\n\n(Bio kısmına yazı ekleyerek story kısmını daha detaylı hale getirebilirsiniz.)'),
+              'You need to create a profile to continue this action.\n\n(You can make the story part more detailed by adding text to the bio section.)').tr(),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -219,7 +233,7 @@ class _NavigationExampleState extends State<NavigationExample> {
                 });
                 Navigator.of(context).pop();
               },
-              child: const Text('İptal'),
+              child: const Text('Cancel').tr(),
             ),
             TextButton(
               onPressed: () {
@@ -228,7 +242,7 @@ class _NavigationExampleState extends State<NavigationExample> {
                 });
                 Navigator.of(context).pop();
               },
-              child: const Text('Onayla'),
+              child: const Text('Confirm').tr(),
             ),
           ],
         );
@@ -247,6 +261,7 @@ class _NavigationExampleState extends State<NavigationExample> {
     User? user = FirebaseAuth.instance.currentUser;
     final themeProvider = Provider.of<ThemeProvider>(context);
     CustomThemeData theme = ThemeColors.getTheme(themeProvider.themeValue);
+    final languageNotifier = Provider.of<LanguageChangeNotifier>(context);
 
     return Scaffold(
       backgroundColor: theme.background,
@@ -375,7 +390,7 @@ class _NavigationExampleState extends State<NavigationExample> {
                           );
                         } else {
                           return Text(
-                            (user?.email) ?? 'Anonymous User',
+                            (user?.email) ?? tr('Anonymous User'),
                             style: TextStyle(
                               color: theme.welcomeText,
                               fontSize: 18,
@@ -391,51 +406,41 @@ class _NavigationExampleState extends State<NavigationExample> {
             ),
             ListTile(
               leading: Icon(Icons.list, color: theme.bottomBarIcon),
-              title:
-                  Text('Today', style: TextStyle(color: theme.bottomBarText)),
+              title: Text(tr('Today'), style: TextStyle(color: theme.bottomBarText)),
               onTap: () {
                 setState(() {
                   currentPageIndex = 0;
                 });
+                languageNotifier.notify(); // Dil değişikliğini dinleyiciye bildirin
                 Navigator.of(context).pop();
               },
             ),
             ListTile(
               leading: Icon(Icons.check_circle, color: theme.bottomBarIcon),
-              title: Text('Habits',
-                  style: TextStyle(color: theme.bottomBarText)),
+              title: Text(tr('Habits'), style: TextStyle(color: theme.bottomBarText)),
               onTap: () {
                 setState(() {
                   currentPageIndex = 1;
                 });
+                languageNotifier.notify(); // Dil değişikliğini dinleyiciye bildirin
                 Navigator.of(context).pop();
               },
             ),
             ListTile(
-              leading: Icon(Icons.star, color: theme.bottomBarIcon),
-              title: Text('Important Task',
+              leading: Icon(Icons.library_books_outlined, color: theme.bottomBarIcon),
+              title: Text(tr('Journal'),
                   style: TextStyle(color: theme.bottomBarText)),
               onTap: () {
                 setState(() {
                   currentPageIndex = 2;
                 });
+                languageNotifier.notify(); // Dil değişikliğini dinleyiciye bildirin
                 Navigator.of(context).pop();
               },
             ),
             ListTile(
-              leading: Icon(Icons.delete, color: theme.bottomBarIcon),
-              title: Text('Deleted',
-                  style: TextStyle(color: theme.bottomBarText)),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const TrashPage()),
-                );
-              },
-            ),
-            ListTile(
               leading: Icon(Icons.book, color: theme.bottomBarIcon),
-              title: Text('User Stories',
+              title: Text(tr('User Stories'),
                   style: TextStyle(color: theme.bottomBarText)),
               onTap: () async {
                 if (user != null && user.isAnonymous) {
@@ -453,11 +458,21 @@ class _NavigationExampleState extends State<NavigationExample> {
                 );
               },
             ),
+            ListTile(
+              leading: Icon(Icons.delete, color: theme.bottomBarIcon),
+              title: Text(tr('Deleted'), style: TextStyle(color: theme.bottomBarText)),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const TrashPage()),
+                );
+              },
+            ),
             const Divider(color: Colors.grey),
             ListTile(
               leading: Icon(Icons.settings, color: theme.bottomBarIcon),
-              title:
-                  Text('Settings', style: TextStyle(color: theme.bottomBarText)),
+              title: Text(tr('Settings'),
+                  style: TextStyle(color: theme.bottomBarText)),
               onTap: () {
                 Navigator.push(
                   context,
@@ -467,59 +482,64 @@ class _NavigationExampleState extends State<NavigationExample> {
             ),
             ListTile(
               leading: Icon(Icons.logout, color: Colors.red),
-              title: Text('Logout', style: TextStyle(color: Colors.red)),
+              title: Text(tr('Logout'), style: TextStyle(color: Colors.red)),
               onTap: () async {
                 await Auth().signOut(context: context);
               },
             ),
-
-            ListTile(
-              leading: const Icon(Icons.settings, color: Colors.white),
-              title:
-                  const Text("Languages", style: TextStyle(color: Colors.white)).tr(),
-              onTap: () {
-                LocalizationChecker.changeLanguge(context);
-              },
-            ),
-            
-
           ],
         ),
       ),
       floatingActionButton: currentPageIndex == 3
-    ? null
-    : FloatingActionButton(
-        onPressed: () async {
-          if (currentPageIndex == 1 || currentPageIndex == 2) {
-            if (user != null && user.isAnonymous) {
-              _showAnonymousAlertDialog(context);
-              return;
-            }
-            bool userExists = await _isUserInCollection(userId);
-            if (!userExists) {
-              _showProfileAlertDialog(context);
-              return;
-            }
-          }
-          switch (currentPageIndex) {
-            case 0:
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                builder: (context) =>
-                    TodayAddSubPage(focusDate: _focusDate),
-              );
-              break;
-            case 1:
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                builder: (context) => const HabitAddPage(),
-              );
-              break;
-            case 2:
+          ? null
+          : FloatingActionButton(
+              onPressed: () async {
+                if (currentPageIndex == 1 || currentPageIndex == 2) {
+                  if (user != null && user.isAnonymous) {
+                    _showAnonymousAlertDialog(context);
+                    return;
+                  }
+                  bool userExists = await _isUserInCollection(userId);
+                  if (!userExists) {
+                    _showProfileAlertDialog(context);
+                    return;
+                  }
+                }
+                switch (currentPageIndex) {
+                  case 0:
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => DraggableScrollableSheet(
+                        initialChildSize: 0.85,
+                        minChildSize: 0.8,
+                        maxChildSize: 1.0,
+                        builder: (BuildContext context,
+                            ScrollController scrollController) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.surface,
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20),
+                              ),
+                            ),
+                            child: TodayAddSubPage(focusDate: _focusDate),
+                          );
+                        },
+                      ),
+                    );
+                    break;
+                  case 1:
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => const HabitAddPage(),
+                    );
+                    break;
+                  case 2:
                     showModalBottomSheet(
                       context: context,
                       isScrollControlled: true,
@@ -528,7 +548,8 @@ class _NavigationExampleState extends State<NavigationExample> {
                         initialChildSize: 0.9,
                         minChildSize: 0.9,
                         maxChildSize: 0.9,
-                        builder: (BuildContext context, ScrollController scrollController) {
+                        builder: (BuildContext context,
+                            ScrollController scrollController) {
                           return Container(
                             decoration: BoxDecoration(
                               color: Theme.of(context).colorScheme.surface,
@@ -542,18 +563,17 @@ class _NavigationExampleState extends State<NavigationExample> {
                         },
                       ),
                     );
-              break;
-            default:
-          }
-        },
-        backgroundColor: theme.addButton,
-        child: Icon(
-          Icons.add,
-          size: 32,
-          color: theme.addButtonIcon,
-        ),
-      ),
-
+                    break;
+                  default:
+                }
+              },
+              backgroundColor: theme.addButton,
+              child: Icon(
+                Icons.add,
+                size: 32,
+                color: theme.addButtonIcon,
+              ),
+            ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       bottomNavigationBar: NavigationBar(
         backgroundColor: theme.bottomBarBackground,
@@ -562,6 +582,7 @@ class _NavigationExampleState extends State<NavigationExample> {
           setState(() {
             currentPageIndex = index;
           });
+          languageNotifier.notify(); // Dil değişikliğini dinleyiciye bildirin
         },
         selectedIndex: currentPageIndex,
         destinations: [
@@ -576,7 +597,7 @@ class _NavigationExampleState extends State<NavigationExample> {
               color: theme.bottomBarIcon,
               size: 20,
             ),
-            label: 'Today',
+            label: tr('Today'),
           ),
           NavigationDestination(
             selectedIcon: Icon(
@@ -589,7 +610,7 @@ class _NavigationExampleState extends State<NavigationExample> {
               color: theme.bottomBarIcon,
               size: 20,
             ),
-            label: 'Habits',
+            label: tr('Habits'),
           ),
           NavigationDestination(
             selectedIcon: Icon(
@@ -602,7 +623,7 @@ class _NavigationExampleState extends State<NavigationExample> {
               color: theme.bottomBarIcon,
               size: 20,
             ),
-            label: 'Journal',
+            label: tr('Journal'),
           ),
           NavigationDestination(
             selectedIcon: Icon(
@@ -615,7 +636,7 @@ class _NavigationExampleState extends State<NavigationExample> {
               color: theme.bottomBarIcon,
               size: 20,
             ),
-            label: 'Profile',
+            label: tr('Profile'),
           ),
         ],
       ),
@@ -646,7 +667,7 @@ class _NavigationExampleState extends State<NavigationExample> {
   Future<String> _getUserName(String userId) async {
     DocumentSnapshot userDoc =
         await FirebaseFirestore.instance.collection('users').doc(userId).get();
-    return userDoc['name'] ?? '';
+    return userDoc['name'] ?? tr('Unknown User');
   }
 }
 
@@ -658,4 +679,22 @@ class Auth {
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) => const WelcomeScreen()));
   }
+}
+
+String monthName(int index) {
+  const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+  ];
+  return tr(months[index]);
 }

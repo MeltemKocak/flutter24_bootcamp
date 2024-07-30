@@ -25,7 +25,7 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
   @override
   void initState() {
     super.initState();
-    Gemini.init(apiKey: "API_KEY");
+    Gemini.init(apiKey: "AIzaSyCc49bDki47KVW42vhvxMNyi7mO9dy0OLI");
     gemini = Gemini.instance;
     _fetchUserName();
     _fetchStory();
@@ -82,8 +82,7 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
     } else {
       try {
         String fullResponse = "";
-        await for (var event
-            in gemini.streamGenerateContent(user_data + prompt)) {
+        await for (var event in gemini.streamGenerateContent(user_data + prompt)) {
           fullResponse += event.content?.parts?.fold(
                   "", (previous, current) => "$previous ${current.text}") ??
               "No content received";
@@ -190,40 +189,20 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
     return Scaffold(
       backgroundColor: theme.background,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: theme.background,
         elevation: 0,
         automaticallyImplyLeading: false,
-        leading: null,
-        toolbarHeight: 100,
-        titleSpacing: 0,
-        title: Row(
-          children: [
-            IconButton(
-              icon: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                  Icon(
-                    Icons.arrow_back_ios,
-                    color: theme.loginTextAndBorder,
-                    size: 28,
-                  ),
-                  Text(
-                    'Geri',
-                    style: TextStyle(
-                      fontFamily: 'Lato',
-                      color: theme.loginTextAndBorder,
-                      fontSize: 17,
-                    ),
-                  ),
-                ],
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: theme.loginTextAndBorder,
+            size: 28,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
+        title: Container(), // Empty Container to center the title properly
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -235,7 +214,7 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
               child: Text(
                 "Select Date",
                 style: TextStyle(color: theme.addButtonIcon),
-              ),
+              ).tr(),
             ),
             const SizedBox(height: 30),
             if (storyExists)
@@ -286,7 +265,7 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
                   height: 1,
                   color: theme.welcomeText,
                 ),
-              ),
+              ).tr(),
             ),
             Container(
               margin: EdgeInsets.fromLTRB(0, 0, 0, 17),
@@ -301,7 +280,7 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
                     height: 1,
                     color: theme.welcomeText,
                   ),
-                ),
+                ).tr(),
               ),
             ),
             Container(
@@ -315,7 +294,7 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
                   height: 1,
                   color: theme.welcomeText,
                 ),
-              ),
+              ).tr(),
             ),
           ],
         ),
@@ -348,7 +327,7 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
                   fontSize: 18,
                   color: theme.addButtonIcon,
                 ),
-              ),
+              ).tr(),
       ),
     );
   }
@@ -365,7 +344,7 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
           fontSize: 18,
           color: theme.welcomeText,
         ),
-      ),
+      ).tr(),
     );
   }
 }

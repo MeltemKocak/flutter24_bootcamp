@@ -7,6 +7,7 @@ import 'package:planova/pages/journal_edit_page.dart';
 import 'package:planova/pages/photo_view_page.dart';
 import 'package:planova/utilities/theme.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class PrivateJournalPage extends StatefulWidget {
   const PrivateJournalPage({super.key});
@@ -26,21 +27,21 @@ class _PrivateJournalPageState extends State<PrivateJournalPage> {
         color: themeData.background,
         child: Center(
             child: Text('Please sign in',
-                style: TextStyle(color: themeData.welcomeText))),
+                style: TextStyle(color: themeData.welcomeText)).tr()),
       );
     }
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Private Journal',
-            style: TextStyle(color: themeData.welcomeText)),
+            style: TextStyle(color: themeData.welcomeText)).tr(),
         backgroundColor: themeData.background,
-         leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: themeData.welcomeText),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-      ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: themeData.welcomeText),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       backgroundColor: themeData.background,
       body: Card(
@@ -61,12 +62,12 @@ class _PrivateJournalPageState extends State<PrivateJournalPage> {
             if (snapshot.hasError) {
               return Center(
                   child: Text('Error: ${snapshot.error}',
-                      style: TextStyle(color: themeData.welcomeText)));
+                      style: TextStyle(color: themeData.welcomeText)).tr());
             }
             if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
               return Center(
                   child: Text('No entries found',
-                      style: TextStyle(color: themeData.welcomeText)));
+                      style: TextStyle(color: themeData.welcomeText)).tr());
             }
 
             return ListView.builder(

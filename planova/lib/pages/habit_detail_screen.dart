@@ -1,4 +1,3 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:planova/utilities/theme.dart';
@@ -6,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'habit_edit_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class HabitDetailPage extends StatefulWidget {
   final String habitId;
@@ -117,11 +117,11 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Warning').tr(),
-          content: const Text("You cannot check this habit today").tr(),
+          title: Text(tr('Warning')),
+          content: Text(tr('You cannot check this habit today.')),
           actions: <Widget>[
             TextButton(
-              child: const Text('OK').tr(),
+              child: Text(tr('OK')),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -140,11 +140,11 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
       return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text('Loading...').tr(),
+          title: Text(tr('Loading...')),
           backgroundColor: theme.appBar,
         ),
-        body: const Center(
-          child: CircularProgressIndicator(color: Color(0XFF03DAC6)),
+        body: Center(
+          child: CircularProgressIndicator(color: theme.checkBoxActiveColor),
         ),
       );
     }
@@ -153,11 +153,11 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
       return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text('Habit Details').tr(),
+          title: Text(tr('Habit Details')),
           backgroundColor: theme.appBar,
         ),
-        body: const Center(
-          child: Text('Habit not found', style: TextStyle(color: Colors.white)),
+        body: Center(
+          child: Text(tr('Habit not found'), style: TextStyle(color: theme.welcomeText)),
         ),
       );
     }
@@ -180,10 +180,10 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
             appBar: AppBar(
               centerTitle: true,
               title: Text(
-                provider.habitData['name'] ?? 'Habit Details',
+                provider.habitData['name'] ?? tr('Habit Details'),
                 style: TextStyle(
                   color: theme.welcomeText,
-                  fontFamily: 'Roboto',
+                  fontFamily: 'Lato',
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
@@ -210,7 +210,7 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
                           children: [
                             ElevatedButton.icon(
                               icon: const Icon(Icons.edit),
-                              label: const Text('Edit'),
+                              label: Text(tr('Edit')),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: theme.habitCardBackground,
                                 foregroundColor: theme.habitIcons,
@@ -225,7 +225,7 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
                             ),
                             ElevatedButton.icon(
                               icon: const Icon(Icons.notifications),
-                              label: const Text('Reminder'),
+                              label: Text(tr('Reminder')),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: theme.habitCardBackground,
                                 foregroundColor: theme.habitIcons,
@@ -350,13 +350,13 @@ class TwoWeekProgress extends StatelessWidget {
       future: _fetchTwoWeekProgress(),
       builder: (BuildContext context, AsyncSnapshot<List<Map<String, bool>>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(color: Color(0XFF03DAC6)),
+          return Center(
+            child: CircularProgressIndicator(color: theme.checkBoxActiveColor),
           );
         }
         if (snapshot.hasError) {
-          return const Center(
-            child: Text('Error loading progress', style: TextStyle(color: Colors.white)),
+          return Center(
+            child: Text(tr('Error loading progress'), style: TextStyle(color: theme.welcomeText)),
           );
         }
         List<Map<String, bool>> twoWeekProgress = snapshot.data ?? [];
@@ -366,20 +366,20 @@ class TwoWeekProgress extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 6.0),
           padding: const EdgeInsets.all(15.0),
           decoration: BoxDecoration(
-            color: theme.weeklyStatsBackgroundColor.withOpacity(0.25),
+            color: theme.weeklyStatsBackgroundColor.withOpacity(1),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Progress',
+                    tr('Progress'),
                     style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Roboto Flex',
+                      color: theme.welcomeText,
+                      fontFamily: 'Lato Flex',
                       fontSize: 20,
                       fontWeight: FontWeight.normal,
                     ),
@@ -400,6 +400,7 @@ class TwoWeekProgress extends StatelessWidget {
                           painter: ProgressPainter(
                             value[FirebaseAuth.instance.currentUser!.uid] ?? false,
                             hasFriends ? (value[firstFriend] ?? false) : null,
+                            context,
                           ),
                         ),
                       ),
@@ -411,19 +412,19 @@ class TwoWeekProgress extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Last $daysToShow days: ${twoWeekProgress.where((day) => day.values.contains(true)).length}/$daysToShow days',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Roboto Flex',
+                    tr('Last $daysToShow days: ${twoWeekProgress.where((day) => day.values.contains(true)).length}/$daysToShow days'),
+                    style: TextStyle(
+                      color: theme.welcomeText,
+                      fontFamily: 'Lato Flex',
                       fontSize: 13,
                       fontWeight: FontWeight.normal,
                     ),
                   ),
                   Text(
                     '${(twoWeekProgress.where((day) => day.values.contains(true)).length / daysToShow * 100).toStringAsFixed(2)}%',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Roboto Flex',
+                    style: TextStyle(
+                      color: theme.welcomeText,
+                      fontFamily: 'Lato Flex',
                       fontSize: 13,
                       fontWeight: FontWeight.normal,
                     ),
@@ -441,30 +442,32 @@ class TwoWeekProgress extends StatelessWidget {
 class ProgressPainter extends CustomPainter {
   final bool user1Completed;
   final bool? user2Completed;
+  final BuildContext context;
 
-  ProgressPainter(this.user1Completed, this.user2Completed);
+  ProgressPainter(this.user1Completed, this.user2Completed, this.context);
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint();
+    final theme = Provider.of<ThemeProvider>(context, listen: false).currentTheme;
 
     if (user2Completed == null) {
-      paint.color = user1Completed ? const Color.fromRGBO(3, 218, 198, 1) : const Color.fromRGBO(3, 218, 198, 0.2);
+      paint.color = user1Completed ? theme.habitProgress : theme.habitProgress.withOpacity(0.2);
       canvas.drawRect(Rect.fromLTRB(0, 0, size.width, size.height), paint);
     } else {
       if (user1Completed) {
-        paint.color = const Color.fromRGBO(3, 218, 198, 1);
+        paint.color = theme.habitProgress;
         canvas.drawRect(Rect.fromLTRB(0, 0, size.width, size.height / 2), paint);
       } else {
-        paint.color = const Color.fromRGBO(3, 218, 198, 0.2);
+        paint.color = theme.habitProgress.withOpacity(0.2);
         canvas.drawRect(Rect.fromLTRB(0, 0, size.width, size.height / 2), paint);
       }
 
       if (user2Completed != null && user2Completed!) {
-        paint.color = Colors.white;
+        paint.color = theme.habitIcons;
         canvas.drawRect(Rect.fromLTRB(0, size.height / 2, size.width, size.height), paint);
       } else {
-        paint.color = const Color.fromRGBO(3, 218, 198, 0.1);
+        paint.color = theme.habitProgress.withOpacity(0.1);
         canvas.drawRect(Rect.fromLTRB(0, size.height / 2, size.width, size.height), paint);
       }
     }
@@ -612,6 +615,7 @@ class AllTimeStats extends StatelessWidget {
   Widget build(BuildContext context) {
     final habitProvider = Provider.of<HabitProvider>(context);
     final habitData = habitProvider.habitData;
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
     Map<String, dynamic> completedDates = (habitData['completed_days'] ?? {}).cast<String, dynamic>();
     int targetDays = habitData['target_days'] ?? 0;
 
@@ -620,31 +624,31 @@ class AllTimeStats extends StatelessWidget {
     int completion = completionDouble.isNaN ? 0 : completionDouble.toInt();
 
     return Card(
-      color: const Color.fromRGBO(96, 125, 139, 0.25),
+      color: theme.weeklyStatsBackgroundColor.withOpacity(1),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'All Time Stats',
+            Text(
+              tr('All Time Stats'),
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: theme.welcomeText,
               ),
             ),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Current Streak',
-                  style: TextStyle(color: Colors.grey),
+                Text(
+                  tr('Current Streak'),
+                  style: TextStyle(color: theme.subText),
                 ),
                 Text(
-                  '${habitProvider.currentStreak} days',
-                  style: const TextStyle(color: Colors.white),
+                  '${habitProvider.currentStreak} ${tr("days")}',
+                  style: TextStyle(color: theme.welcomeText),
                 ),
               ],
             ),
@@ -652,13 +656,13 @@ class AllTimeStats extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Longest Streak',
-                  style: TextStyle(color: Colors.grey),
+                Text(
+                  tr('Longest Streak'),
+                  style: TextStyle(color: theme.subText),
                 ),
                 Text(
-                  '${habitProvider.longestStreak} days',
-                  style: const TextStyle(color: Colors.white),
+                  '${habitProvider.longestStreak} ${tr("days")}',
+                  style: TextStyle(color: theme.welcomeText),
                 ),
               ],
             ),
@@ -666,13 +670,13 @@ class AllTimeStats extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Completion',
-                  style: TextStyle(color: Colors.grey),
+                Text(
+                  tr('Completion'),
+                  style: TextStyle(color: theme.subText),
                 ),
                 Text(
-                  '$completion% ($completedCount days of $targetDays days)',
-                  style: const TextStyle(color: Colors.white),
+                  '$completion% (${completedCount} ${tr("days of")} $targetDays ${tr("days")})',
+                  style: TextStyle(color: theme.welcomeText),
                 ),
               ],
             ),
@@ -680,13 +684,13 @@ class AllTimeStats extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Start Date',
-                  style: TextStyle(color: Colors.grey),
+                Text(
+                  tr('Start Date'),
+                  style: TextStyle(color: theme.subText),
                 ),
                 Text(
                   DateFormat('d MMM yyyy').format(habitData['start_date'].toDate()),
-                  style: const TextStyle(color: Colors.white),
+                  style: TextStyle(color: theme.welcomeText),
                 ),
               ],
             ),
@@ -694,13 +698,13 @@ class AllTimeStats extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'End Date',
-                  style: TextStyle(color: Colors.grey),
+                Text(
+                  tr('End Date'),
+                  style: TextStyle(color: theme.subText),
                 ),
                 Text(
                   DateFormat('d MMM yyyy').format(habitData['end_date'].toDate()),
-                  style: const TextStyle(color: Colors.white),
+                  style: TextStyle(color: theme.welcomeText),
                 ),
               ],
             ),
@@ -734,11 +738,6 @@ class _MonthlyStatsState extends State<MonthlyStats> {
 
   String? firstFriendId;
 
-  final Color backgroundColor = const Color.fromARGB(40, 96, 125, 139);
-  final Color primaryColor = const Color.fromARGB(255, 96, 125, 139);
-  final Color secondaryColor = const Color.fromARGB(135, 96, 125, 139);
-  final Color textColor = Colors.white;
-
   @override
   void initState() {
     super.initState();
@@ -760,13 +759,15 @@ class _MonthlyStatsState extends State<MonthlyStats> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
+
     return FutureBuilder(
        future: _dataFuture,
     builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
-        return const Center(child: CircularProgressIndicator());
+        return Center(child: CircularProgressIndicator(color: theme.checkBoxActiveColor));
       } else if (snapshot.hasError) {
-        return Center(child: Text('Error: ${snapshot.error}'));
+        return Center(child: Text('Error: ${snapshot.error}', style: TextStyle(color: theme.welcomeText)));
       } else {
         return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -776,12 +777,12 @@ class _MonthlyStatsState extends State<MonthlyStats> {
             children: [
               DropdownButton<int>(
                 value: year,
-                dropdownColor: secondaryColor,
-                icon: Icon(Icons.arrow_drop_down, color: textColor),
-                style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.bold),
+                dropdownColor: theme.weeklyStatsBackgroundColor.withOpacity(1),
+                icon: Icon(Icons.arrow_drop_down, color: theme.welcomeText),
+                style: TextStyle(color: theme.welcomeText, fontSize: 18, fontWeight: FontWeight.bold),
                 underline: Container(
                   height: 2,
-                  color: primaryColor,
+                  color: theme.weeklyStatsBackgroundColor,
                 ),
                 onChanged: (int? newValue) {
                   setState(() {
@@ -792,7 +793,7 @@ class _MonthlyStatsState extends State<MonthlyStats> {
                     .map<DropdownMenuItem<int>>((int value) {
                   return DropdownMenuItem<int>(
                     value: value,
-                    child: Text('$value Stats'),
+                    child: Text('$value ${tr("Stats")}'),
                   );
                 }).toList(),
               ),
@@ -810,22 +811,22 @@ class _MonthlyStatsState extends State<MonthlyStats> {
               itemCount: 12,
               itemBuilder: (context, index) {
                 return FutureBuilder<List<Widget>>(
-                  future: buildMonthGrid(year, index),
+                  future: buildMonthGrid(year, index, context),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
+                      return Center(child: CircularProgressIndicator(color: theme.checkBoxActiveColor));
                     } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
+                      return Center(child: Text('Error: ${snapshot.error}', style: TextStyle(color: theme.welcomeText)));
                     } else {
                       return Card(
-                        color: secondaryColor.withOpacity(0.25),
+                        color: theme.weeklyStatsBackgroundColor.withOpacity(1),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
                             children: [
                               Text(
-                                monthName(index),
-                                style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
+                                monthName(index).tr(),
+                                style: TextStyle(fontWeight: FontWeight.bold, color: theme.welcomeText),
                               ),
                               const SizedBox(height: 4),
                               Expanded(
@@ -852,18 +853,19 @@ class _MonthlyStatsState extends State<MonthlyStats> {
   );
 }
 
-  Future<List<Widget>> buildMonthGrid(int year, int monthIndex) async {
+  Future<List<Widget>> buildMonthGrid(int year, int monthIndex, BuildContext context) async {
   List<Widget> dayWidgets = [];
   DateTime firstDayOfMonth = DateTime(year, monthIndex + 1, 1);
   int daysInMonth = DateTime(year, monthIndex + 2, 0).day;
   DateTime now = DateTime.now();
   String userId = FirebaseAuth.instance.currentUser!.uid;
+  final theme = Provider.of<ThemeProvider>(context).currentTheme;
 
   for (int i = 0; i < firstDayOfMonth.weekday % 7; i++) {
     dayWidgets.add(Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(4),
-        color: backgroundColor,
+        color: theme.background,
       ),
     ));
   }
@@ -888,6 +890,7 @@ class _MonthlyStatsState extends State<MonthlyStats> {
           friendCompleted: widget.hasFriends ? friendCompleted : null,
           isPastDate: currentDate.isBefore(now),
           isFutureDate: currentDate.isAfter(now),
+          context: context,
         ),
       ),
     ));
@@ -897,7 +900,7 @@ class _MonthlyStatsState extends State<MonthlyStats> {
     dayWidgets.add(Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(4),
-        color: backgroundColor,
+        color: theme.habitCardBackground,
       ),
     ));
   }
@@ -919,6 +922,7 @@ class DayPainter extends CustomPainter {
   final bool? friendCompleted;
   final bool isPastDate;
   final bool isFutureDate;
+  final BuildContext context;
 
   DayPainter({
     required this.isHabitDay,
@@ -926,34 +930,36 @@ class DayPainter extends CustomPainter {
     required this.friendCompleted,
     required this.isPastDate,
     required this.isFutureDate,
+    required this.context,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
     final Paint paint = Paint();
+    final theme = Provider.of<ThemeProvider>(context, listen: false).currentTheme;
     final double halfHeight = size.height / 2;
 
     if (isHabitDay) {
       if (friendCompleted == null) {
-        paint.color = userCompleted ? const Color.fromARGB(255, 3, 218, 198) : const Color.fromARGB(80, 3, 218, 198);
+        paint.color = userCompleted ? theme.habitProgress : theme.habitProgress.withOpacity(0.2);
         canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
       } else {
         if (isFutureDate) {
-          paint.color = const Color.fromARGB(255, 96, 125, 139);
+          paint.color = theme.habitCardBackground;
           canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
         } else if (isPastDate) {
-          paint.color = userCompleted ? const Color.fromARGB(255, 3, 218, 198) : const Color.fromARGB(80, 3, 218, 198);
+          paint.color = userCompleted ? theme.habitProgress : theme.habitProgress.withOpacity(0.2);
           canvas.drawRect(Rect.fromLTWH(0, 0, size.width, halfHeight), paint);
 
-          paint.color = friendCompleted! ? Colors.white : const Color.fromRGBO(3, 218, 198, 0.2);
+          paint.color = friendCompleted! ? theme.habitIcons : theme.habitProgress.withOpacity(0.1);
           canvas.drawRect(Rect.fromLTWH(0, halfHeight, size.width, halfHeight), paint);
         } else {
-          paint.color = userCompleted ? const Color.fromARGB(255, 127, 76, 175) : const Color.fromARGB(255, 96, 125, 139);
+          paint.color = userCompleted ? theme.habitProgress : theme.habitCardBackground;
           canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
         }
       }
     } else {
-      paint.color = const Color.fromARGB(135, 96, 125, 139);
+      paint.color = theme.background.withOpacity(0.25);
       canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
     }
   }
@@ -961,6 +967,7 @@ class DayPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
+
 
 // Asenkron veri hazırlama fonksiyonu
 Future<Map<String, dynamic>> prepareData() async {
@@ -1021,12 +1028,15 @@ class ReminderPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Set Reminder'),
+        title: Text(tr('Set Reminder')),
+        backgroundColor: theme.appBar,
       ),
-      body: const Center(
-        child: Text('Reminder Page'),
+      body: Center(
+        child: Text(tr('Reminder Page'), style: TextStyle(color: theme.welcomeText)),
       ),
     );
   }

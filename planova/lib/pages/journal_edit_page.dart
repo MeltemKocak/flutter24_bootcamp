@@ -11,7 +11,8 @@ import 'package:intl/intl.dart';
 import 'package:planova/pages/photo_view_page.dart';
 import 'package:audioplayers/audioplayers.dart' as ap;
 import 'package:planova/utilities/theme.dart';
-import 'package:provider/provider.dart'; // Provider eklendi
+import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class JournalEditPage extends StatefulWidget {
   final String docId;
@@ -33,7 +34,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
   late TextEditingController descriptionController;
   final List<XFile> _newImages = [];
   late List<String> _existingImageUrls;
-  late DateTime _dateTime; // Fix type issue
+  late DateTime _dateTime;
   FlutterSoundRecorder? _soundRecorder;
   FlutterSoundPlayer? _soundPlayer;
   bool _isRecording = false;
@@ -48,7 +49,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
   Map<String, Duration> _audioDurations = {};
   bool _isAudioLoading = false;
   bool _isSaving = false;
-  bool _isPrivate = false; // Checkbox state for privacy
+  bool _isPrivate = false;
 
   @override
   void initState() {
@@ -57,12 +58,11 @@ class _JournalEditPageState extends State<JournalEditPage> {
     descriptionController =
         TextEditingController(text: widget.data['description']);
     _existingImageUrls = List<String>.from(widget.data['imageUrls'] ?? []);
-    // Handle the date conversion properly
     _dateTime = widget.data['date'] is Timestamp
         ? (widget.data['date'] as Timestamp).toDate()
         : widget.data['date'];
     _existingAudioUrl = widget.data['audioUrl'];
-    _isPrivate = widget.data['isPrivate'] ?? false; // Initialize privacy state
+    _isPrivate = widget.data['isPrivate'] ?? false;
     _soundRecorder = FlutterSoundRecorder();
     _soundPlayer = FlutterSoundPlayer();
     _openRecorder();
@@ -187,7 +187,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
 
     if (nameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Header cannot be empty')),
+        SnackBar(content: Text(tr('Header cannot be empty'))),
       );
       setState(() {
         _isSaving = false;
@@ -219,7 +219,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
       'imageUrls': imageUrls,
       'audioUrl': audioUrl,
       'waveform': _audioWaveform,
-      'isPrivate': _isPrivate, // Save privacy state
+      'isPrivate': _isPrivate,
     });
 
     setState(() {
@@ -373,11 +373,11 @@ class _JournalEditPageState extends State<JournalEditPage> {
       appBar: AppBar(
         backgroundColor: theme.background,
         leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: theme.calenderNumbers),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-      ),
+          icon: Icon(Icons.arrow_back, color: theme.calenderNumbers),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.delete, color: theme.calenderNumbers),
@@ -392,9 +392,9 @@ class _JournalEditPageState extends State<JournalEditPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildTextField(nameController, "Header", theme),
+              _buildTextField(nameController, tr("Header"), theme),
               const SizedBox(height: 20),
-              _buildTextField(descriptionController, "Description", theme,
+              _buildTextField(descriptionController, tr("Description"), theme,
                   maxLines: 3),
               const SizedBox(height: 20),
               Row(
@@ -406,7 +406,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
                   const SizedBox(width: 15),
                   Expanded(
                     flex: 2,
-                    child: _buildPrivacyButton(theme), // Add the privacy button
+                    child: _buildPrivacyButton(theme),
                   ),
                 ],
               ),
@@ -442,7 +442,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
           style: TextStyle(color: theme.welcomeText),
           maxLines: maxLines,
           decoration: InputDecoration(
-            hintText: "Enter $label",
+            hintText: tr("Enter") + " $label",
             hintStyle: TextStyle(color: theme.borderColor.withOpacity(0.6)),
             filled: true,
             fillColor: theme.habitCardBackground.withOpacity(0.5),
@@ -461,7 +461,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Date",
+          tr("Date"),
           style: TextStyle(
               color: theme.welcomeText,
               fontSize: 15,
@@ -497,7 +497,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Images",
+          tr("Images"),
           style: TextStyle(
               color: theme.welcomeText,
               fontSize: 15,
@@ -593,7 +593,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Audio",
+          tr("Audio"),
           style: TextStyle(
               color: theme.welcomeText,
               fontSize: 15,
@@ -654,7 +654,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
                       )
                     : Center(
                         child: Text(
-                          "Tap to record",
+                          tr("Tap to record"),
                           style: TextStyle(color: theme.welcomeText),
                         ),
                       ),
@@ -673,8 +673,8 @@ class _JournalEditPageState extends State<JournalEditPage> {
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               _audioDurations.containsKey(_existingAudioUrl)
-                  ? "Duration: ${_formatDuration(_audioDurations[_existingAudioUrl]!)}"
-                  : "Loading duration...",
+                  ? tr("Duration") + ": ${_formatDuration(_audioDurations[_existingAudioUrl]!)}"
+                  : tr("Loading duration..."),
               style: TextStyle(color: theme.welcomeText, fontSize: 12),
             ),
           ),
@@ -687,7 +687,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Private",
+          tr("Private"),
           style: TextStyle(
               color: theme.welcomeText,
               fontSize: 15,
@@ -712,7 +712,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
               ),
             ),
             child: Text(
-              _isPrivate ? 'Private' : 'Public',
+              _isPrivate ? tr('Private') : tr('Public'),
               style: TextStyle(color: theme.addButtonIcon),
             ),
           ),
@@ -732,8 +732,8 @@ class _JournalEditPageState extends State<JournalEditPage> {
           ),
         ),
         onPressed: _isSaving ? null : _saveJournalEntry,
-        child:
-            Text("Save Changes", style: TextStyle(color: theme.addButtonIcon)),
+        child: Text(tr("Save Changes"),
+            style: TextStyle(color: theme.addButtonIcon)),
       ),
     );
   }
@@ -748,7 +748,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
 
 class WaveformPainter extends CustomPainter {
   final List<double> waveform;
-  final Color color; // Color parametresi eklendi
+  final Color color;
 
   WaveformPainter(this.waveform, this.color);
 

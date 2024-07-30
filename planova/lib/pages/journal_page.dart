@@ -5,9 +5,9 @@ import 'package:intl/intl.dart';
 import 'package:planova/pages/journal_detail_page.dart';
 import 'package:planova/pages/journal_edit_page.dart';
 import 'package:planova/pages/photo_view_page.dart';
-import 'package:planova/pages/pin_entry_page.dart'; // Import PinEntryPage
 import 'package:provider/provider.dart';
 import 'package:planova/utilities/theme.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class JournalPage extends StatefulWidget {
   const JournalPage({super.key});
@@ -32,163 +32,197 @@ class _JournalPageState extends State<JournalPage> {
       );
     }
 
-    return Scaffold(
-      backgroundColor: theme.background,
-      body: Card(
-        color: theme.background,
-        child: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection('journal')
-              .where('userId', isEqualTo: user.uid)
-              .where('isPrivate', isEqualTo: false) // Only fetch non-private entries
-              .orderBy('date', descending: true)
-              .snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: CircularProgressIndicator(color: theme.habitProgress),
-              );
-            }
-            if (snapshot.hasError) {
-              return Center(
-                child: Text('Error: ${snapshot.error}', style: TextStyle(color: theme.toDoTitle)),
-              );
-            }
-            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-              return Center(
-                child: Text('No entries found', style: TextStyle(color: theme.toDoTitle)),
-              );
-            }
+    return Card(
+      color: theme.background,
+      child: Column(
+        children: [
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('journal')
+                  .where('userId', isEqualTo: user.uid)
+                  .where('isPrivate', isEqualTo: false)
+                  .orderBy('date', descending: true)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(color: theme.habitProgress),
+                  );
+                }
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text(tr('Error') + ': ${snapshot.error}', style: TextStyle(color: theme.toDoTitle)),
+                  );
+                }
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return Center(
+                    child: Text(tr('No entries found'), style: TextStyle(color: theme.toDoTitle)),
+                  );
+                }
 
-            return ListView.builder(
-              itemCount: snapshot.data!.docs.length,
-              itemBuilder: (context, index) {
-                var doc = snapshot.data!.docs[index];
-                var data = doc.data() as Map<String, dynamic>;
-                DateTime date = (data['date'] as Timestamp).toDate();
-                String formattedDate = DateFormat('d MMMM').format(date);
-                List<String> imageUrls = data['imageUrls'] != null ? List<String>.from(data['imageUrls']) : [];
-                String? audioUrl = data['audioUrl'];
-                String description = data['description'] ?? '';
+                return ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    var doc = snapshot.data!.docs[index];
+                    var data = doc.data() as Map<String, dynamic>;
+                    DateTime date = (data['date'] as Timestamp).toDate();
+                    String formattedDate = DateFormat('d MMMM').format(date);
+                    List<String> imageUrls = data['imageUrls'] != null ? List<String>.from(data['imageUrls']) : [];
+                    String? audioUrl = data['audioUrl'];
+                    String description = data['description'] ?? '';
 
-                return Dismissible(
-                  key: Key(doc.id),
-                  background: Container(
-                    color: Colors.red,
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 20.0),
-                        child: Icon(Icons.delete, color: Colors.white),
-                      ),
-                    ),
-                  ),
-                  direction: DismissDirection.endToStart,
-                  onDismissed: (direction) {
-                    _moveJournalEntryToTrash(doc);
-                  },
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => JournalDetailPage(docId: doc.id, data: data),
+                    return Dismissible(
+                      key: Key(doc.id),
+                      background: Container(
+                        color: Colors.red,
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 20.0),
+                            child: Icon(Icons.delete, color: Colors.white),
+                          ),
                         ),
-                      );
-                    },
-                    child: Card(
-                      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                      color: theme.toDoCardBackground,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
+                      direction: DismissDirection.endToStart,
+                      onDismissed: (direction) async {
+                        bool? confirmed = await _showConfirmationDialog(context);
+                        if (confirmed == true) {
+                          _moveJournalEntryToTrash(doc);
+                        } else {
+                          setState(() {});
+                        }
+                      },
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => JournalDetailPage(docId: doc.id, data: data),
+                            ),
+                          );
+                        },
+                        child: Card(
+                          margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                          color: theme.toDoCardBackground,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      formattedDate,
+                                      style: TextStyle(
+                                        color: theme.habitProgress,
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    if (audioUrl != null && audioUrl.isNotEmpty)
+                                      Icon(Icons.audiotrack, color: theme.habitProgress),
+                                    IconButton(
+                                      icon: Icon(Icons.edit, color: theme.habitProgress),
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => JournalEditPage(docId: doc.id, data: data),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
                                 Text(
-                                  formattedDate,
+                                  data['name'],
                                   style: TextStyle(
-                                    color: theme.habitProgress,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w500,
+                                    color: theme.toDoTitle,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
-                                const Spacer(),
-                                if (audioUrl != null && audioUrl.isNotEmpty)
-                                  Icon(Icons.audiotrack, color: theme.habitProgress),
-                                IconButton(
-                                  icon: Icon(Icons.edit, color: theme.habitProgress),
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => JournalEditPage(docId: doc.id, data: data),
-                                      ),
-                                    );
-                                  },
+                                const SizedBox(height: 10),
+                                Text(
+                                  description.length > 100 ? '${description.substring(0, 100)}...' : description,
+                                  style: TextStyle(
+                                    color: theme.toDoIcons,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w300,
+                                  ),
                                 ),
+                                const SizedBox(height: 15),
+                                if (imageUrls.isNotEmpty)
+                                  SizedBox(
+                                    height: 100,
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: imageUrls.length,
+                                      itemBuilder: (context, index) {
+                                        return GestureDetector(
+                                          onTap: () => _viewPhoto(imageUrls[index]),
+                                          child: Container(
+                                            width: 100,
+                                            height: 100,
+                                            margin: const EdgeInsets.only(right: 10),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(10),
+                                              image: DecorationImage(
+                                                image: NetworkImage(imageUrls[index]),
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
                               ],
                             ),
-                            const SizedBox(height: 10),
-                            Text(
-                              data['name'],
-                              style: TextStyle(
-                                color: theme.toDoTitle,
-                                fontSize: 22,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            Text(
-                              description.length > 100 ? '${description.substring(0, 100)}...' : description,
-                              style: TextStyle(
-                                color: theme.toDoIcons,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w300,
-                              ),
-                            ),
-                            const SizedBox(height: 15),
-                            if (imageUrls.isNotEmpty)
-                              SizedBox(
-                                height: 100,
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: imageUrls.length,
-                                  itemBuilder: (context, index) {
-                                    return GestureDetector(
-                                      onTap: () => _viewPhoto(imageUrls[index]),
-                                      child: Container(
-                                        width: 100,
-                                        height: 100,
-                                        margin: const EdgeInsets.only(right: 10),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(10),
-                                          image: DecorationImage(
-                                            image: NetworkImage(imageUrls[index]),
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                  ),
+                    );
+                  },
                 );
               },
-            );
-          },
-        ),
+            ),
+          ),
+        ],
       ),
     );
+  }
+
+  Future<bool> _showConfirmationDialog(BuildContext context) async {
+    return await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Deletion').tr(),
+          content: const Text('Are you sure you want to delete this entry?').tr(),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel').tr(),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            TextButton(
+              child: const Text('Delete').tr(),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    ) ?? false;
   }
 
   void _moveJournalEntryToTrash(DocumentSnapshot entry) async {

@@ -21,40 +21,20 @@ class _TrashPageState extends State<TrashPage> {
     return Scaffold(
       backgroundColor: theme.background,
       appBar: AppBar(
-        backgroundColor: theme.appBar,
+        backgroundColor: theme.background,
         elevation: 0,
         automaticallyImplyLeading: false,
-        leading: null,
-        toolbarHeight: 100,
-        titleSpacing: 0,
-        title: Row(
-          children: [
-            IconButton(
-              icon: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                  Icon(
-                    Icons.arrow_back_ios,
-                    color: theme.loginTextAndBorder,
-                    size: 28,
-                  ),
-                  Text(
-                    "Back",
-                    style: TextStyle(
-                      fontFamily: 'Lato',
-                      color: theme.loginTextAndBorder,
-                      fontSize: 17,
-                    ),
-                  ).tr(),
-                ],
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: theme.loginTextAndBorder,
+            size: 28,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
+        title: Container(), // Empty Container to center the title properly
         actions: [
           IconButton(
             icon: Icon(
@@ -85,7 +65,9 @@ class _TrashPageState extends State<TrashPage> {
           .where('userId', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
           .snapshots(),
       builder: (context, snapshot) {
-        if (!snapshot.hasData) return Center(child: CircularProgressIndicator(color: theme.habitProgress));
+        if (!snapshot.hasData)
+          return Center(
+              child: CircularProgressIndicator(color: theme.habitProgress));
 
         var tasks = snapshot.data!.docs;
 
@@ -154,7 +136,8 @@ class _TrashPageState extends State<TrashPage> {
     );
   }
 
-  void _showRestoreBottomSheet(DocumentSnapshot taskData, CustomThemeData theme) {
+  void _showRestoreBottomSheet(
+      DocumentSnapshot taskData, CustomThemeData theme) {
     var data = taskData.data() as Map<String, dynamic>;
     var taskName = data['name'];
     var taskDescription = data['description'];
@@ -169,7 +152,8 @@ class _TrashPageState extends State<TrashPage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(taskName, style: TextStyle(color: theme.welcomeText, fontSize: 20)),
+              Text(taskName,
+                  style: TextStyle(color: theme.welcomeText, fontSize: 20)),
               const SizedBox(height: 10),
               Text(taskDescription, style: TextStyle(color: theme.subText)),
               const SizedBox(height: 20),
@@ -178,13 +162,19 @@ class _TrashPageState extends State<TrashPage> {
                 children: [
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
-                    style: ElevatedButton.styleFrom(backgroundColor: theme.subText),
-                    child: Text("Cancel", style: TextStyle(color: theme.welcomeText)).tr(),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: theme.subText),
+                    child: Text("Cancel",
+                            style: TextStyle(color: theme.welcomeText))
+                        .tr(),
                   ),
                   ElevatedButton(
                     onPressed: () => _restoreTask(taskData),
-                    style: ElevatedButton.styleFrom(backgroundColor: theme.checkBoxActiveColor),
-                    child: Text("Bring Back", style: TextStyle(color: theme.addButtonIcon)).tr(),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: theme.checkBoxActiveColor),
+                    child: Text("Bring Back",
+                            style: TextStyle(color: theme.addButtonIcon))
+                        .tr(),
                   ),
                 ],
               ),
@@ -195,7 +185,8 @@ class _TrashPageState extends State<TrashPage> {
     );
   }
 
-  void _showDeleteConfirmDialog(DocumentSnapshot taskData, CustomThemeData theme) {
+  void _showDeleteConfirmDialog(
+      DocumentSnapshot taskData, CustomThemeData theme) {
     showDialog(
       context: context,
       builder: (context) {
@@ -280,7 +271,10 @@ class _TrashPageState extends State<TrashPage> {
     await FirebaseFirestore.instance.collection(collection).doc(docId).delete();
 
     // 'deleted_tasks' koleksiyonundan sil
-    await FirebaseFirestore.instance.collection('deleted_tasks').doc(taskData.id).delete();
+    await FirebaseFirestore.instance
+        .collection('deleted_tasks')
+        .doc(taskData.id)
+        .delete();
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text("Deleted").tr()),
@@ -299,10 +293,16 @@ class _TrashPageState extends State<TrashPage> {
       var collection = data['collection'];
 
       // Orijinal koleksiyondan sil
-      await FirebaseFirestore.instance.collection(collection).doc(docId).delete();
+      await FirebaseFirestore.instance
+          .collection(collection)
+          .doc(docId)
+          .delete();
 
       // 'deleted_tasks' koleksiyonundan sil
-      await FirebaseFirestore.instance.collection('deleted_tasks').doc(doc.id).delete();
+      await FirebaseFirestore.instance
+          .collection('deleted_tasks')
+          .doc(doc.id)
+          .delete();
     }
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -317,13 +317,19 @@ class _TrashPageState extends State<TrashPage> {
     var taskDataOriginal = data['data'];
 
     // Orijinal koleksiyona geri yükle
-    await FirebaseFirestore.instance.collection(collection).doc(docId).set(taskDataOriginal);
+    await FirebaseFirestore.instance
+        .collection(collection)
+        .doc(docId)
+        .set(taskDataOriginal);
 
     // 'deleted_tasks' koleksiyonundan sil
-    await FirebaseFirestore.instance.collection('deleted_tasks').doc(taskData.id).delete();
+    await FirebaseFirestore.instance
+        .collection('deleted_tasks')
+        .doc(taskData.id)
+        .delete();
 
     ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Mission successfully brought back").tr()),
+      SnackBar(content: Text("Mission successfully brought back").tr()),
     );
   }
 }

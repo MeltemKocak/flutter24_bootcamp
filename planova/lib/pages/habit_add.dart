@@ -187,23 +187,20 @@ class _HabitAddPageState extends State<HabitAddPage> {
           children: [
             _buildTextField(_nameController, tr("Habit Name"), _isNameEmpty, theme),
             const SizedBox(height: 20),
-            _buildTextField(_descriptionController,tr("Description") , false, theme,
-                maxLines: 3),
+            _buildTextField(_descriptionController, tr("Description"), false, theme, maxLines: 3),
             const SizedBox(height: 20),
             _buildTextField(_friendEmailController, tr("Friend's Email"), false, theme),
             const SizedBox(height: 20),
             Row(
               children: [
-                Expanded(
-                    child: _buildDateField(_startDateController, tr("Start Date"), theme)),
+                Expanded(child: _buildDateField(_startDateController, tr("Start Date"), theme)),
                 const SizedBox(width: 20),
-                Expanded(
-                    child: _buildDateField(_endDateController, tr("End Date"), theme)),
+                Expanded(child: _buildDateField(_endDateController, tr("End Date"), theme)),
               ],
             ),
             const SizedBox(height: 20),
             Text(
-              tr("Target Days:")+" $_targetDays",
+              "${tr("Target Days")}: $_targetDays",
               style: TextStyle(color: theme.subText, fontSize: 16),
             ),
             const SizedBox(height: 20),
@@ -222,8 +219,7 @@ class _HabitAddPageState extends State<HabitAddPage> {
       children: [
         Text(
           label,
-          style: TextStyle(
-              color: theme.subText, fontSize: 15, fontWeight: FontWeight.w300),
+          style: TextStyle(color: theme.subText, fontSize: 15, fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 2),
         TextFormField(
@@ -231,27 +227,21 @@ class _HabitAddPageState extends State<HabitAddPage> {
           style: TextStyle(color: theme.welcomeText),
           maxLines: maxLines,
           decoration: InputDecoration(
-            hintText: tr("Enter")+ " $label",
+            hintText: "${tr("Enter")} $label",
             hintStyle: TextStyle(color: theme.welcomeText.withOpacity(0.6)),
             filled: true,
             fillColor: theme.toDoCardBackground.withOpacity(1),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20),
-              borderSide: isEmpty
-                  ? const BorderSide(color: Colors.red)
-                  : BorderSide.none,
+              borderSide: isEmpty ? const BorderSide(color: Colors.red) : BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20),
-              borderSide: isEmpty
-                  ? const BorderSide(color: Colors.red)
-                  : BorderSide.none,
+              borderSide: isEmpty ? const BorderSide(color: Colors.red) : BorderSide.none,
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20),
-              borderSide: isEmpty
-                  ? const BorderSide(color: Colors.red)
-                  : BorderSide.none,
+              borderSide: isEmpty ? const BorderSide(color: Colors.red) : BorderSide.none,
             ),
           ),
         ),
@@ -265,14 +255,12 @@ class _HabitAddPageState extends State<HabitAddPage> {
       children: [
         Text(
           label,
-          style: TextStyle(
-              color: theme.subText, fontSize: 15, fontWeight: FontWeight.w300),
+          style: TextStyle(color: theme.subText, fontSize: 15, fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 2),
         GestureDetector(
           onTap: () => _selectDate(context, controller,
-              firstDate: controller == _endDateController &&
-                      _startDateController.text.isNotEmpty
+              firstDate: controller == _endDateController && _startDateController.text.isNotEmpty
                   ? DateFormat('yyyy-MM-dd').parse(_startDateController.text)
                   : DateTime.now()),
           child: Container(
@@ -299,7 +287,7 @@ class _HabitAddPageState extends State<HabitAddPage> {
       children: List.generate(7, (index) {
         return FilterChip(
           label: Text(
-            DateFormat.E().format(DateTime(2021, 1, index + 3)),
+            _getDayName(index).tr(),
             style: TextStyle(color: theme.addButtonIcon),
           ),
           selected: _selectedDays[index],
@@ -314,6 +302,27 @@ class _HabitAddPageState extends State<HabitAddPage> {
         );
       }),
     );
+  }
+
+  String _getDayName(int index) {
+    switch (index) {
+      case 0:
+        return tr("Mon");
+      case 1:
+        return tr("Tue");
+      case 2:
+        return tr("Wed");
+      case 3:
+        return tr("Thu");
+      case 4:
+        return tr("Fri");
+      case 5:
+        return tr("Sat");
+      case 6:
+        return tr("Sun");
+      default:
+        return "";
+    }
   }
 
   Widget _buildConfirmButton(CustomThemeData theme) {
