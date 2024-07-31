@@ -4,15 +4,18 @@
 # PLANOVA
 
 ---
-## Team Members 
 
-| Name   |Title  |
-|:-------:| :-----:|
-| Melisa Nur Alparslan  | Scrum Master     |
-| Olgun Baran Atik   | Product Owner    |
-| Meltem Sena Koçak     | Developer  |
-| Oğuzhan Gündüz    | Developer  |
-| Onur Turan     | Developer  |
+## Team Members
+
+| Name | Title | Social |
+|:-------:| :-----:| :--------:|
+| Melisa Nur Alparslan | Scrum Master | [<img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn" width="20"/>](https://www.linkedin.com/in/melisanuralparslan/) |
+| Olgun Baran Atik | Product Owner | [<img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn" width="20"/>](https://www.linkedin.com/in/olgun-baran-atik/) |
+| Meltem Sena Koçak | Developer | [<img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn" width="20"/>](https://www.linkedin.com/in/meltemkocak/) |
+| Oğuzhan Gündüz | Developer | [<img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn" width="20"/>](https://linkedin.com/in/ulwus) |
+| Onur Turan | Developer | [<img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn" width="20"/>](https://www.linkedin.com/in/onurtturan/) |
+
+
 
 ---
 <details>
