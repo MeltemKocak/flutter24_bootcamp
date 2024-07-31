@@ -7,13 +7,14 @@
 
 ## Team Members
 
-| Name | Title | Social |
+| Name | Title | LinkedIn |
 |:-------:| :-----:| :--------:|
-| Melisa Nur Alparslan | Scrum Master | [<img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn" width="20"/>](https://www.linkedin.com/in/melisanuralparslan/) |
+| [Melisa Nur Alparslan](https://github.com/melisalparslan) | Scrum Master | [<img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn" width="20"/>](https://www.linkedin.com/in/melisanuralparslan/) |
 | Olgun Baran Atik | Product Owner | [<img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn" width="20"/>](https://www.linkedin.com/in/olgun-baran-atik/) |
 | Meltem Sena Koçak | Developer | [<img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn" width="20"/>](https://www.linkedin.com/in/meltemkocak/) |
 | Oğuzhan Gündüz | Developer | [<img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn" width="20"/>](https://linkedin.com/in/ulwus) |
 | Onur Turan | Developer | [<img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn" width="20"/>](https://www.linkedin.com/in/onurtturan/) |
+
 
 
 
