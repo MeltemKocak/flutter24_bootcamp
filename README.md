@@ -1,6 +1,3 @@
-
-
-
 # PLANOVA
 
 ---
@@ -20,7 +17,7 @@
 
 
 ---
-<details>
+
   <summary><h2>Product Description</h2></summary>
 
 In today's fast-paced world, using time efficiently and managing personal time correctly is one of the most important keys to achieving both professional and personal success.
@@ -41,7 +38,6 @@ Sonuç olarak, zamanı doğru yönetmek, yaşamın her alanında başarıya ula�
     
   </details>
   
-</details>
 
 ---
 <details>
@@ -91,7 +87,7 @@ Sonuç olarak, zamanı doğru yönetmek, yaşamın her alanında başarıya ula�
   * **Feedback and Support:** Allows users to provide feedback about the app and receive support.
   * **About:** Provides information about the app, mission and vision statements, and details about the development team.
 
-
+  * ***Additional Files*** 
 <details>
     <summary><h4>Turkish explanation</h4></summary>
 
@@ -138,6 +134,8 @@ Sonuç olarak, zamanı doğru yönetmek, yaşamın her alanında başarıya ula�
       * **Dil Değişimi:** Uygulama, telefonda kullanılan dilde açılıyor olsa da kullanıcı tarafından farklı dil seçenekleri ile değişim yapılabilir.
   * **Geri Bildirim ve Destek:** Kullanıcıların uygulama hakkında geri bildirimde bulunmalarını ve destek almalarını sağlar.
   * **Hakkında:** Uygulama hakkında bilgiler, misyon ve vizyon açıklamaları, ve geliştirici ekibe dair bilgiler sunar.
+
+  * ***Ek Dosyalar*** 
   </details>
 
 </details>
@@ -168,6 +166,7 @@ Planova application appeals to a wide range of users and offers features for peo
   * **Common Goal Setting:** Groups of friends or business teams who want to work together by setting common goals.
   * **Increasing Motivation:** Those who want to increase group motivation by using the joint goal tracking feature.
 
+  * ***Additional Files*** 
 
 <details>
     <summary><h4>Turkish explanation</h4></summary>
@@ -194,7 +193,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
   * **Ortak Hedef Belirleme:** Ortak hedefler belirleyerek birlikte çalışmak isteyen arkadaş grupları veya iş takımları.
   * **Motivasyon Artırma:** Birlikte hedef takibi özelliğini kullanarak grup motivasyonunu artırmak isteyenler.
 
-
+  * ***Ek Dosyalar***
     
   </details>
   
@@ -205,6 +204,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 <details>
   <summary><h1>Sprint 1</h1></summary>
 
+  ---
 <details>
     <summary><h2>App Screenshots</h2></summary>
 
@@ -273,20 +273,20 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 
 - **Sprint Notes:**
-   * It was decided to use Figma in UI designs.
-   * It was decided to use Asana as a project management tool.
-   * Daily scrum meetings were held using WhatsApp and Discord applications according to team availability.
-   * It was decided to use e-mail for the login system.
-   * It was decided that the main theme of the application would be dark.
-   * Due to global targets, it was decided to make designs and applications in English.
+   * It was decided to use _`Figma`_ in UI designs.
+   * It was decided to use _`Asana`_ as a project management tool.
+   * Daily scrum meetings were held using _`WhatsApp`_ and _`Discord`_ applications according to team availability.
+   * It was decided to use _`E-mail`_ for the login system.
+   * It was decided that the main theme of the application would be _`dark`_.
+   * Due to global targets, it was decided to make designs and applications in _`English`_.
  
 - **Expected point completion within Sprint:**
-  * 300 Point
+  * `300` Point
 
 - **Point Completion Logic:**
-  * A total target of 1200 points was set. In the first sprint, 300 points were targeted because the idea was planned and the designs were made, and 300 points were completed. In the second sprint, 450 points are targeted as the focus will be on writing code and adding APIs. In the third sprint, a target of 450 points was set as the remaining tasks would be completed and integration work would be carried out.
+  * A total target of `1200` points was set. In the first sprint, `300` points were targeted because the idea was planned and the designs were made, and were completed. In the second sprint, `450` points are targeted as the focus will be on writing code and adding APIs. In the third sprint, a target of `450` points was set as the remaining tasks would be completed and integration work would be carried out.
 
-- **Daily Scrum:** [Daily Scrum](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Project_Management_Files/Sprint_1/Sprint1_Daily_Scrum)
+- **Daily Scrum:** [Sprint 1 Daily Scrum](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Project_Management_Files/Sprint_1/Sprint1_Daily_Scrum)
 
 - **Product Backlog URL:** 
 
@@ -303,7 +303,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 
 - **Sprint Review Participants:**
-    * Melisa Nur Alparslan , Olgun Baran Atik, Meltem Sena Koçak, Oğuzhan Gündüz, Onur Turan
+    * `Melisa Nur Alparslan , Olgun Baran Atik, Meltem Sena Koçak, Oğuzhan Gündüz, Onur Turan`
 
 - **Sprint Retrospective:**
    * In the second sprint, it was decided to install Firebase first.
@@ -324,19 +324,19 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 
 - **Sprint Notları:**
-   * UI tasarımlarında Figma kullanılmasına karar verildi.
-   * Proje yönetim aracı olarak Asana kullanılmasına karar verildi.
-   * Daily scrum toplantıları whatsapp ve discord uygulamaları takım müsaitlik durumuna göre kullanılarak gerçekleştirildi.
-   * Giriş sistemi için e-posta kullanılmasına karar verildi.
-   * Uygulamanın asıl temasının koyu olmasına karar verildi.
-   * Globale yönelik hedefler nedeniyle İngilizce dili ile tasarımların ve uygulamanın yapılmasına karar verildi.
+   * UI tasarımlarında _`Figma`_ kullanılmasına karar verildi.
+   * Proje yönetim aracı olarak _`Asana`_ kullanılmasına karar verildi.
+   * Daily scrum toplantıları _`Whatsapp`_ ve _`Discord`_ uygulamaları takım müsaitlik durumuna göre kullanılarak gerçekleştirildi.
+   * Giriş sistemi için _`E-posta`_ kullanılmasına karar verildi.
+   * Uygulamanın asıl temasının _`koyu`_ olmasına karar verildi.
+   * Globale yönelik hedefler nedeniyle _`İngilizce dili`_ ile tasarımların ve uygulamanın yapılmasına karar verildi.
  
  
 - **Sprint İçinde Tamamlanması Beklenen Puan:**
-  * 300 Puan
+  * `300` Puan
 
 - **Puan Tamamlama Mantığı:**
-  * Toplamda 1200 puanlık bir hedef belirlendi. Birinci sprintte, fikir oturması ve tasarımların yapılması planlandığı için 300 puan hedeflenmiştir ve 300 puan tamamlanmıştır. İkinci sprintte, kod yazma ve API ekleme çalışmalarına yoğunlaşılacağı için 450 puan hedeflenmiştir. Üçüncü sprintte ise kalan görevlerin tamamlanması ve entegrasyon çalışmaları yapılacağından 450 puan hedefi konulmuştur.
+  * Toplamda `1200` puanlık bir hedef belirlendi. Birinci sprintte, fikir oturması ve tasarımların yapılması planlandığı için `300` puan hedeflenmiştir ve tamamlanmıştır. İkinci sprintte, kod yazma ve API ekleme çalışmalarına yoğunlaşılacağı için `450` puan hedeflenmiştir. Üçüncü sprintte ise kalan görevlerin tamamlanması ve entegrasyon çalışmaları yapılacağından `450` puan hedefi konulmuştur.
 
 - **Sprint Gözden Geçirilmesi:**
    * Melisa Nur Alparslan ve Olgun Baran Atik prototip ve tasarımları yaptı.
@@ -351,7 +351,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
      
 
 - **Sprint Gözden Geçirme Katılımcıları:**
-    * Melisa Nur Alparslan, Olgun Baran Atik, Meltem Sena Koçak, Oğuzhan Gündüz, Onur Turan
+    * `Melisa Nur Alparslan, Olgun Baran Atik, Meltem Sena Koçak, Oğuzhan Gündüz, Onur Turan`
 
 - **Sprint Retrospektifi:**
    * İkinci sprintte ilk olarak Firebase kurulmasına karar verildi.
@@ -436,21 +436,21 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 
 - **Sprint Notes:**
-   * Used Firebase Core for Firebase services application integration.
-   * Firebase Authentication was used to authenticate with Firebase.
-   * Used Cloud Firestore to interact with the Firestore database and transfer user data.
-   * Firebase Storage was used to store user data.
-   * Google Sign in option has been added to log in.
-   * Image picker was used for user photos.
-   * Flutter sound was used for audio recording and playback.
+   * Used _`Firebase Core`_ for Firebase services application integration.
+   * _`Firebase Authentication`_ was used to authenticate with Firebase.
+   * Used _`Cloud Firestore`_ to interact with the Firestore database and transfer user data.
+   * _`Firebase Storage`_ was used to store user data.
+   * _`Google Sign`_ in option has been added to log in.
+   * _`Image picker`_ was used for user photos.
+   * _`Flutter sound`_ was used for audio recording and playback.
  
 - **Expected point completion within Sprint:**
-  * 450
+  * `450`
 
 - **Point Completion Logic:**
-  * A total target of 1200 points was set. 300 points were completed in the first sprint. In the second sprint, the overall completion of the codes was requested, a target of 450 points was set and 450 points were completed. In the third sprint, a target of 450 points was set as the remaining tasks would be completed and integration work would be carried out.
+  * A total target of `1200` points was set. `300` points were completed in the first sprint. In the second sprint, the overall completion of the codes was requested, a target of `450` points was set and completed. In the third sprint, a target of `450` points was set as the remaining tasks would be completed and integration work would be carried out.
 
-- **Daily Scrum:**  [Daily Scrum](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Project_Management_Files/Sprint_2/Sprint2_Daily_Scrum)
+- **Daily Scrum:**  [Sprint 2 Daily Scrum](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Project_Management_Files/Sprint_2/Sprint2_Daily_Scrum)
 
 - **Product Backlog URL:** 
 
@@ -468,7 +468,8 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 
 - **Sprint Review Participants:**
-    * Melisa Nur Alparslan, Olgun Baran Atik, Meltem Sena Koçak, Oğuzhan Gündüz, Onur Turan
+    * `Melisa Nur Alparslan , Olgun Baran Atik, Meltem Sena Koçak, Oğuzhan Gündüz, Onur Turan`
+      
 
 - **Sprint Retrospective:**
    * In the third sprint, it was decided that the habit tracking pages with friends would be created first by Oğuzhan, Olgun and Melisa.
@@ -481,26 +482,26 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
    * It was decided to write the User Agreement, Information and Explicit Consent texts and add them to the application.
    * It was decided to localize the application so that it can offer different language options.
 
-- **Additional Notes:**
+ - **Additional Notes:**
 
 <details>
     <summary><h4>Turkish explanation</h4></summary>
 
 
 - **Sprint Notları:**
-   * Firebase hizmetleri uygulama entegrasyonu için Firebase Core kullanıldı.
-   * Firebase ile kimlik doğrulama işlemleri gerçekleştirmek için Firebase Authentication kullanıldı.
-   * Firestore veritabanı ile etkileşim kurup kullanıcı verilerini aktarmak için Cloud Firestore kullanıldı.
-   * Kullanıcı verilerini depolamak için Firebase Storage kullanıldı.
-   * Oturum açmak için Google Sign in seçeneği eklenildi.
-   * Kullanıcı fotoğrafları için Image picker kullanıldı.
-   * Ses kaydetme ve oynatma için flutter sound kullanıldı.
+   * Firebase hizmetleri uygulama entegrasyonu için _`Firebase Core`_ kullanıldı.
+   * Firebase ile kimlik doğrulama işlemleri gerçekleştirmek için _`Firebase Authentication`_ kullanıldı.
+   * Firestore veritabanı ile etkileşim kurup kullanıcı verilerini aktarmak için _`Cloud Firestore`_ kullanıldı.
+   * Kullanıcı verilerini depolamak için _`Firebase Storage`_ kullanıldı.
+   * Oturum açmak için _`Google Sign in`_ seçeneği eklenildi.
+   * Kullanıcı fotoğrafları için _`Image picker`_ kullanıldı.
+   * Ses kaydetme ve oynatma için   _`Flutter sound`_  kullanıldı.
  
 - **Sprint İçinde Tamamlanması Beklenen Puan:**
-  * 450
+  * `450`
 
 - **Puan Tamamlama Mantığı:**
-  * Toplamda 1200 puanlık bir hedef belirlendi. Birinci sprintte 300 puan tamamlanmıştır. İkinci sprintte, kodların genel olarak tamamlanması istenilmiş 450 puan hedefi konulmuş ve 450 puan tamamlanmıştır. Üçüncü sprintte ise kalan görevlerin tamamlanması ve entegrasyon çalışmaları yapılacağından 450 puan hedefi konulmuştur.
+  * Toplamda `1200` puanlık bir hedef belirlendi. Birinci sprintte `300` puan tamamlanmıştır. İkinci sprintte, kodların genel olarak tamamlanması istenilmiş `450` puan hedefi konulmuş ve tamamlanmıştır. Üçüncü sprintte ise kalan görevlerin tamamlanması ve entegrasyon çalışmaları yapılacağından `450` puan hedefi konulmuştur.
 
 - **Sprint Gözden Geçirilmesi:**
    * İkinci sprintte, ilk olarak proje iskeleti oluşturulması Olgun ve Oğuzhan tarafından yapıldı.
@@ -516,7 +517,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
      
 
 - **Sprint Gözden Geçirme Katılımcıları:**
-    * Melisa Nur Alparslan, Olgun Baran Atik, Meltem Sena Koçak, Oğuzhan Gündüz, Onur Turan
+    * `Melisa Nur Alparslan, Olgun Baran Atik, Meltem Sena Koçak, Oğuzhan Gündüz, Onur Turan`
 
 - **Sprint Retrospektifi:**
    * Üçüncü sprintte ilk olarak arkadaşlı alışkanlık takip sayfalarının Oğuzhan, Olgun, Melisa tarafından yapılmasına karar verildi.
@@ -535,6 +536,105 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 <details>
   <summary><h1>Sprint 3</h1></summary>
+
+ ---
+
+<details>
+    <summary><h2>App Screenshots</h2></summary>
+
+  ### Login Page
+
+
+
+---
+### Today(Home)page
+
+
+---
+### Habits Page
+
+
+---
+### Journal Page
+
+
+---
+### Profile Page
+
+
+
+
+
+   
+</details>
+
+---
+
+<details>
+  <summary><h2>Project Management</h2></summary>
+    
+
+</details>
+
+---
+  <details>
+    <summary><h2>Burndown Chart</h2></summary>
+
+
+  </details>
+
+---
+
+
+- **Sprint Notes:**
+   * 
+ 
+- **Expected point completion within Sprint:**
+  * `450`
+
+- **Point Completion Logic:**
+  * A total target of `1200` points was set. `300` points were completed in the first sprint. In the second sprint, `450` points completed. In the third sprint, a target of `450` points was set as the remaining tasks would be completed and integration work would be carried out.
+
+- **Daily Scrum:**  
+
+- **Product Backlog URL:** 
+
+- **Sprint Review:**
+  *  
+
+- **Sprint Review Participants:**
+    * `Melisa Nur Alparslan , Olgun Baran Atik, Meltem Sena Koçak, Oğuzhan Gündüz, Onur Turan`
+      
+
+- **Sprint Retrospective:**
+   * 
+
+ - **Additional Notes:**
+
+<details>
+    <summary><h4>Turkish explanation</h4></summary>
+
+
+- **Sprint Notları:**
+   * 
+ 
+- **Sprint İçinde Tamamlanması Beklenen Puan:**
+  * `450`
+
+- **Puan Tamamlama Mantığı:**
+  * Toplamda `1200` puanlık bir hedef belirlendi. Birinci sprintte `300` puan tamamlanmıştır. İkinci sprintte, `450` puan tamamlanmıştır. Üçüncü sprintte ise kalan görevlerin tamamlanması ve entegrasyon çalışmaları yapılacağından `450` puan hedefi konulmuştur.
+
+- **Sprint Gözden Geçirilmesi:**
+   * 
+     
+
+- **Sprint Gözden Geçirme Katılımcıları:**
+    * `Melisa Nur Alparslan, Olgun Baran Atik, Meltem Sena Koçak, Oğuzhan Gündüz, Onur Turan`
+
+- **Sprint Retrospektifi:**
+   *
+</details>
+
 </details>
 
 ---
