@@ -597,24 +597,51 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
   * `450`
 
 - **Point Completion Logic:**
-  * A total target of `1200` points was set. `300` points were completed in the first sprint. In the second sprint, `450` points completed. In the third sprint, a target of `450` points was set as the remaining tasks would be completed and integration work would be carried out.
+  * A total target of `1200` points was set. `300` points were completed in the first sprint. In the second sprint, `450` points completed. In the third sprint, since the remaining tasks will be completed and integration studies will be carried out, a target of '450' points was set and completed.
 
-- **Daily Scrum:**  
+- **Daily Scrum:**  [Sprint 3 Daily Scrum](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Project_Management_Files/Sprint_3/Sprint3_Daily_Scrum)
 
 - **Product Backlog URL:** 
 
 - **Sprint Review:**
-  *  
+  *  The Habit Tracking page was initiated by Oğuzhan and Olgun.
+  * UI changes were made to the Daily page, making entries more detailed.
+  * Gemini was used for the Personal Story Creating AI, which was integrated into the application during the first week of the third sprint.
+  * New theme colors for the application were decided upon, offering users the freedom to choose from four different theme options.
+  * The User Agreement, Privacy Policy, and Consent Forms were created in line with the application's future goals.
+  * The Persona file was prepared in both Turkish and English.
+  * The logo was completely finalized.
+  * A Lean Canvas was prepared due to the goal of turning the project into a startup.
+  * Considering global targets, the application was translated into Turkish, German, Spanish, French, Chinese, Hindi, Russian, Japanese, and Italian, in addition to English.
+  * Adjustments were made to the menu screen, including buttons for API-generated stories and Settings.
+  * The Settings page was updated to include language options, theme options, an About section, and Support.
+  * Adjustments were made to the Profile page.
+  * Hints were added to the application for first-time users.
+  * A Frequently Asked Questions document was prepared in both English and Turkish to address potential user queries.
+  * A Tech Tree document was prepared for the application.
+  * GitHub was updated in line with the changes made to the application.
+  * A website and a LinkedIn account were created for the application's promotion.
+  * Due to global targets, a second promotional video in English was prepared to be placed on the GitHub page.
 
 - **Sprint Review Participants:**
     * `Melisa Nur Alparslan , Olgun Baran Atik, Meltem Sena Koçak, Oğuzhan Gündüz, Onur Turan`
       
 
 - **Sprint Retrospective:**
-   * 
+   * Starting from the third sprint, evaluations of all sprints were conducted, and plans were made in line with the application's future goals.
+  * The team gathered on the Discord platform and celebrated the completion of the application.
+  * It was decided that Olgun and Melisa would begin preparing for the jury presentation
 
- - **Additional Notes:**
+- **Additional Files:**
+   * [Express Consent Agreement](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Project_Management_Files/Sprint_3/Sprint3_Additional_Files/Planova_Acik_Riza_Sözleşmesi.pdf)
+   * [Express Consent Agreement](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Project_Management_Files/Sprint_3/Sprint3_Additional_Files/Planova_Kisisel Verilerin_Korunması_Aydınlatma_Metni.pdf)
+   * [User Agreement](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Project_Management_Files/Sprint_3/Sprint3_Additional_Files/Planova_Kullanıcı_Sozlesmesi.pdf)
 
+
+
+
+
+  
 <details>
     <summary><h4>Turkish explanation</h4></summary>
 
@@ -626,17 +653,36 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
   * `450`
 
 - **Puan Tamamlama Mantığı:**
-  * Toplamda `1200` puanlık bir hedef belirlendi. Birinci sprintte `300` puan tamamlanmıştır. İkinci sprintte, `450` puan tamamlanmıştır. Üçüncü sprintte ise kalan görevlerin tamamlanması ve entegrasyon çalışmaları yapılacağından `450` puan hedefi konulmuştur.
+  * Toplamda `1200` puanlık bir hedef belirlendi. Birinci sprintte `300` puan tamamlanmıştır. İkinci sprintte, `450` puan tamamlanmıştır. Üçüncü sprintte ise kalan görevlerin tamamlanması ve entegrasyon çalışmaları yapılacağından `450` puan hedefi konulmuş ve tamamlanmıştır.
 
 - **Sprint Gözden Geçirilmesi:**
-   * 
+  * 3. Sprinte  Arkadaşla Alışkanlık Takip sayfası Oğuzhan ve Olgun tarafından yapılarak başlanıldı.
+  * Günlük sayfasının UI kısmında değişiklik yapıldı ve Günlükler detaylı görülebilir hale getirildi.
+  * Kişisel Hikaye Yaratan Yapay Zeka için Gemini kullanıldı ve 3. Sprint ilk haftasında uyulamaya eklenildi.
+  * Uygulamaya eklenecek yeni tema renklerine karar verildi ve uygulamada kullanıcıya özgürlük tanımak adına dört farklı tema seçeneği sunuldu.
+  * Kullanıcı Sözleşmesi, Aydınlatma ve Açık Rıza Metinleri uygulamanın gelecek hedefleri doğrultusunda oluşturuldu.
+  * Persona dosyası hem Türkçe hem İngilizce dilinde hazırlanıldı.
+  * Logo tamamen bitirildi.
+  * Girişime dönüşme hedefinden dolayı yalın kanvas hazırlanıldı.
+  * Globale yönelik hedefler nedeniyle Dünya'da en çok konuşulan diller göz önünde bulundurularak uygulamaya İngilizce dilinin yanında Türkçe, Almanca, İspanyolca, Fransızca, Çince, Hintçe, Rusça, Japonca, İtalyanca dilleri eklenildi.
+  * Menü ekranında düzenlemeler yapıldı, Api tarafından oluşturulan hikayeler ve Ayarlar butonları eklenildi.
+  * Ayarlar sayfasında dil seçeneği, tema seçeneği, hakkında ve destek kısımları eklenildi
+  * Profil sayfasında düzenlemeler yapıldı.
+  * Uygulamayı ilk kez kullanacak kullanıcılar düşünülerek uygulamaya hint eklenilmesine karar verildi ve eklenildi.
+  * Kullanıcıların uygulama hakkındaki olası sorulara yönelik Sıkça Sorulan Sorular Dokumanı hem İngilizce hem Türkçe dillerinde hazırlanıldı.
+  * Tech tree dosyası uygulama için hazırlanıldı.
+  * Uygulamada olan değişiklikler doğrultusunda Github düzenlenildi.
+  * Uygulama tanıtımı için websitesi yapıldı ve linkedin hesabı açıldı.
+  * Globale yönelik hedeflerden dolayı Github sayfasına konulmak üzere İngilizce dilinde ikinci video hazırlanıldı.
      
 
 - **Sprint Gözden Geçirme Katılımcıları:**
     * `Melisa Nur Alparslan, Olgun Baran Atik, Meltem Sena Koçak, Oğuzhan Gündüz, Onur Turan`
 
 - **Sprint Retrospektifi:**
-   *
+   * Üçüncü sprint ile başlayarak tüm sprintlerin değerlendirmesi ve uygulamanın gelecek hedefleri doğrultusunda planlamalar yapıldı.
+   * Ekip hep birlikte Discord platformunda toplandı ve uygulama bitiş kutlaması yapıldı.
+   * Jüri sunumu için Olgun ve Melisa'nın hazırlanmaya başlamasına karar verildi.
 </details>
 
 </details>
