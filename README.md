@@ -1,4 +1,5 @@
-# PLANOVA
+![Planova](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/General_Documents/Github_Pages_Images/Planova.png)
+
 
 ---
 
@@ -11,7 +12,6 @@
 | <a href="https://github.com/MeltemKocak" style="text-decoration:none; color:blue;">Meltem Sena Koçak</a> | Developer | [<img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn" width="20"/>](https://www.linkedin.com/in/meltemkocak/) |
 | <a href="https://github.com/Ulwus" style="text-decoration:none; color:blue;">Oğuzhan Gündüz</a> | Developer | [<img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn" width="20"/>](https://linkedin.com/in/ulwus) |
 | <a href="https://github.com/onurtturan" style="text-decoration:none; color:blue;">Onur Turan</a> | Developer | [<img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn" width="20"/>](https://www.linkedin.com/in/onurtturan/) |
-
 
 
 
@@ -199,6 +199,9 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
   
 </details>
 
+---
+
+![Planova](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/General_Documents/Github_Pages_Images/Sprints.png)
 
 ---
 <details>
@@ -638,3 +641,30 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 </details>
 
 ---
+![Planova](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/General_Documents/Github_Pages_Images/Endnotes.png)
+
+---
+<details>
+  <summary><h2>Logo</h2></summary>
+  
+  
+</details>
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
