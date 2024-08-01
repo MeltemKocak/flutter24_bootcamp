@@ -87,7 +87,8 @@ Sonuç olarak, zamanı doğru yönetmek, yaşamın her alanında başarıya ula�
   * **Feedback and Support:** Allows users to provide feedback about the app and receive support.
   * **About:** Provides information about the app, mission and vision statements, and details about the development team.
 
-  * ***Additional Files*** 
+**Frequently Asked Questions:** [FAQ](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Project_Management_Files/General_Documents/FAQ_English.pdf)
+
 <details>
     <summary><h4>Turkish explanation</h4></summary>
 
@@ -135,7 +136,7 @@ Sonuç olarak, zamanı doğru yönetmek, yaşamın her alanında başarıya ula�
   * **Geri Bildirim ve Destek:** Kullanıcıların uygulama hakkında geri bildirimde bulunmalarını ve destek almalarını sağlar.
   * **Hakkında:** Uygulama hakkında bilgiler, misyon ve vizyon açıklamaları, ve geliştirici ekibe dair bilgiler sunar.
 
-  * ***Ek Dosyalar*** 
+**Sıkça Sorulan Sorular:** [SSS](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Project_Management_Files/General_Documents/SSS_Turkce.pdf)
   </details>
 
 </details>
@@ -166,7 +167,7 @@ Planova application appeals to a wide range of users and offers features for peo
   * **Common Goal Setting:** Groups of friends or business teams who want to work together by setting common goals.
   * **Increasing Motivation:** Those who want to increase group motivation by using the joint goal tracking feature.
 
-  * ***Additional Files*** 
+**Persona File:** 
 
 <details>
     <summary><h4>Turkish explanation</h4></summary>
@@ -193,7 +194,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
   * **Ortak Hedef Belirleme:** Ortak hedefler belirleyerek birlikte çalışmak isteyen arkadaş grupları veya iş takımları.
   * **Motivasyon Artırma:** Birlikte hedef takibi özelliğini kullanarak grup motivasyonunu artırmak isteyenler.
 
-  * ***Ek Dosyalar***
+**Persona Dosyası:** [Personalar](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Project_Management_Files/General_Documents/Persona_Turkce.pdf) 
     
   </details>
   
@@ -201,7 +202,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 ---
 
-![Planova](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/General_Documents/Github_Pages_Images/Sprints.png)
+![Sprints](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/General_Documents/Github_Pages_Images/Sprints.png)
 
 ---
 <details>
