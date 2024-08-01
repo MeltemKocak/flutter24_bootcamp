@@ -292,7 +292,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 - **Daily Scrum:** [Sprint 1 Daily Scrum](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Project_Management_Files/Sprint_1/Sprint1_Daily_Scrum)
 
-- **Product Backlog URL:** 
+- **Product Backlog URL:** [Asana](https://app.asana.com/0/1207708660563810/1207708543191862)
 
 - **Sprint Review:**
     * Melisa Nur Alparslan and Olgun Baran Atik made the prototypes and designs.
@@ -456,7 +456,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 - **Daily Scrum:**  [Sprint 2 Daily Scrum](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Project_Management_Files/Sprint_2/Sprint2_Daily_Scrum)
 
-- **Product Backlog URL:** 
+- **Product Backlog URL:** [Asana](https://app.asana.com/0/1207708660563810/1207708543191862)
 
 - **Sprint Review:**
   *  In the second sprint, firstly project skeleton was created by Olgun and Oğuzhan.
@@ -472,7 +472,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 
 - **Sprint Review Participants:**
-    * `Melisa Nur Alparslan , Olgun Baran Atik, Meltem Sena Koçak, Oğuzhan Gündüz, Onur Turan`
+    * `Melisa Nur Alparslan, Olgun Baran Atik, Meltem Sena Koçak, Oğuzhan Gündüz, Onur Turan`
       
 
 - **Sprint Retrospective:**
@@ -546,7 +546,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 <details>
     <summary><h2>App Screenshots</h2></summary>
 
-  ### Login Page
+### Login Page
 
 
 
@@ -601,7 +601,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 - **Daily Scrum:**  [Sprint 3 Daily Scrum](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Project_Management_Files/Sprint_3/Sprint3_Daily_Scrum)
 
-- **Product Backlog URL:** 
+- **Product Backlog URL:** [Asana](https://app.asana.com/0/1207708660563810/1207708543191862)
 
 - **Sprint Review:**
   *  The Habit Tracking page was initiated by Oğuzhan and Olgun.
@@ -624,7 +624,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
   * Due to global targets, a second promotional video in English was prepared to be placed on the GitHub page.
 
 - **Sprint Review Participants:**
-    * `Melisa Nur Alparslan , Olgun Baran Atik, Meltem Sena Koçak, Oğuzhan Gündüz, Onur Turan`
+    * `Melisa Nur Alparslan, Olgun Baran Atik, Meltem Sena Koçak, Oğuzhan Gündüz, Onur Turan`
       
 
 - **Sprint Retrospective:**
@@ -634,7 +634,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 - **Additional Files:**
    * [Express Consent Agreement](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Project_Management_Files/Sprint_3/Sprint3_Additional_Files/Planova_Acik_Riza_Sözleşmesi.pdf)
-   * [Express Consent Agreement](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Project_Management_Files/Sprint_3/Sprint3_Additional_Files/Planova_Kisisel Verilerin_Korunması_Aydınlatma_Metni.pdf)
+   * [Customer Clarification Text File](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Project_Management_Files/Sprint_3/Sprint3_Additional_Files/Planova_Kisisel_Verilerin_Korunması_Aydınlatma_Metni.pdf)
    * [User Agreement](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Project_Management_Files/Sprint_3/Sprint3_Additional_Files/Planova_Kullanıcı_Sozlesmesi.pdf)
 
 
@@ -695,6 +695,38 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
   <summary><h2>Logo</h2></summary>
 
   ![Logo](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/General_Documents/LOGO.png )  
+
+</details>
+
+---
+
+## PlanovApp Promo
+
+---
+
+### Apk File
+
+---
+<details>
+  <summary><h2>Tech Tree</h2></summary>
+  
+  
+</details>
+
+---
+
+<details>
+  <summary><h2>Lean Canvas</h2></summary>
+
+  ![Lean Canvas](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/General_Documents/Lean_canvas.png)  
+  
+</details>
+
+---
+
+<details>
+  <summary><h2>Website</h2></summary>
+  
 
 </details>
 
