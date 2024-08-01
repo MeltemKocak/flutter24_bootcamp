@@ -50,7 +50,7 @@ Sonuç olarak, zamanı doğru yönetmek, yaşamın her alanında başarıya ula�
 - **Calendar:** The weekly and monthly calendar at the top allows users to easily navigate between different days and view upcoming goals.
 - **Categorization:** On the home page, users can filter to see only habits or the to-do list for the day. They can also star important items and apply extra filters accordingly.
 - **Adding, Editing, and Deleting Daily Tasks:** The plus button on the home page allows users to easily add daily tasks. For recurring tasks, they can set the frequency and select the days and times they recur. Tasks can be edited or deleted by clicking on them.
-- 
+  
 ### 2. Habit Page
 - **Habit Progress View:** All habits are presented in a view where users can easily track their progress.
 - **Habit Details:** Clicking on a habit provides details such as the start date, completion status, and statistics.
@@ -167,7 +167,7 @@ Planova application appeals to a wide range of users and offers features for peo
   * **Common Goal Setting:** Groups of friends or business teams who want to work together by setting common goals.
   * **Increasing Motivation:** Those who want to increase group motivation by using the joint goal tracking feature.
 
-**Persona File:** 
+**Persona File:** [Persona](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Project_Management_Files/General_Documents/Persona_English.pdf) 
 
 <details>
     <summary><h4>Turkish explanation</h4></summary>
