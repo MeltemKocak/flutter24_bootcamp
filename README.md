@@ -641,13 +641,14 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 </details>
 
 ---
-![Planova](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/General_Documents/Github_Pages_Images/Endnotes.png)
+![Endnotes](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/General_Documents/Github_Pages_Images/Endnotes.png)
 
 ---
 <details>
   <summary><h2>Logo</h2></summary>
-  
-  
+
+  ![Logo](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/General_Documents/LOGO.png )  
+
 </details>
 
 ---
