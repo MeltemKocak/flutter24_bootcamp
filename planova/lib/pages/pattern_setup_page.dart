@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:planova/utilities/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'journal_page.dart'; // JournalPage'i import edin
 
 class PatternSetupPage extends StatefulWidget {
   @override
@@ -20,9 +22,17 @@ class _PatternSetupPageState extends State<PatternSetupPage> {
   void _addPattern(int index) {
     setState(() {
       if (_isConfirming) {
-        _confirmPattern.add(index);
+        if (_confirmPattern.contains(index)) {
+          _confirmPattern.remove(index);
+        } else {
+          _confirmPattern.add(index);
+        }
       } else {
-        _pattern.add(index);
+        if (_pattern.contains(index)) {
+          _pattern.remove(index);
+        } else {
+          _pattern.add(index);
+        }
       }
     });
   }
@@ -30,6 +40,13 @@ class _PatternSetupPageState extends State<PatternSetupPage> {
   Future<void> _setupPattern() async {
     final user = _auth.currentUser;
     if (user == null) return;
+
+    if (_pattern.isEmpty || (_isConfirming && _confirmPattern.isEmpty)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Pattern cannot be empty').tr()),
+      );
+      return;
+    }
 
     if (_pattern.join() == _confirmPattern.join()) {
       await FirebaseFirestore.instance
@@ -52,6 +69,13 @@ class _PatternSetupPageState extends State<PatternSetupPage> {
   }
 
   void _confirmPatternSetup() {
+    if (_pattern.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Pattern cannot be empty').tr()),
+      );
+      return;
+    }
+
     setState(() {
       _isConfirming = true;
     });
@@ -64,7 +88,15 @@ class _PatternSetupPageState extends State<PatternSetupPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_isConfirming ? 'Confirm Pattern' : 'Set Up Pattern').tr(),
-        backgroundColor: theme.appBar,
+        backgroundColor: theme.background,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(
+              context,
+            );
+          },
+        ),
       ),
       backgroundColor: theme.background,
       body: Padding(
@@ -75,7 +107,9 @@ class _PatternSetupPageState extends State<PatternSetupPage> {
               _isConfirming
                   ? 'Draw the pattern again to confirm'
                   : 'Draw your pattern',
-              style: TextStyle(color: theme.welcomeText, fontSize: 18),
+              style: GoogleFonts.didactGothic(
+                textStyle: TextStyle(color: theme.welcomeText, fontSize: 18),
+              ),
             ).tr(),
             SizedBox(height: 20),
             _buildPatternLock(theme),
@@ -84,8 +118,10 @@ class _PatternSetupPageState extends State<PatternSetupPage> {
               onPressed: _isConfirming ? _setupPattern : _confirmPatternSetup,
               style: ElevatedButton.styleFrom(
                 backgroundColor: theme.addButton,
+                foregroundColor: theme.welcomeText,
               ),
-              child: Text(_isConfirming ? 'Confirm Pattern' : 'Set Up Pattern').tr(),
+              child: Text(_isConfirming ? 'Confirm Pattern' : 'Set Up Pattern')
+                  .tr(),
             ),
             if (_isPatternMismatch)
               Padding(
@@ -118,7 +154,9 @@ class _PatternSetupPageState extends State<PatternSetupPage> {
             child: Container(
               margin: EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: isSelected ? theme.addButtonIcon : theme.borderColor,
+                color: isSelected
+                    ? theme.addButton
+                    : theme.borderColor.withAlpha(150),
                 shape: BoxShape.circle,
               ),
             ),

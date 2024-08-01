@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'habit_edit_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HabitDetailPage extends StatefulWidget {
   final String habitId;
@@ -27,63 +28,83 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
   }
 
   Future<void> _loadHabitData() async {
-    setState(() {
-      isLoading = true;
-    });
-    DocumentSnapshot doc = await FirebaseFirestore.instance.collection('habits').doc(widget.habitId).get();
-    setState(() {
-      habitData = doc.data() as Map<String, dynamic>?;
-      isLoading = false;
-    });
-  }
+  setState(() {
+    isLoading = true;
+  });
+  DocumentSnapshot doc = await FirebaseFirestore.instance
+      .collection('habits')
+      .doc(widget.habitId)
+      .get();
+  setState(() {
+    habitData = doc.data() as Map<String, dynamic>?;
+    isLoading = false;
+    if (habitData != null) {
+      print('Habit data loaded: $habitData'); // Bu satırı ekleyin
+    } else {
+      print('No habit data found.'); // Bu satırı ekleyin
+    }
+  });
+}
+
 
   Future<void> _updateCompletionStatus(bool? value, String date) async {
-    if (habitData == null) return;
+  if (habitData == null) return;
 
-    String userId = FirebaseAuth.instance.currentUser!.uid;
-    Map<String, dynamic> completedDays = (habitData!['completed_days'] ?? {}).cast<String, dynamic>();
+  String userId = FirebaseAuth.instance.currentUser!.uid;
+  Map<String, dynamic> completedDays =
+      (habitData!['completed_days'] ?? {}).cast<String, dynamic>();
 
-    if (!completedDays.containsKey(userId)) {
-      completedDays[userId] = {};
-    }
+  if (!completedDays.containsKey(userId)) {
+    completedDays[userId] = {};
+  }
 
-    completedDays[userId][date] = value ?? false;
+  completedDays[userId][date] = value ?? false;
 
-    await FirebaseFirestore.instance.collection('habits').doc(widget.habitId).update({
-      'completed_days': completedDays,
-    });
 
-    List<dynamic> friends = habitData!['friends'] ?? [];
-    if (friends.isNotEmpty) {
-      for (String friendId in friends.cast<String>()) {
-        QuerySnapshot friendHabits = await FirebaseFirestore.instance
-            .collection('habits')
-            .where('user_id', isEqualTo: friendId)
-            .where('name', isEqualTo: habitData!['name'])
-            .get();
+  await FirebaseFirestore.instance
+      .collection('habits')
+      .doc(widget.habitId)
+      .update({
+    'completed_days': completedDays,
+  });
 
-        for (var habit in friendHabits.docs) {
-          Map<String, dynamic> friendCompletedDays = (habit['completed_days'] ?? {}).cast<String, dynamic>();
+  List<dynamic> friends = habitData!['friends'] ?? [];
+  if (friends.isNotEmpty) {
+    for (String friendId in friends.cast<String>()) {
+      QuerySnapshot friendHabits = await FirebaseFirestore.instance
+          .collection('habits')
+          .where('user_id', isEqualTo: friendId)
+          .where('name', isEqualTo: habitData!['name'])
+          .get();
 
-          if (!friendCompletedDays.containsKey(userId)) {
-            friendCompletedDays[userId] = {};
-          }
+      for (var habit in friendHabits.docs) {
+        Map<String, dynamic> friendCompletedDays =
+            (habit['completed_days'] ?? {}).cast<String, dynamic>();
 
-          friendCompletedDays[userId][date] = value ?? false;
-
-          await FirebaseFirestore.instance.collection('habits').doc(habit.id).update({
-            'completed_days': friendCompletedDays,
-          });
+        if (!friendCompletedDays.containsKey(userId)) {
+          friendCompletedDays[userId] = {};
         }
+
+        friendCompletedDays[userId][date] = value ?? false;
+
+        await FirebaseFirestore.instance
+            .collection('habits')
+            .doc(habit.id)
+            .update({
+          'completed_days': friendCompletedDays,
+        });
       }
     }
-
-    setState(() {
-      habitData!['completed_days'] = completedDays;
-    });
-
-    Provider.of<HabitProvider>(context, listen: false).setHabitData(habitData!);
   }
+
+  setState(() {
+    habitData!['completed_days'] = completedDays;
+    print('Updated habit data: $habitData'); // Bu satırı ekleyin
+  });
+
+  Provider.of<HabitProvider>(context, listen: false).setHabitData(habitData!);
+}
+
 
   void _showEditBottomSheet(BuildContext context) {
     showModalBottomSheet(
@@ -98,7 +119,9 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
           builder: (BuildContext context, ScrollController scrollController) {
             return Container(
               decoration: BoxDecoration(
-                color: Provider.of<ThemeProvider>(context).currentTheme.habitDetailEditBackground,
+                color: Provider.of<ThemeProvider>(context)
+                    .currentTheme
+                    .habitDetailEditBackground,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
@@ -117,11 +140,12 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(tr('Warning')),
-          content: Text(tr('You cannot check this habit today.')),
+          title: Text(tr('Warning'), style: GoogleFonts.didactGothic()),
+          content: Text(tr('You cannot check this habit today.'),
+              style: GoogleFonts.didactGothic()),
           actions: <Widget>[
             TextButton(
-              child: Text(tr('OK')),
+              child: Text(tr('OK'), style: GoogleFonts.didactGothic()),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -140,7 +164,7 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
       return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text(tr('Loading...')),
+          title: Text(tr('Loading...'), style: GoogleFonts.didactGothic()),
           backgroundColor: theme.appBar,
         ),
         body: Center(
@@ -153,11 +177,12 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
       return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text(tr('Habit Details')),
+          title: Text(tr('Habit Details'), style: GoogleFonts.didactGothic()),
           backgroundColor: theme.appBar,
         ),
         body: Center(
-          child: Text(tr('Habit not found'), style: TextStyle(color: theme.welcomeText)),
+          child: Text(tr('Habit not found'),
+              style: GoogleFonts.didactGothic(color: theme.welcomeText)),
         ),
       );
     }
@@ -165,8 +190,10 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
     DateTime today = DateTime.now();
     String formattedDate = DateFormat('yyyy-MM-dd').format(today);
     String userId = FirebaseAuth.instance.currentUser!.uid;
-    Map<String, dynamic> completedDays = (habitData!['completed_days'] ?? {}).cast<String, dynamic>();
-    Map<String, dynamic> userCompletedDays = (completedDays[userId] ?? {}).cast<String, dynamic>();
+    Map<String, dynamic> completedDays =
+        (habitData!['completed_days'] ?? {}).cast<String, dynamic>();
+    Map<String, dynamic> userCompletedDays =
+        (completedDays[userId] ?? {}).cast<String, dynamic>();
     int targetDays = habitData!['target_days'] ?? 0;
     bool isCompleted = userCompletedDays[formattedDate] ?? false;
     bool isTodayHabitDay = habitData!['days'][formattedDate] ?? false;
@@ -181,9 +208,8 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
               centerTitle: true,
               title: Text(
                 provider.habitData['name'] ?? tr('Habit Details'),
-                style: TextStyle(
+                style: GoogleFonts.didactGothic(
                   color: theme.welcomeText,
-                  fontFamily: 'Lato',
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
@@ -210,7 +236,8 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
                           children: [
                             ElevatedButton.icon(
                               icon: const Icon(Icons.edit),
-                              label: Text(tr('Edit')),
+                              label:
+                                  Text(tr('Edit'), style: GoogleFonts.didactGothic()),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: theme.habitCardBackground,
                                 foregroundColor: theme.habitIcons,
@@ -225,7 +252,8 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
                             ),
                             ElevatedButton.icon(
                               icon: const Icon(Icons.notifications),
-                              label: Text(tr('Reminder')),
+                              label: Text(tr('Reminder'),
+                                  style: GoogleFonts.didactGothic()),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: theme.habitCardBackground,
                                 foregroundColor: theme.habitIcons,
@@ -253,7 +281,7 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
                         children: [
                           Text(
                             formattedDate,
-                            style: TextStyle(
+                            style: GoogleFonts.didactGothic(
                               color: theme.subText,
                               fontSize: 14,
                             ),
@@ -262,11 +290,13 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
                             value: isCompleted,
                             onChanged: isTodayHabitDay
                                 ? (bool? value) {
-                                    _updateCompletionStatus(value, formattedDate);
+                                    _updateCompletionStatus(
+                                        value, formattedDate);
                                     Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) => super.widget));
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                super.widget));
                                   }
                                 : (bool? value) {
                                     _showAlertDialog(context);
@@ -286,7 +316,8 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
                       const SizedBox(height: 16),
                       MonthlyStats(
                         habitId: widget.habitId,
-                        completedDates: provider.habitData['completed_days'] ?? {},
+                        completedDates:
+                            provider.habitData['completed_days'] ?? {},
                         hasFriends: hasFriends,
                       ),
                       const SizedBox(height: 16),
@@ -318,9 +349,13 @@ class TwoWeekProgress extends StatelessWidget {
   });
 
   Future<List<Map<String, bool>>> _fetchTwoWeekProgress() async {
-    DocumentSnapshot doc = await FirebaseFirestore.instance.collection('habits').doc(habitId).get();
+    DocumentSnapshot doc = await FirebaseFirestore.instance
+        .collection('habits')
+        .doc(habitId)
+        .get();
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    Map<String, dynamic> completedDays = (data['completed_days'] ?? {}).cast<String, dynamic>();
+    Map<String, dynamic> completedDays =
+        (data['completed_days'] ?? {}).cast<String, dynamic>();
     List<String> friends = List<String>.from(data['friends'] ?? []);
     firstFriend = friends.isNotEmpty ? friends.first : '';
 
@@ -329,11 +364,13 @@ class TwoWeekProgress extends StatelessWidget {
     List<Map<String, bool>> twoWeekProgress = [];
     int daysToFetch = targetDays < 14 ? targetDays : 14;
     for (int i = 0; i < daysToFetch; i++) {
-      String day = DateFormat('yyyy-MM-dd').format(today.subtract(Duration(days: i)));
+      String day =
+          DateFormat('yyyy-MM-dd').format(today.subtract(Duration(days: i)));
       Map<String, bool> dailyProgress = {};
 
       completedDays.forEach((userId, userCompletedDays) {
-        dailyProgress[userId] = (userCompletedDays as Map<String, dynamic>)[day] ?? false;
+        dailyProgress[userId] =
+            (userCompletedDays as Map<String, dynamic>)[day] ?? false;
       });
 
       twoWeekProgress.add(dailyProgress);
@@ -348,7 +385,8 @@ class TwoWeekProgress extends StatelessWidget {
 
     return FutureBuilder<List<Map<String, bool>>>(
       future: _fetchTwoWeekProgress(),
-      builder: (BuildContext context, AsyncSnapshot<List<Map<String, bool>>> snapshot) {
+      builder: (BuildContext context,
+          AsyncSnapshot<List<Map<String, bool>>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
             child: CircularProgressIndicator(color: theme.checkBoxActiveColor),
@@ -356,7 +394,8 @@ class TwoWeekProgress extends StatelessWidget {
         }
         if (snapshot.hasError) {
           return Center(
-            child: Text(tr('Error loading progress'), style: TextStyle(color: theme.welcomeText)),
+            child: Text(tr('Error loading progress'),
+                style: GoogleFonts.didactGothic(color: theme.welcomeText)),
           );
         }
         List<Map<String, bool>> twoWeekProgress = snapshot.data ?? [];
@@ -377,9 +416,8 @@ class TwoWeekProgress extends StatelessWidget {
                 children: [
                   Text(
                     tr('Progress'),
-                    style: TextStyle(
+                    style: GoogleFonts.didactGothic(
                       color: theme.welcomeText,
-                      fontFamily: 'Lato Flex',
                       fontSize: 20,
                       fontWeight: FontWeight.normal,
                     ),
@@ -398,7 +436,8 @@ class TwoWeekProgress extends StatelessWidget {
                         height: 50,
                         child: CustomPaint(
                           painter: ProgressPainter(
-                            value[FirebaseAuth.instance.currentUser!.uid] ?? false,
+                            value[FirebaseAuth.instance.currentUser!.uid] ??
+                                false,
                             hasFriends ? (value[firstFriend] ?? false) : null,
                             context,
                           ),
@@ -413,18 +452,16 @@ class TwoWeekProgress extends StatelessWidget {
                 children: [
                   Text(
                     tr('Last $daysToShow days: ${twoWeekProgress.where((day) => day.values.contains(true)).length}/$daysToShow days'),
-                    style: TextStyle(
+                    style: GoogleFonts.didactGothic(
                       color: theme.welcomeText,
-                      fontFamily: 'Lato Flex',
                       fontSize: 13,
                       fontWeight: FontWeight.normal,
                     ),
                   ),
                   Text(
                     '${(twoWeekProgress.where((day) => day.values.contains(true)).length / daysToShow * 100).toStringAsFixed(2)}%',
-                    style: TextStyle(
+                    style: GoogleFonts.didactGothic(
                       color: theme.welcomeText,
-                      fontFamily: 'Lato Flex',
                       fontSize: 13,
                       fontWeight: FontWeight.normal,
                     ),
@@ -449,26 +486,33 @@ class ProgressPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint();
-    final theme = Provider.of<ThemeProvider>(context, listen: false).currentTheme;
+    final theme =
+        Provider.of<ThemeProvider>(context, listen: false).currentTheme;
 
     if (user2Completed == null) {
-      paint.color = user1Completed ? theme.habitProgress : theme.habitProgress.withOpacity(0.2);
+      paint.color = user1Completed
+          ? theme.habitProgress
+          : theme.habitProgress.withOpacity(0.2);
       canvas.drawRect(Rect.fromLTRB(0, 0, size.width, size.height), paint);
     } else {
       if (user1Completed) {
         paint.color = theme.habitProgress;
-        canvas.drawRect(Rect.fromLTRB(0, 0, size.width, size.height / 2), paint);
+        canvas.drawRect(
+            Rect.fromLTRB(0, 0, size.width, size.height / 2), paint);
       } else {
         paint.color = theme.habitProgress.withOpacity(0.2);
-        canvas.drawRect(Rect.fromLTRB(0, 0, size.width, size.height / 2), paint);
+        canvas.drawRect(
+            Rect.fromLTRB(0, 0, size.width, size.height / 2), paint);
       }
 
       if (user2Completed != null && user2Completed!) {
         paint.color = theme.habitIcons;
-        canvas.drawRect(Rect.fromLTRB(0, size.height / 2, size.width, size.height), paint);
+        canvas.drawRect(
+            Rect.fromLTRB(0, size.height / 2, size.width, size.height), paint);
       } else {
         paint.color = theme.habitProgress.withOpacity(0.1);
-        canvas.drawRect(Rect.fromLTRB(0, size.height / 2, size.width, size.height), paint);
+        canvas.drawRect(
+            Rect.fromLTRB(0, size.height / 2, size.width, size.height), paint);
       }
     }
   }
@@ -493,7 +537,7 @@ class HabitProvider with ChangeNotifier {
   List<bool> twoWeekProgress = List<bool>.filled(14, false);
   List<Map<int, bool>> monthlyStats = List.generate(
     12,
-    (index) => { for (var item in List.generate(31, (i) => i + 1)) item : false },
+    (index) => {for (var item in List.generate(31, (i) => i + 1)) item: false},
   );
   List<bool> yearProgress = List<bool>.filled(365, false);
 
@@ -567,13 +611,16 @@ class HabitProvider with ChangeNotifier {
     List<bool> yearProgress = [];
     DateTime startDate = (habitData['start_date'] as Timestamp).toDate();
     DateTime endDate = DateTime.now();
-    Map<String, dynamic> completedDays = (habitData['completed_days'] ?? {}).cast<String, dynamic>();
+    Map<String, dynamic> completedDays =
+        (habitData['completed_days'] ?? {}).cast<String, dynamic>();
 
     for (DateTime date = startDate;
         date.isBefore(endDate) || date.isAtSameMomentAs(endDate);
         date = date.add(const Duration(days: 1))) {
       String formattedDate = DateFormat('yyyy-MM-dd').format(date);
-      Map<String, dynamic> userCompletedDays = (completedDays[FirebaseAuth.instance.currentUser!.uid] ?? {}).cast<String, dynamic>();
+      Map<String, dynamic> userCompletedDays =
+          (completedDays[FirebaseAuth.instance.currentUser!.uid] ?? {})
+              .cast<String, dynamic>();
       yearProgress.add(userCompletedDays[formattedDate] ?? false);
     }
 
@@ -584,13 +631,16 @@ class HabitProvider with ChangeNotifier {
     List<bool> yearProgress = [];
     DateTime startDate = (habitData['start_date'] as Timestamp).toDate();
     DateTime endDate = (habitData['end_date'] as Timestamp).toDate();
-    Map<String, dynamic> completedDays = (habitData['completed_days'] ?? {}).cast<String, dynamic>();
+    Map<String, dynamic> completedDays =
+        (habitData['completed_days'] ?? {}).cast<String, dynamic>();
 
     for (DateTime date = startDate;
         date.isBefore(endDate) || date.isAtSameMomentAs(endDate);
         date = date.add(const Duration(days: 1))) {
       String formattedDate = DateFormat('yyyy-MM-dd').format(date);
-      Map<String, dynamic> userCompletedDays = (completedDays[FirebaseAuth.instance.currentUser!.uid] ?? {}).cast<String, dynamic>();
+      Map<String, dynamic> userCompletedDays =
+          (completedDays[FirebaseAuth.instance.currentUser!.uid] ?? {})
+              .cast<String, dynamic>();
       yearProgress.add(userCompletedDays[formattedDate] ?? false);
     }
 
@@ -613,14 +663,19 @@ class AllTimeStats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
     final habitProvider = Provider.of<HabitProvider>(context);
     final habitData = habitProvider.habitData;
     final theme = Provider.of<ThemeProvider>(context).currentTheme;
-    Map<String, dynamic> completedDates = (habitData['completed_days'] ?? {}).cast<String, dynamic>();
+    Map<String, dynamic> completedDays =
+        (habitData['completed_days'] ?? <String, dynamic>{}).cast<String, dynamic>();
     int targetDays = habitData['target_days'] ?? 0;
 
-    int completedCount = habitProvider.yearProgress.where((value) => value == true).length;
-    double completionDouble = completedCount / targetDays * 100;
+    final int completedCount = habitData['completed_days'] != null &&
+                            habitData['completed_days'][userId] != null
+    ? habitData['completed_days'][userId].values.where((value) => value == true).length
+    : 0;
+    double completionDouble = targetDays != 0 ? (completedCount / targetDays) * 100 : 0.0;
     int completion = completionDouble.isNaN ? 0 : completionDouble.toInt();
 
     return Card(
@@ -632,7 +687,7 @@ class AllTimeStats extends StatelessWidget {
           children: [
             Text(
               tr('All Time Stats'),
-              style: TextStyle(
+              style: GoogleFonts.didactGothic(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: theme.welcomeText,
@@ -644,11 +699,11 @@ class AllTimeStats extends StatelessWidget {
               children: [
                 Text(
                   tr('Current Streak'),
-                  style: TextStyle(color: theme.subText),
+                  style: GoogleFonts.didactGothic(color: theme.subText),
                 ),
                 Text(
                   '${habitProvider.currentStreak} ${tr("days")}',
-                  style: TextStyle(color: theme.welcomeText),
+                  style: GoogleFonts.didactGothic(color: theme.welcomeText),
                 ),
               ],
             ),
@@ -658,11 +713,11 @@ class AllTimeStats extends StatelessWidget {
               children: [
                 Text(
                   tr('Longest Streak'),
-                  style: TextStyle(color: theme.subText),
+                  style: GoogleFonts.didactGothic(color: theme.subText),
                 ),
                 Text(
                   '${habitProvider.longestStreak} ${tr("days")}',
-                  style: TextStyle(color: theme.welcomeText),
+                  style: GoogleFonts.didactGothic(color: theme.welcomeText),
                 ),
               ],
             ),
@@ -672,11 +727,11 @@ class AllTimeStats extends StatelessWidget {
               children: [
                 Text(
                   tr('Completion'),
-                  style: TextStyle(color: theme.subText),
+                  style: GoogleFonts.didactGothic(color: theme.subText),
                 ),
                 Text(
-                  '$completion% (${completedCount} ${tr("days of")} $targetDays ${tr("days")})',
-                  style: TextStyle(color: theme.welcomeText),
+                  '$completion% ($completedCount days of $targetDays days)',
+                  style: GoogleFonts.didactGothic(color: theme.welcomeText),
                 ),
               ],
             ),
@@ -686,11 +741,12 @@ class AllTimeStats extends StatelessWidget {
               children: [
                 Text(
                   tr('Start Date'),
-                  style: TextStyle(color: theme.subText),
+                  style: GoogleFonts.didactGothic(color: theme.subText),
                 ),
                 Text(
-                  DateFormat('d MMM yyyy').format(habitData['start_date'].toDate()),
-                  style: TextStyle(color: theme.welcomeText),
+                  DateFormat('d MMM yyyy')
+                      .format(habitData['start_date'].toDate()),
+                  style: GoogleFonts.didactGothic(color: theme.welcomeText),
                 ),
               ],
             ),
@@ -700,11 +756,12 @@ class AllTimeStats extends StatelessWidget {
               children: [
                 Text(
                   tr('End Date'),
-                  style: TextStyle(color: theme.subText),
+                  style: GoogleFonts.didactGothic(color: theme.subText),
                 ),
                 Text(
-                  DateFormat('d MMM yyyy').format(habitData['end_date'].toDate()),
-                  style: TextStyle(color: theme.welcomeText),
+                  DateFormat('d MMM yyyy')
+                      .format(habitData['end_date'].toDate()),
+                  style: GoogleFonts.didactGothic(color: theme.welcomeText),
                 ),
               ],
             ),
@@ -714,6 +771,7 @@ class AllTimeStats extends StatelessWidget {
     );
   }
 }
+
 
 class MonthlyStats extends StatefulWidget {
   final String habitId;
@@ -746,7 +804,10 @@ class _MonthlyStatsState extends State<MonthlyStats> {
   }
 
   Future<void> _loadHabitData() async {
-    DocumentSnapshot doc = await FirebaseFirestore.instance.collection('habits').doc(widget.habitId).get();
+    DocumentSnapshot doc = await FirebaseFirestore.instance
+        .collection('habits')
+        .doc(widget.habitId)
+        .get();
     if (doc.exists) {
       Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
       List<String> friends = List<String>.from(data['friends'] ?? []);
@@ -762,155 +823,188 @@ class _MonthlyStatsState extends State<MonthlyStats> {
     final theme = Provider.of<ThemeProvider>(context).currentTheme;
 
     return FutureBuilder(
-       future: _dataFuture,
-    builder: (context, snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return Center(child: CircularProgressIndicator(color: theme.checkBoxActiveColor));
-      } else if (snapshot.hasError) {
-        return Center(child: Text('Error: ${snapshot.error}', style: TextStyle(color: theme.welcomeText)));
-      } else {
-        return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+      future: _dataFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+              child:
+                  CircularProgressIndicator(color: theme.checkBoxActiveColor));
+        } else if (snapshot.hasError) {
+          return Center(
+              child: Text('Error: ${snapshot.error}',
+                  style: GoogleFonts.didactGothic(color: theme.welcomeText)));
+        } else {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              DropdownButton<int>(
-                value: year,
-                dropdownColor: theme.weeklyStatsBackgroundColor.withOpacity(1),
-                icon: Icon(Icons.arrow_drop_down, color: theme.welcomeText),
-                style: TextStyle(color: theme.welcomeText, fontSize: 18, fontWeight: FontWeight.bold),
-                underline: Container(
-                  height: 2,
-                  color: theme.weeklyStatsBackgroundColor,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  DropdownButton<int>(
+                    value: year,
+                    dropdownColor:
+                        theme.weeklyStatsBackgroundColor.withOpacity(1),
+                    icon: Icon(Icons.arrow_drop_down, color: theme.welcomeText),
+                    style: GoogleFonts.didactGothic(
+                        color: theme.welcomeText,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
+                    underline: Container(
+                      height: 2,
+                      color: theme.weeklyStatsBackgroundColor,
+                    ),
+                    onChanged: (int? newValue) {
+                      setState(() {
+                        year = newValue!;
+                      });
+                    },
+                    items: [
+                      DateTime.now().year - 1,
+                      DateTime.now().year,
+                      DateTime.now().year + 1
+                    ].map<DropdownMenuItem<int>>((int value) {
+                      return DropdownMenuItem<int>(
+                        value: value,
+                        child: Text('$value ${tr("Stats")}',
+                            style: GoogleFonts.didactGothic()),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 1,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
                 ),
-                onChanged: (int? newValue) {
-                  setState(() {
-                    year = newValue!;
-                  });
-                },
-                items: [DateTime.now().year - 1, DateTime.now().year, DateTime.now().year + 1]
-                    .map<DropdownMenuItem<int>>((int value) {
-                  return DropdownMenuItem<int>(
-                    value: value,
-                    child: Text('$value ${tr("Stats")}'),
+                itemCount: 12,
+                itemBuilder: (context, index) {
+                  return FutureBuilder<List<Widget>>(
+                    future: buildMonthGrid(year, index, context),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(
+                            child: CircularProgressIndicator(
+                                color: theme.checkBoxActiveColor));
+                      } else if (snapshot.hasError) {
+                        return Center(
+                            child: Text('Error: ${snapshot.error}',
+                                style: GoogleFonts.didactGothic(
+                                    color: theme.welcomeText)));
+                      } else {
+                        return Card(
+                          color:
+                              theme.weeklyStatsBackgroundColor.withOpacity(1),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Text(
+                                  monthName(index).tr(),
+                                  style: GoogleFonts.didactGothic(
+                                      fontWeight: FontWeight.bold,
+                                      color: theme.welcomeText),
+                                ),
+                                const SizedBox(height: 4),
+                                Expanded(
+                                  child: GridView.count(
+                                    crossAxisCount: 7,
+                                    crossAxisSpacing: 3,
+                                    mainAxisSpacing: 3,
+                                    children: snapshot.data!,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+                    },
                   );
-                }).toList(),
+                },
               ),
             ],
-          ),
-          GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 1,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-              ),
-              itemCount: 12,
-              itemBuilder: (context, index) {
-                return FutureBuilder<List<Widget>>(
-                  future: buildMonthGrid(year, index, context),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator(color: theme.checkBoxActiveColor));
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}', style: TextStyle(color: theme.welcomeText)));
-                    } else {
-                      return Card(
-                        color: theme.weeklyStatsBackgroundColor.withOpacity(1),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              Text(
-                                monthName(index).tr(),
-                                style: TextStyle(fontWeight: FontWeight.bold, color: theme.welcomeText),
-                              ),
-                              const SizedBox(height: 4),
-                              Expanded(
-                                child: GridView.count(
-                                  crossAxisCount: 7,
-                                  crossAxisSpacing: 3,
-                                  mainAxisSpacing: 3,
-                                  children: snapshot.data!,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                );
-              },
-            ),
-          ],
-        );
-      }
-    },
-  );
-}
-
-  Future<List<Widget>> buildMonthGrid(int year, int monthIndex, BuildContext context) async {
-  List<Widget> dayWidgets = [];
-  DateTime firstDayOfMonth = DateTime(year, monthIndex + 1, 1);
-  int daysInMonth = DateTime(year, monthIndex + 2, 0).day;
-  DateTime now = DateTime.now();
-  String userId = FirebaseAuth.instance.currentUser!.uid;
-  final theme = Provider.of<ThemeProvider>(context).currentTheme;
-
-  for (int i = 0; i < firstDayOfMonth.weekday % 7; i++) {
-    dayWidgets.add(Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4),
-        color: theme.background,
-      ),
-    ));
+          );
+        }
+      },
+    );
   }
 
-  for (int i = 1; i <= daysInMonth; i++) {
-    DateTime currentDate = DateTime(year, monthIndex + 1, i);
-    String formattedDate = DateFormat('yyyy-MM-dd').format(currentDate);
-    bool isHabitDay = days[formattedDate] ?? false;
+  Future<List<Widget>> buildMonthGrid(
+      int year, int monthIndex, BuildContext context) async {
+    List<Widget> dayWidgets = [];
+    DateTime firstDayOfMonth = DateTime(year, monthIndex + 1, 1);
+    int daysInMonth = DateTime(year, monthIndex + 2, 0).day;
+    DateTime now = DateTime.now();
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
 
-    bool userCompleted = (widget.completedDates[userId] ?? {})[formattedDate] ?? false;
-    bool friendCompleted = widget.hasFriends && firstFriendId != null 
-      ? (widget.completedDates[firstFriendId] ?? {})[formattedDate] ?? false 
-      : false;
-
-    dayWidgets.add(ClipRRect(
-      borderRadius: BorderRadius.circular(4),
-      child: CustomPaint(
-        size: const Size(14, 14),
-        painter: DayPainter(
-          isHabitDay: isHabitDay,
-          userCompleted: userCompleted,
-          friendCompleted: widget.hasFriends ? friendCompleted : null,
-          isPastDate: currentDate.isBefore(now),
-          isFutureDate: currentDate.isAfter(now),
-          context: context,
+    for (int i = 0; i < firstDayOfMonth.weekday % 7; i++) {
+      dayWidgets.add(Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          color: theme.monthlyInvalidDayGrid,
         ),
-      ),
-    ));
-  }
+      ));
+    }
 
-  while (dayWidgets.length < 42) {
-    dayWidgets.add(Container(
-      decoration: BoxDecoration(
+    for (int i = 1; i <= daysInMonth; i++) {
+      DateTime currentDate = DateTime(year, monthIndex + 1, i);
+      String formattedDate = DateFormat('yyyy-MM-dd').format(currentDate);
+      bool isHabitDay = days[formattedDate] ?? false;
+
+      bool userCompleted =
+          (widget.completedDates[userId] ?? {})[formattedDate] ?? false;
+      bool friendCompleted = widget.hasFriends && firstFriendId != null
+          ? (widget.completedDates[firstFriendId] ?? {})[formattedDate] ?? false
+          : false;
+
+      dayWidgets.add(ClipRRect(
         borderRadius: BorderRadius.circular(4),
-        color: theme.habitCardBackground,
-      ),
-    ));
+        child: CustomPaint(
+          size: const Size(14, 14),
+          painter: DayPainter(
+            isHabitDay: isHabitDay,
+            userCompleted: userCompleted,
+            friendCompleted: widget.hasFriends ? friendCompleted : null,
+            isPastDate: currentDate.isBefore(now),
+            isFutureDate: currentDate.isAfter(now),
+            context: context,
+          ),
+        ),
+      ));
+    }
+
+    while (dayWidgets.length < 42) {
+      dayWidgets.add(Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          color: theme.monthlyInvalidDayGrid,
+        ),
+      ));
+    }
+
+    return dayWidgets;
   }
 
-  return dayWidgets;
-}
   String monthName(int index) {
     const months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
     ];
     return months[index];
   }
@@ -936,42 +1030,52 @@ class DayPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final Paint paint = Paint();
-    final theme = Provider.of<ThemeProvider>(context, listen: false).currentTheme;
+    final theme =
+        Provider.of<ThemeProvider>(context, listen: false).currentTheme;
     final double halfHeight = size.height / 2;
 
-    if (isHabitDay) {
-      if (friendCompleted == null) {
-        paint.color = userCompleted ? theme.habitProgress : theme.habitProgress.withOpacity(0.2);
-        canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
-      } else {
-        if (isFutureDate) {
-          paint.color = theme.habitCardBackground;
-          canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
-        } else if (isPastDate) {
-          paint.color = userCompleted ? theme.habitProgress : theme.habitProgress.withOpacity(0.2);
-          canvas.drawRect(Rect.fromLTWH(0, 0, size.width, halfHeight), paint);
 
-          paint.color = friendCompleted! ? theme.habitIcons : theme.habitProgress.withOpacity(0.1);
-          canvas.drawRect(Rect.fromLTWH(0, halfHeight, size.width, halfHeight), paint);
-        } else {
-          paint.color = userCompleted ? theme.habitProgress : theme.habitCardBackground;
-          canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
-        }
-      }
-    } else {
-      paint.color = theme.background.withOpacity(0.25);
+   if (isHabitDay) {
+    if (friendCompleted == null) {
+      paint.color = userCompleted 
+          ? theme.monthlyCompleteDayGrid  // monthlyCompleteDayGrid
+          : theme.monthlyActiveDayGrid; // monthlyActiveDayGrid
       canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
+    } else {
+      if (isFutureDate) {
+        paint.color = theme.monthlyActiveDayGrid; // monthlyDefaultDayGrid
+        canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
+      } else if (isPastDate) {
+        paint.color = userCompleted 
+            ? theme.monthlyCompleteDayGrid  // monthlyCompleteDayGrid
+            : theme.monthlyActiveDayGrid; // monthlyActiveDayGrid
+        canvas.drawRect(Rect.fromLTWH(0, 0, size.width, halfHeight), paint);
+
+        paint.color = friendCompleted! 
+            ? theme.monthlyFriendCompleteDayGrid // monthlyFriendCompleteDayGrid
+            : theme.monthlyFriendUncompleteDayGrid; // monthlyFriendUncompleteDayGrid
+        canvas.drawRect(Rect.fromLTWH(0, halfHeight, size.width, halfHeight), paint);
+      } else {
+        paint.color = userCompleted 
+            ? theme.monthlyCompleteDayGrid  // monthlyCompleteDayGrid
+            : theme.monthlyDefaultDayGrid; // monthlyDefaultDayGrid
+        canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
+      }
     }
+  } else {
+    paint.color = theme.monthlyDefaultDayGrid.withOpacity(0.5); // monthlyInvalidDayGrid
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
   }
+}
+
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-
 // Asenkron veri hazırlama fonksiyonu
 Future<Map<String, dynamic>> prepareData() async {
-  await Future.delayed(Duration(seconds: 2)); 
+  await Future.delayed(Duration(seconds: 2));
 
   return {
     'isHabitDay': true,
@@ -1004,7 +1108,7 @@ class _MyPainterWidgetState extends State<MyPainterWidget> {
   }
 
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-  
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -1032,11 +1136,12 @@ class ReminderPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(tr('Set Reminder')),
+        title: Text(tr('Set Reminder'), style: GoogleFonts.didactGothic()),
         backgroundColor: theme.appBar,
       ),
       body: Center(
-        child: Text(tr('Reminder Page'), style: TextStyle(color: theme.welcomeText)),
+        child: Text(tr('Reminder Page'),
+            style: GoogleFonts.didactGothic(color: theme.welcomeText)),
       ),
     );
   }

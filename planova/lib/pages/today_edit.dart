@@ -1,6 +1,9 @@
+// TodayEditPage.dart
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
@@ -40,14 +43,8 @@ class _TodayEditPageState extends State<TodayEditPage> {
     selectedTime = widget.task['taskTimes']
                 [DateFormat('yyyy-MM-dd').format(widget.selectedDate)] !=
             "empty"
-        ? TimeOfDay(
-            hour: int.parse(widget.task['taskTimes']
-                    [DateFormat('yyyy-MM-dd').format(widget.selectedDate)]
-                .split(":")[0]),
-            minute: int.parse(widget.task['taskTimes']
-                    [DateFormat('yyyy-MM-dd').format(widget.selectedDate)]
-                .split(":")[1]),
-          )
+        ? _parseTimeOfDay(widget.task['taskTimes']
+            [DateFormat('yyyy-MM-dd').format(widget.selectedDate)])
         : null;
   }
 
@@ -84,7 +81,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
                 _buildRecurringSection(context, theme),
                 if (selectedRecurrence != 'Do not repeat')
                   _buildDaySelectionSection(context, theme),
-                const SizedBox(height: 150),
+                const SizedBox(height: 95),
               ],
             ),
           ),
@@ -128,10 +125,9 @@ class _TodayEditPageState extends State<TodayEditPage> {
                 ),
                 Text(
                   "Edit Task",
-                  style: TextStyle(
+                  style: GoogleFonts.didactGothic(
                     color: theme.welcomeText,
                     fontSize: 24,
-                    fontFamily: 'Lato',
                     fontWeight: FontWeight.w300,
                   ),
                 ).tr(),
@@ -141,11 +137,6 @@ class _TodayEditPageState extends State<TodayEditPage> {
                     padding: const EdgeInsets.all(8),
                     child: SizedBox(
                       height: 38,
-                      width: 38,
-                      child: SvgPicture.asset(
-                        "assets/images/img_check.svg",
-                        color: theme.welcomeDot,
-                      ),
                     ),
                   ),
                 )
@@ -170,10 +161,9 @@ class _TodayEditPageState extends State<TodayEditPage> {
               children: [
                 Text(
                   "Task Name",
-                  style: TextStyle(
+                  style: GoogleFonts.didactGothic(
                     color: theme.welcomeText,
                     fontSize: 15,
-                    fontFamily: 'Lato',
                     fontWeight: FontWeight.w300,
                   ),
                 ).tr(),
@@ -200,15 +190,12 @@ class _TodayEditPageState extends State<TodayEditPage> {
             child: TextFormField(
               controller: nameController,
               focusNode: taskNameFocusNode,
-              style: TextStyle(
-                color: theme.welcomeText,
-              ),
+              style: GoogleFonts.didactGothic(color: theme.welcomeText),
               decoration: InputDecoration(
                 hintText: tr("Enter Task Name"),
-                hintStyle: TextStyle(
+                hintStyle: GoogleFonts.didactGothic(
                   color: theme.subText,
                   fontSize: 15,
-                  fontFamily: 'Lato',
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -257,10 +244,9 @@ class _TodayEditPageState extends State<TodayEditPage> {
                   alignment: Alignment.center,
                   child: Text(
                     "Description",
-                    style: TextStyle(
+                    style: GoogleFonts.didactGothic(
                       color: theme.welcomeText,
                       fontSize: 15,
-                      fontFamily: 'Lato',
                       fontWeight: FontWeight.w300,
                     ),
                   ).tr(),
@@ -285,17 +271,14 @@ class _TodayEditPageState extends State<TodayEditPage> {
             child: TextFormField(
               controller: descriptionController,
               focusNode: descriptionFocusNode,
-              style: TextStyle(
-                color: theme.welcomeText,
-              ),
+              style: GoogleFonts.didactGothic(color: theme.welcomeText),
               textInputAction: TextInputAction.done,
               maxLines: 6,
               decoration: InputDecoration(
                 hintText: tr("Enter Description"),
-                hintStyle: TextStyle(
+                hintStyle: GoogleFonts.didactGothic(
                   color: theme.subText,
                   fontSize: 15,
-                  fontFamily: 'Lato',
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -362,10 +345,9 @@ class _TodayEditPageState extends State<TodayEditPage> {
                           const SizedBox(width: 12),
                           Text(
                             "Recurring",
-                            style: TextStyle(
+                            style: GoogleFonts.didactGothic(
                               color: theme.welcomeText,
                               fontSize: 17,
-                              fontFamily: 'Lato',
                             ),
                           ).tr()
                         ],
@@ -396,14 +378,19 @@ class _TodayEditPageState extends State<TodayEditPage> {
                           initialTime: selectedTime ?? TimeOfDay.now(),
                           builder: (BuildContext context, Widget? child) {
                             return Theme(
-                              data: ThemeData.dark().copyWith(
+                              data: ThemeData(
                                 colorScheme: ColorScheme.dark(
-                                  primary: theme.checkBoxActiveColor,
-                                  onPrimary: Colors.black,
+                                  primary: theme.addButton,
+                                  onPrimary: theme.addButtonIcon,
                                   surface: theme.background,
                                   onSurface: theme.welcomeText,
                                 ),
                                 dialogBackgroundColor: theme.background,
+                                textButtonTheme: TextButtonThemeData(
+                                  style: TextButton.styleFrom(
+                                      backgroundColor: theme.addButton,
+                                      foregroundColor: theme.welcomeText),
+                                ),
                               ),
                               child: child!,
                             );
@@ -424,10 +411,9 @@ class _TodayEditPageState extends State<TodayEditPage> {
                             selectedTime != null
                                 ? selectedTime!.format(context)
                                 : tr("Select Time"),
-                            style: TextStyle(
+                            style: GoogleFonts.didactGothic(
                               color: theme.welcomeText,
                               fontSize: 17,
-                              fontFamily: 'Lato',
                             ),
                           ),
                         ],
@@ -443,7 +429,8 @@ class _TodayEditPageState extends State<TodayEditPage> {
     );
   }
 
-  Widget _buildDaySelectionSection(BuildContext context, CustomThemeData theme) {
+  Widget _buildDaySelectionSection(
+      BuildContext context, CustomThemeData theme) {
     return Container(
       alignment: Alignment.center,
       width: MediaQuery.of(context).size.width * 0.8,
@@ -456,37 +443,48 @@ class _TodayEditPageState extends State<TodayEditPage> {
           return FilterChip(
             label: Text(
               _getDayName(index + 1),
-              style: TextStyle(color: theme.welcomeText, fontSize: 18),
+              style: GoogleFonts.didactGothic(
+                  color: theme.addButtonIcon, fontSize: 18),
             ),
+            labelStyle: GoogleFonts.didactGothic(
+                color: theme.addButtonIcon,
+                fontSize: 18,
+                fontWeight: FontWeight.bold),
             selected: selectedDays.contains(index + 1),
             onSelected: null, // Günlerin değiştirilemez olmasını sağlamak için
             backgroundColor: theme.checkBoxBorderColor,
             selectedColor: theme.checkBoxActiveColor,
-            disabledColor: theme.checkBoxActiveColor,
+            disabledColor: theme.checkBoxBorderColor,
           );
         }),
       ),
     );
   }
 
+  // Güncelleme Butonunu sadece saat değiştiğinde göstermek için _buildUpdateButton widget'ında şart ekleniyor.
   Widget _buildUpdateButton(BuildContext context, CustomThemeData theme) {
-    return GestureDetector(
-      onTap: _updateTodo,
-      child: Container(
-        alignment: Alignment.center,
-        height: 70,
-        width: 70,
-        padding: const EdgeInsets.all(0),
-        decoration: BoxDecoration(
-          color: theme.addButton,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Icon(Icons.check, color: theme.addButtonIcon, size: 45),
-      ),
-    );
+    return selectedTime != null
+        ? GestureDetector(
+            onTap: _updateTodo,
+            child: Container(
+              alignment: Alignment.center,
+              height: 50,
+              width: 120,
+              padding: const EdgeInsets.all(0),
+              decoration: BoxDecoration(
+                color: theme.addButton,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Text(tr("Update Task")),
+            ),
+          )
+        : Container(); // Eğer saat seçilmemişse boş bir widget döndürüyor.
   }
 
   void _updateTodo() {
+    final theme =
+        Provider.of<ThemeProvider>(context, listen: false).currentTheme;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -494,25 +492,26 @@ class _TodayEditPageState extends State<TodayEditPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          backgroundColor: const Color(0xFF1E1E1E),
+          backgroundColor: theme.background,
           child: Container(
             padding: const EdgeInsets.all(20),
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center, // Merkezi hizalama
               children: [
-                const Text(
+                Text(
                   "Hour Update",
-                  style: TextStyle(
-                    color: Colors.white,
+                  style: GoogleFonts.didactGothic(
+                    color: theme.welcomeText,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ).tr(),
                 const SizedBox(height: 10),
-                const Text(
+                Text(
                   "Do you want to update the time for this task or for all recurring tasks?",
-                  style: TextStyle(color: Colors.white70),
+                  style: GoogleFonts.didactGothic(color: theme.subText),
+                  textAlign: TextAlign.center, // Merkezi hizalama
                 ).tr(),
                 const SizedBox(height: 20),
                 Column(
@@ -523,18 +522,21 @@ class _TodayEditPageState extends State<TodayEditPage> {
                         _updateTask(false);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF03DAC6),
+                        backgroundColor: theme.checkBoxActiveColor,
                         padding: const EdgeInsets.symmetric(
-                          vertical: 12,
+                          vertical: 14,
                           horizontal: 24,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: const Text(
+                      child: Text(
                         "Only This Task",
-                        style: TextStyle(fontSize: 16, color: Colors.black),
+                        style: GoogleFonts.didactGothic(
+                          fontSize: 16,
+                          color: theme.welcomeText,
+                        ),
                       ).tr(),
                     ),
                     const SizedBox(height: 10),
@@ -544,18 +546,21 @@ class _TodayEditPageState extends State<TodayEditPage> {
                         _updateTask(true);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF03DAC6),
+                        backgroundColor: theme.checkBoxActiveColor,
                         padding: const EdgeInsets.symmetric(
-                          vertical: 12,
+                          vertical: 14,
                           horizontal: 24,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: const Text(
+                      child: Text(
                         "All Recurring Tasks",
-                        style: TextStyle(fontSize: 16, color: Colors.black),
+                        style: GoogleFonts.didactGothic(
+                          fontSize: 16,
+                          color: theme.welcomeText,
+                        ),
                       ).tr(),
                     ),
                   ],
@@ -574,7 +579,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
 
     String selectedDate = DateFormat('yyyy-MM-dd').format(widget.selectedDate);
     String newTime =
-        selectedTime != null ? selectedTime!.format(context) : "empty";
+        selectedTime != null ? _formatTimeOfDay(selectedTime!) : "empty";
 
     if (updateAll) {
       // Tüm tekrarlanan görevlerin saatini güncelle
@@ -594,18 +599,25 @@ class _TodayEditPageState extends State<TodayEditPage> {
       'taskTimes': taskTimes,
     }).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Task updated successfully').tr()),
+        SnackBar(
+            content: Text('Task updated successfully',
+                    style: GoogleFonts.didactGothic())
+                .tr()),
       );
       Navigator.pop(context);
     }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error updating task:" + " $error").tr()),
+        SnackBar(
+            content: Text("Error updating task:" + " $error",
+                    style: GoogleFonts.didactGothic())
+                .tr()),
       );
     });
   }
 
   void _showRecurringDialog() {
-    final theme = Provider.of<ThemeProvider>(context, listen: false).currentTheme;
+    final theme =
+        Provider.of<ThemeProvider>(context, listen: false).currentTheme;
 
     showDialog(
       context: context,
@@ -622,7 +634,8 @@ class _TodayEditPageState extends State<TodayEditPage> {
           ),
           child: AlertDialog(
             title: Text("Select Recurrence",
-                style: TextStyle(color: theme.welcomeText)).tr(),
+                    style: GoogleFonts.didactGothic(color: theme.welcomeText))
+                .tr(),
             content: DropdownButton<String>(
               value: selectedRecurrence,
               items: [
@@ -634,7 +647,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
               ].map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
-                  child: Text(value).tr(),
+                  child: Text(value, style: GoogleFonts.didactGothic()).tr(),
                 );
               }).toList(),
               onChanged: (String? newValue) {
@@ -644,7 +657,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
                 Navigator.of(context).pop();
               },
               dropdownColor: theme.background,
-              style: TextStyle(color: theme.welcomeText),
+              style: GoogleFonts.didactGothic(color: theme.welcomeText),
             ),
           ),
         );
@@ -657,20 +670,21 @@ class _TodayEditPageState extends State<TodayEditPage> {
       onTap: () => _confirmDeleteTask(),
       child: Container(
         alignment: Alignment.center,
-        height: 70,
-        width: 70,
+        height: 50,
+        width: 120,
         padding: const EdgeInsets.all(0),
         decoration: BoxDecoration(
-          color: theme.habitIcons,
+          color: Color.fromARGB(150, 200, 0, 0),
           borderRadius: BorderRadius.circular(16),
         ),
-        child: Icon(Icons.delete_outline, color: theme.welcomeText, size: 45),
+        child: Text(tr("Delete Task")),
       ),
     );
   }
 
   void _confirmDeleteTask() {
-    final theme = Provider.of<ThemeProvider>(context, listen: false).currentTheme;
+    final theme =
+        Provider.of<ThemeProvider>(context, listen: false).currentTheme;
 
     showDialog(
       context: context,
@@ -680,14 +694,20 @@ class _TodayEditPageState extends State<TodayEditPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          title: Text(
-            "Delete Task",
-            style: TextStyle(
-                color: theme.welcomeText, fontSize: 20, fontWeight: FontWeight.bold),
-          ).tr(),
-          content: const Text(
+          title: Center(
+            // Başlığı ortalamak için Center widget'ı eklendi
+            child: Text(
+              "Delete Task",
+              style: GoogleFonts.didactGothic(
+                  color: theme.welcomeText,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),
+            ).tr(),
+          ),
+          content: Text(
             "Do you want to delete this task or all recurring tasks?",
-            style: TextStyle(color: Colors.white70),
+            style: GoogleFonts.didactGothic(color: theme.welcomeText),
+            textAlign: TextAlign.center, // İçerik metni de ortalandı
           ).tr(),
           actions: <Widget>[
             Column(
@@ -707,7 +727,8 @@ class _TodayEditPageState extends State<TodayEditPage> {
                   ),
                   child: Text(
                     "Only This Task",
-                    style: TextStyle(fontSize: 16, color: theme.welcomeText),
+                    style: GoogleFonts.didactGothic(
+                        fontSize: 16, color: theme.welcomeText),
                   ).tr(),
                 ),
                 const SizedBox(height: 10),
@@ -725,7 +746,8 @@ class _TodayEditPageState extends State<TodayEditPage> {
                   ),
                   child: Text(
                     "All Recurring Tasks",
-                    style: TextStyle(fontSize: 16, color: theme.welcomeText),
+                    style: GoogleFonts.didactGothic(
+                        fontSize: 16, color: theme.welcomeText),
                   ).tr(),
                 ),
               ],
@@ -769,14 +791,22 @@ class _TodayEditPageState extends State<TodayEditPage> {
       }
     }
 
-    _moveTaskToTrash(widget.task.id, taskCompletionStatus, taskTimes, deletedTasks, deleteAll).then((_) {
+    _moveTaskToTrash(widget.task.id, taskCompletionStatus, taskTimes,
+            deletedTasks, deleteAll)
+        .then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("The task was deleted successfully.").tr()),
+        SnackBar(
+            content: Text("The task was deleted successfully.",
+                    style: GoogleFonts.didactGothic())
+                .tr()),
       );
       Navigator.pop(context);
     }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error while deleting task:" + " $error").tr()),
+        SnackBar(
+            content: Text("Error while deleting task:" + " $error",
+                    style: GoogleFonts.didactGothic())
+                .tr()),
       );
     });
   }
@@ -805,14 +835,21 @@ class _TodayEditPageState extends State<TodayEditPage> {
 
       // Orijinal görevden sadece belirli bir günü silme
       if (!deleteAll) {
-        Map<String, dynamic> updatedTaskData = Map<String, dynamic>.from(taskData);
+        Map<String, dynamic> updatedTaskData =
+            Map<String, dynamic>.from(taskData);
         updatedTaskData['taskCompletionStatus'] = taskCompletionStatus;
         updatedTaskData['taskTimes'] = taskTimes;
         updatedTaskData['deletedTasks'] = deletedTasks;
-        await FirebaseFirestore.instance.collection('todos').doc(taskId).update(updatedTaskData);
+        await FirebaseFirestore.instance
+            .collection('todos')
+            .doc(taskId)
+            .update(updatedTaskData);
       } else {
         // Orijinal görevden tüm günleri silme
-        await FirebaseFirestore.instance.collection('todos').doc(taskId).delete();
+        await FirebaseFirestore.instance
+            .collection('todos')
+            .doc(taskId)
+            .delete();
       }
     }
   }
@@ -836,5 +873,18 @@ class _TodayEditPageState extends State<TodayEditPage> {
       default:
         return '';
     }
+  }
+
+  TimeOfDay _parseTimeOfDay(String timeString) {
+    final format = DateFormat.jm(); // AM/PM format
+    final dateTime = format.parse(timeString);
+    return TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
+  }
+
+  String _formatTimeOfDay(TimeOfDay time) {
+    final now = DateTime.now();
+    final dt = DateTime(now.year, now.month, now.day, time.hour, time.minute);
+    final format = DateFormat.jm(); // AM/PM format
+    return format.format(dt);
   }
 }

@@ -34,9 +34,9 @@
     "3 hafta tekrar": "3 week repetition",
     "1 ay tekrar": "1 month repetition",
     "Mon": "Mon",
-    "Tues": "Tue",
+    "Tue": "Tue",
     "Wed": "Wed",
-    "Thurs": "Thu",
+    "Thu": "Thu",
     "Fri": "Fri",
     "Sat": "Sat",
     "Sun": "Sun",
@@ -104,7 +104,7 @@
     "Tap to record": "Tap to record",
     "Duration": "Duration",
     "Save Changes": "Save Changes",
-    "Daily Task Overview": "Daily Task Overview",
+    "Daily Task Overview": "Weekly Task View",
     "Incomplete Task": "Incomplete Task",
     "Completed Task": "Completed Task",
     "Daily Task Statistics": "Daily Task Statistics",
@@ -130,7 +130,6 @@
     "Password":"Password",
     "New Password":"New Password",
     "Get the latest news and resources straight to your inbox":"Get the latest news and resources straight to your inbox",
-    "Please enter your email address":"Please enter your email address",
     "Checking...":"Checking...",
     "Login":"Login",
     "Create Account":"Create Account",
@@ -148,15 +147,7 @@
     "Cancel":"Cancel",
     "Mission successfully brought back":"Mission successfully brought back",
     "Get started":"Get started",
-    "Welcome to Planova":"Welcome to Planova",
-    "Here’s a good place for a brief overview":"Here’s a good place for a brief overview",
-    "of the app or it’s key features.":"of the app or it’s key features.",
-    "Discover Features":"Discover Features",
-    "Explore the various features":"Explore the various features",
-    "that make our app unique.":"that make our app unique.",
-    "Get Started Now":"Get Started Now",
-    "Sign up and start using":"Sign up and start using",
-    "the app today.":"the app today.",
+    
     "Only tasks can be marked as favorites.":"Only tasks can be marked as favorites.",
     "Repetitive Task":"Repetitive Task",
     "Delete":"Delete",
@@ -183,6 +174,137 @@
     "Incorrect PIN":"Incorrect PIN",
     "PIN":"PIN",
     "Submit PIN":"Submit PIN",
-    "Use Pattern":"Use Pattern"
+    "Use Pattern":"Use Pattern",
+    "Welcome to Planova":"Welcome to Planova",
+    "Explore how Planova can help you\nmaster your time and achieve your goals." :"Explore how Planova can help you\nmaster your time and achieve your goals.",
+    "Unlock Your Full Potential":"Reach Your Potential",
+    "Discover powerful features that enhance \nproductivity and keep you on track.":"Discover powerful features that enhance \nproductivity and keep you on track.",
+    "Begin Your Journey":"Begin Your Journey",
+    "Sign up now to start transforming\nyour productivity with Planova.":"Sign up now to start transforming\nyour productivity with Planova.",
+    "If you are creating a new account,\nTerms & Conditions and Privacy Policy will apply.":"If you are creating a new account,\nTerms & Conditions and Privacy Policy will apply.",
+    "Email is required to save your progress on your account.":"Email is required to save your progress on your account.",
+    "Forgot password":"Forgot password",
+
+    "Forgot Password":"Forgot Password",
+    "Please enter your email address to reset your password":"Please enter your email address to reset your password",
+    "Email address":"Email address",
+    "Sending...":"Sending...",
+    "Send Password Reset Email":"Send Password Reset Email",
+    "Please enter your email address":"Please enter your email address",
+    "Sign In":"Sign In",
+    "Create a new password":"Create a new password",
+    "New password":"New password",
+
+    "User Stories":"User Stories",
+    "Active day":"Active day",
+
+    "Journal Header":"Header",
+    "Journal Body":"Body",
+
+    "Today's Story":"Today's Story",
+    "Create your story for today":"Create your story for today",
+
+    "Confirm Task":"Confirm Task",
+    "All Tasks":"All Tasks",
+
+    "Do not repeat":"Do not repeat",
+    "Repeat every week":"Repeat for 1 week",
+    "Repeat every 2 weeks":"Repeat 2 weeks",
+    "Repeat every 3 weeks":"Repeat 3 weeks",
+    "Repeat every month":"Repeat for 1 month",
+
+    "Target Days":"Target Days",
+
+    "Private":"Private",
+    "private":"Hidden",
+    "Public":"Open",
+
+    "Filter":"Filtrele",
+    "Favorite Tasks":"Favorilenmiş Görevler",
+
+    "Create Story":"Create Your Story",
+
+    "Save Journal Entry":"Save Journal Entry",
+
+    "January":"January",
+    "February":"February",
+    "March":"March",
+    "April":"April",
+    "May":"May",
+    "June":"June",
+    "July":"July",
+    "August":"August",
+    "September":"September",
+    "October":"October",
+    "November":"November",
+    "December":"December",
+
+    "Enter Pattern":"Enter Pattern",
+    "Draw your pattern to unlock":"Draw your pattern to unlock",
+    "Verify Pattern":"Verify Pattern",
+
+
+    "Incorrect Pattern":"Incorrect Pattern",
+    "Incorrect Pattern, please try again":"Incorrect Pattern, please try again",
+
+    "Private Journal":"Private Journal",
+
+    "PIN fields cannot be empty":"PIN fields cannot be empty",
+    "PINs do not match":"PINs do not match",
+
+    "Set Up Pattern":"Set Up Pattern",
+    "Draw your pattern":"Draw your pattern to unlock",
+
+    "Patterns do not match, try again": "Patterns do not match, try again",
+    "Draw the pattern again to confirm": "Draw the pattern again to confirm",
+
+    "Patterns do not match, please try again": "Patterns do not match, please try again",
+
+    "Set Up PIN":"Set Up PIN",
+    "Confirm PIN":"Confirm PIN",
+
+    "PIN cannot be empty":"PIN cannot be empty",
+
+    "Update Task":"Update Task",
+    "en":"en",
+    "You need to create a profile to continue this action.":"You need to create a profile to continue this action.",
+    "Confirm":"Confirm",
+
+    "Select Language":"Select Language",
+
+    "You need to create a profile to continue this action.\n\n(You can make the story part more detailed by adding text to the bio section.)":"You need to create a profile to continue this action.\n\n(You can make the story part more detailed by adding text to the bio section.)",
+    "Confirm Deletion":"Confirm Deletion",
+    "Are you sure you want to delete this entry?":"Are you sure you want to delete this entry?",
+    "feedback_and_support": "Feedback and Support",
+  "social_media_links": "Social Media Links:",
+  "social_media_content": "Stay Connected: Follow us on our social media profiles to stay updated with the latest news, updates, and feature releases. Join our community to participate in discussions, share your experiences, and connect with other users.\nSocial Media Channels: Instagram, LinkedIn",
+  "faq": "FAQ:",
+  "faq_content": "Frequently Asked Questions: Browse through our comprehensive FAQ section to find answers to common questions about using the app. We cover topics such as account management, task management, habit tracking, and journal features. This is your go-to resource for quick help and guidance.",
+  "contact_support": "Contact Support:",
+  "contact_support_content": "Need Assistance? If you can't find what you're looking for in the FAQ section, our support team is here to help. Reach out to us directly via email at support@planovaapp.com. Please provide your name, email address, issue category, and a detailed description of your problem so we can assist you more effectively.",
+  "visit_our_website": "Visit Our Website:",
+  "visit_our_website_content": "More Information: For more detailed information about Planova, our features, and updates, visit our website at www.planovaapp.com. Here you can find additional resources, blog posts, and the latest news about Planova.",
+  
+    "about": "About",
+    "about_planova": "About Planova",
+    "about_description": "In today's fast-paced world, using time efficiently and managing personal time correctly is one of the most important keys to achieving both professional and personal success. Planova is a comprehensive mobile application designed to facilitate users' personal time management.",
+    "planova_features": "Planova offers a variety of features to make time management easier for users:",
+    "goal_setting": "Goal Setting and Tracking: Users can set long-term goals and track their progress individually or with friends throughout the year.",
+    "diary_notes": "Diary and Notes: Keep a detailed diary with the option to add images and audio recordings. Users can also utilize a locked mode for private notes.",
+    "todo_list": "To-Do List: Prioritize tasks by creating a to-do list and mark completed tasks for better task management.",
+    "detailed_analysis": "Detailed Analysis: The application provides detailed analysis and insights into users' progress.",
+    "ai_stories": "AI-Powered Stories: User-specific story creation features, supported by artificial intelligence, help users stay motivated by presenting their progress in an engaging way.",
+    "design_interface": "With its minimalist design and user-friendly interface, Planova ensures users can easily adapt to and benefit from the application.",
+    "team_members": "Team Members:",
+    "melisa_role": "Melisa Nur Alparslan - Scrum Master",
+    "olgun_role": "Olgun Baran Atik - Product Owner",
+    "meltem_role": "Meltem Sena Koçak - Developer",
+    "oguzhan_role": "Oğuzhan Gündüz - Developer",
+    "onur_role": "Onur Turan - Developer",
+    "contact_us": "Contact Us:",
+    "contact_info": "For any inquiries or support, please reach out to us at support@planovaapp.com.",
+    "managing_time": "Managing time correctly is the foundation of achieving success in all areas of life, and the Planova application will be your greatest assistant on this path."
+  
+  
 
 }

@@ -8,6 +8,7 @@ import 'package:planova/pages/photo_view_page.dart';
 import 'package:provider/provider.dart';
 import 'package:planova/utilities/theme.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class JournalPage extends StatefulWidget {
   const JournalPage({super.key});
@@ -27,14 +28,17 @@ class _JournalPageState extends State<JournalPage> {
       return Card(
         color: theme.background,
         child: Center(
-          child: Text('Please sign in', style: TextStyle(color: theme.toDoTitle)),
+          child: Text(
+            'Please sign in',
+            style: GoogleFonts.didactGothic(color: theme.toDoTitle),
+          ),
         ),
       );
     }
 
-    return Card(
-      color: theme.background,
-      child: Column(
+    return Scaffold(
+      backgroundColor: theme.background,
+      body: Column(
         children: [
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
@@ -52,12 +56,18 @@ class _JournalPageState extends State<JournalPage> {
                 }
                 if (snapshot.hasError) {
                   return Center(
-                    child: Text(tr('Error') + ': ${snapshot.error}', style: TextStyle(color: theme.toDoTitle)),
+                    child: Text(
+                      tr('Error') + ': ${snapshot.error}',
+                      style: GoogleFonts.didactGothic(color: theme.toDoTitle),
+                    ),
                   );
                 }
                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                   return Center(
-                    child: Text(tr('No entries found'), style: TextStyle(color: theme.toDoTitle)),
+                    child: Text(
+                      tr('No entries found'),
+                      style: GoogleFonts.didactGothic(color: theme.toDoTitle),
+                    ),
                   );
                 }
 
@@ -75,7 +85,7 @@ class _JournalPageState extends State<JournalPage> {
                     return Dismissible(
                       key: Key(doc.id),
                       background: Container(
-                        color: Colors.red,
+                        color: const Color.fromARGB(200, 250, 70, 60),
                         child: Align(
                           alignment: Alignment.centerRight,
                           child: Padding(
@@ -117,7 +127,7 @@ class _JournalPageState extends State<JournalPage> {
                                   children: [
                                     Text(
                                       formattedDate,
-                                      style: TextStyle(
+                                      style: GoogleFonts.didactGothic(
                                         color: theme.habitProgress,
                                         fontSize: 24,
                                         fontWeight: FontWeight.w500,
@@ -142,7 +152,7 @@ class _JournalPageState extends State<JournalPage> {
                                 const SizedBox(height: 10),
                                 Text(
                                   data['name'],
-                                  style: TextStyle(
+                                  style: GoogleFonts.didactGothic(
                                     color: theme.toDoTitle,
                                     fontSize: 22,
                                     fontWeight: FontWeight.w700,
@@ -151,7 +161,7 @@ class _JournalPageState extends State<JournalPage> {
                                 const SizedBox(height: 10),
                                 Text(
                                   description.length > 100 ? '${description.substring(0, 100)}...' : description,
-                                  style: TextStyle(
+                                  style: GoogleFonts.didactGothic(
                                     color: theme.toDoIcons,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w300,
@@ -200,30 +210,45 @@ class _JournalPageState extends State<JournalPage> {
   }
 
   Future<bool> _showConfirmationDialog(BuildContext context) async {
-    return await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Confirm Deletion').tr(),
-          content: const Text('Are you sure you want to delete this entry?').tr(),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Cancel').tr(),
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
+  return await showDialog<bool>(
+    context: context,
+    builder: (BuildContext context) {
+      final theme = Provider.of<ThemeProvider>(context).currentTheme;
+      return AlertDialog(
+        backgroundColor: theme.background,
+        title: Text(
+          tr('Confirm Deletion'),
+          style: GoogleFonts.didactGothic(color: theme.welcomeText),
+        ),
+        content: Text(
+          tr('Are you sure you want to delete this entry?'),
+          style: GoogleFonts.didactGothic(color: theme.welcomeText),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text(
+              tr('Cancel'),
+              style: GoogleFonts.didactGothic(color: theme.addButton),
             ),
-            TextButton(
-              child: const Text('Delete').tr(),
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+          ),
+          TextButton(
+            child: Text(
+              tr('Delete'),
+              style: GoogleFonts.didactGothic(color: theme.addButton),
             ),
-          ],
-        );
-      },
-    ) ?? false;
-  }
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
+          ),
+        ],
+      );
+    },
+  ) ?? false;
+}
+
 
   void _moveJournalEntryToTrash(DocumentSnapshot entry) async {
     final data = entry.data() as Map<String, dynamic>;

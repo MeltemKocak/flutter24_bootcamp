@@ -5,6 +5,7 @@ import 'package:planova/pages/photo_view_page.dart';
 import 'package:planova/utilities/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class JournalDetailPage extends StatefulWidget {
   final String docId;
@@ -176,7 +177,7 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
   Widget _buildSectionTitle(String title, CustomThemeData theme) {
     return Text(
       title,
-      style: TextStyle(color: theme.welcomeText, fontSize: 18, fontWeight: FontWeight.bold),
+      style: GoogleFonts.didactGothic(color: theme.welcomeText, fontSize: 18, fontWeight: FontWeight.bold),
     );
   }
 
@@ -189,7 +190,7 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
       ),
       child: Text(
         _data['name'],
-        style: TextStyle(
+        style: GoogleFonts.didactGothic(
           color: theme.welcomeText,
           fontSize: 22,
           fontWeight: FontWeight.w700,
@@ -207,7 +208,7 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
       ),
       child: Text(
         descriptionController.text,
-        style: TextStyle(
+        style: GoogleFonts.didactGothic(
           color: theme.welcomeText,
           fontSize: 16,
         ),
@@ -283,7 +284,7 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
                       _audioDurations.containsKey(audioUrl)
                           ? _formatDuration(_audioDurations[audioUrl]!)
                           : tr("Loading..."),
-                      style: TextStyle(color: theme.welcomeText, fontSize: 12),
+                      style: GoogleFonts.didactGothic(color: theme.welcomeText, fontSize: 12),
                     ),
                   ),
               ],
@@ -295,7 +296,7 @@ class _JournalDetailPageState extends State<JournalDetailPage> {
           _audioDurations.containsKey(audioUrl)
               ? _formatDuration(_audioDurations[audioUrl]!)
               : tr("Loading..."),
-          style: TextStyle(color: theme.welcomeText, fontSize: 12),
+          style: GoogleFonts.didactGothic(color: theme.welcomeText, fontSize: 12),
         ),
       ],
     );

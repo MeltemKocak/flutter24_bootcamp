@@ -5,6 +5,7 @@ import 'package:planova/utilities/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:planova/utilities/auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -122,7 +123,12 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             Icon(Icons.error, color: theme.welcomeText),
             SizedBox(width: 10),
-            Expanded(child: Text(message)),
+            Expanded(
+              child: Text(
+                message,
+                style: GoogleFonts.didactGothic(color: theme.welcomeText),
+              ),
+            ),
           ],
         ),
         backgroundColor: theme.checkBoxActiveColor,
@@ -206,15 +212,14 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(
               height: 40,
               width: 40,
-              child: Icon(Icons.email_outlined, size: 40),
+              child: Icon(Icons.email_outlined, size: 40, color: theme.welcomeText,),
             ),
             const SizedBox(height: 10),
             Text(
               tr("Continue with Email"),
-              style: TextStyle(
+              style: GoogleFonts.didactGothic(
                 color: theme.welcomeText,
                 fontSize: 20,
-                fontFamily: 'Lato',
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -223,28 +228,25 @@ class _LoginScreenState extends State<LoginScreen> {
               tr("Email is required to save your progress on your account."),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
+              style: GoogleFonts.didactGothic(
                 color: theme.subText,
                 fontSize: 15,
-                fontFamily: 'Lato',
                 fontWeight: FontWeight.w400,
               ),
             ),
             const SizedBox(height: 20),
             TextFormField(
               controller: emailController,
-              style: TextStyle(
-                color: theme.subText,
+              style: GoogleFonts.didactGothic(
+                color: theme.welcomeText,
                 fontSize: 18,
-                fontFamily: 'Lato',
                 fontWeight: FontWeight.w400,
               ),
               decoration: InputDecoration(
                 hintText: tr("Email address"),
-                hintStyle: TextStyle(
+                hintStyle: GoogleFonts.didactGothic(
                   color: theme.subText,
                   fontSize: 16,
-                  fontFamily: 'Lato',
                   fontWeight: FontWeight.w400,
                 ),
                 enabledBorder: OutlineInputBorder(
@@ -284,10 +286,9 @@ class _LoginScreenState extends State<LoginScreen> {
           const SizedBox(height: 20),
           Text(
             isExistingUser ? tr("Enter your password") : tr("Create a new password"),
-            style: TextStyle(
+            style: GoogleFonts.didactGothic(
               color: theme.welcomeText,
               fontSize: 18,
-              fontFamily: 'Lato',
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -295,10 +296,10 @@ class _LoginScreenState extends State<LoginScreen> {
           TextFormField(
             controller: passwordController,
             obscureText: true,
-            style: TextStyle(color: theme.subText),
+            style: GoogleFonts.didactGothic(color: theme.welcomeText),
             decoration: InputDecoration(
               hintText: isExistingUser ? tr("Password") : tr("New password"),
-              hintStyle: TextStyle(color: theme.subText),
+              hintStyle: GoogleFonts.didactGothic(color: theme.subText),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide(
@@ -338,10 +339,9 @@ class _LoginScreenState extends State<LoginScreen> {
           },
           child: Text(
             tr("Forgot password"),
-            style: TextStyle(
+            style: GoogleFonts.didactGothic(
               color: theme.welcomeDotActive,
               fontSize: 15,
-              fontFamily: 'Lato',
               fontWeight: FontWeight.w400,
             ),
           ),
@@ -388,10 +388,9 @@ class _LoginScreenState extends State<LoginScreen> {
               : showPasswordField
                   ? (isExistingUser ? tr("Sign In") : tr("Create Account"))
                   : tr("Continue"),
-          style: TextStyle(
+          style: GoogleFonts.didactGothic(
             color: theme.welcomeText,
             fontSize: 16,
-            fontFamily: 'Lato',
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -453,8 +452,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           ),
           title: Text(
             tr("Forgot Password"),
-            style: TextStyle(
-              fontFamily: 'Lato',
+            style: GoogleFonts.didactGothic(
               color: theme.welcomeDotActive,
               fontSize: 20,
             ),
@@ -470,28 +468,25 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               const SizedBox(height: 20),
               Text(
                 tr("Please enter your email address to reset your password"),
-                style: TextStyle(
+                style: GoogleFonts.didactGothic(
                   color: theme.welcomeText,
                   fontSize: 16,
-                  fontFamily: 'Lato',
                   fontWeight: FontWeight.w400,
                 ),
               ),
               const SizedBox(height: 20),
               TextFormField(
                 controller: emailController,
-                style: TextStyle(
+                style: GoogleFonts.didactGothic(
                   color: theme.subText,
                   fontSize: 18,
-                  fontFamily: 'Lato',
                   fontWeight: FontWeight.w400,
                 ),
                 decoration: InputDecoration(
                   hintText: tr("Email address"),
-                  hintStyle: TextStyle(
+                  hintStyle: GoogleFonts.didactGothic(
                     color: theme.subText,
                     fontSize: 16,
-                    fontFamily: 'Lato',
                     fontWeight: FontWeight.w400,
                   ),
                   enabledBorder: OutlineInputBorder(
@@ -537,10 +532,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     isLoading
                         ? tr("Sending...")
                         : tr("Send Password Reset Email"),
-                    style: TextStyle(
+                    style: GoogleFonts.didactGothic(
                       color: theme.welcomeText,
                       fontSize: 16,
-                      fontFamily: 'Lato',
                       fontWeight: FontWeight.w600,
                     ),
                   ),

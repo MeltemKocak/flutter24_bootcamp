@@ -70,7 +70,16 @@ class ThemeColors {
             habitDetailEditBackground: const Color.fromARGB(255, 60, 60, 60),
             weeklyStatsBackgroundColor: const Color.fromARGB(255, 65, 75, 85),
             background: const Color.fromARGB(255, 30, 30, 30),
-            surface: const Color.fromARGB(255, 30, 30, 30));
+            surface: const Color.fromARGB(255, 30, 30, 30),
+            monthlyInvalidDayGrid: const Color.fromARGB(255, 150, 150, 150),
+            monthlyDefaultDayGrid: const Color.fromARGB(255, 100, 100, 100),
+            monthlyActiveDayGrid: const Color.fromARGB(125, 48, 143, 163),
+            monthlyCompleteDayGrid: const Color.fromARGB(255, 48, 143, 163),
+            monthlyActiveFriendDayGrid: const Color.fromARGB(125, 48, 143, 163),
+            monthlyFriendCompleteDayGrid:
+                const Color.fromARGB(255, 150, 150, 150),
+            monthlyFriendUncompleteDayGrid:
+                const Color.fromARGB(255, 200, 200, 200));
       case 3:
         return CustomThemeData(
             welcomeText: const Color.fromARGB(255, 0, 0, 0),
@@ -107,7 +116,16 @@ class ThemeColors {
             weeklyStatsBackgroundColor:
                 const Color.fromARGB(255, 222, 223, 223),
             background: const Color.fromARGB(255, 254, 251, 243),
-            surface: const Color.fromARGB(255, 254, 251, 243));
+            surface: const Color.fromARGB(255, 254, 251, 243),
+            monthlyInvalidDayGrid: const Color.fromARGB(255, 150, 150, 150),
+            monthlyDefaultDayGrid: const Color.fromARGB(255, 100, 100, 100),
+            monthlyActiveDayGrid: const Color.fromARGB(125, 48, 143, 163),
+            monthlyCompleteDayGrid: const Color.fromARGB(255, 48, 143, 163),
+            monthlyActiveFriendDayGrid: const Color.fromARGB(125, 48, 143, 163),
+            monthlyFriendCompleteDayGrid:
+                const Color.fromARGB(255, 150, 150, 150),
+            monthlyFriendUncompleteDayGrid:
+                const Color.fromARGB(255, 200, 200, 200));
       case 4:
         return CustomThemeData(
             welcomeText: const Color.fromARGB(255, 255, 255, 255),
@@ -143,7 +161,16 @@ class ThemeColors {
             habitDetailEditBackground: const Color.fromARGB(255, 60, 70, 80),
             weeklyStatsBackgroundColor: const Color.fromARGB(255, 60, 70, 80),
             background: const Color.fromARGB(255, 30, 30, 30),
-            surface: const Color.fromARGB(255, 30, 30, 30));
+            surface: const Color.fromARGB(255, 30, 30, 30),
+            monthlyInvalidDayGrid: const Color.fromARGB(255, 150, 150, 150),
+            monthlyDefaultDayGrid: const Color.fromARGB(255, 100, 100, 100),
+            monthlyActiveDayGrid: const Color.fromARGB(125, 48, 143, 163),
+            monthlyCompleteDayGrid: const Color.fromARGB(255, 48, 143, 163),
+            monthlyActiveFriendDayGrid: const Color.fromARGB(125, 48, 143, 163),
+            monthlyFriendCompleteDayGrid:
+                const Color.fromARGB(255, 150, 150, 150),
+            monthlyFriendUncompleteDayGrid:
+                const Color.fromARGB(255, 200, 200, 200));
       case 5:
         return CustomThemeData(
             welcomeText: const Color.fromARGB(255, 255, 255, 255),
@@ -179,7 +206,16 @@ class ThemeColors {
             habitDetailEditBackground: const Color.fromARGB(255, 96, 125, 139),
             weeklyStatsBackgroundColor: const Color.fromARGB(255, 96, 125, 139),
             background: const Color.fromARGB(255, 28, 58, 69),
-            surface: const Color.fromARGB(255, 28, 58, 69));
+            surface: const Color.fromARGB(255, 28, 58, 69),
+            monthlyInvalidDayGrid: const Color.fromARGB(255, 150, 150, 150),
+            monthlyDefaultDayGrid: const Color.fromARGB(255, 100, 100, 100),
+            monthlyActiveDayGrid: const Color.fromARGB(125, 48, 143, 163),
+            monthlyCompleteDayGrid: const Color.fromARGB(255, 48, 143, 163),
+            monthlyActiveFriendDayGrid: const Color.fromARGB(125, 48, 143, 163),
+            monthlyFriendCompleteDayGrid:
+                const Color.fromARGB(255, 150, 150, 150),
+            monthlyFriendUncompleteDayGrid:
+                const Color.fromARGB(255, 200, 200, 200));
       case 1:
       default:
         return CustomThemeData(
@@ -198,7 +234,7 @@ class ThemeColors {
             toDoCardBackground: const Color.fromARGB(255, 230, 234, 239),
             toDoTitle: const Color.fromARGB(255, 0, 0, 0),
             toDoIcons: const Color.fromARGB(255, 100, 100, 100),
-            habitCardBackground: const Color.fromARGB(255, 225, 229, 234),
+            habitCardBackground: Color.fromARGB(255, 204, 227, 231),
             habitTitle: const Color.fromARGB(255, 0, 0, 0),
             habitIcons: const Color.fromARGB(255, 100, 100, 100),
             checkBoxBorderColor: Color.fromARGB(255, 100, 100, 100),
@@ -217,7 +253,16 @@ class ThemeColors {
             weeklyStatsBackgroundColor:
                 const Color.fromARGB(255, 225, 229, 234),
             background: const Color.fromARGB(255, 243, 248, 248),
-            surface: const Color.fromARGB(255, 243, 248, 248));
+            surface: const Color.fromARGB(255, 243, 248, 248),
+            monthlyInvalidDayGrid: const Color.fromARGB(255, 200, 200, 200),
+            monthlyDefaultDayGrid: const Color.fromARGB(255, 125, 125, 125),
+            monthlyActiveDayGrid: const Color.fromARGB(125, 48, 143, 163),
+            monthlyCompleteDayGrid: const Color.fromARGB(255, 48, 143, 163),
+            monthlyActiveFriendDayGrid: const Color.fromARGB(125, 48, 143, 163),
+            monthlyFriendCompleteDayGrid:
+                const Color.fromARGB(255, 100, 100, 100),
+            monthlyFriendUncompleteDayGrid:
+                const Color.fromARGB(255, 200, 200, 200));
     }
   }
 }
@@ -261,6 +306,15 @@ class CustomThemeData {
   final Color background;
   final Color surface;
 
+  final Color monthlyInvalidDayGrid; //geçersiz gün
+  final Color monthlyDefaultDayGrid; //ayın günleri
+  final Color monthlyActiveDayGrid; //görevin geçerli günleri
+  final Color monthlyCompleteDayGrid; //ayın tamamlanan günleri
+  final Color monthlyActiveFriendDayGrid; //ayın arkadaş ile görev olan günleri
+  final Color monthlyFriendCompleteDayGrid; //arkdaşın tamamladığı görev rengi
+  final Color
+      monthlyFriendUncompleteDayGrid; //arkadaşın tamamlamadığı görev rengi
+
   CustomThemeData({
     required this.welcomeText,
     required this.welcomeDot,
@@ -296,5 +350,12 @@ class CustomThemeData {
     required this.weeklyStatsBackgroundColor,
     required this.background,
     required this.surface,
+    required this.monthlyInvalidDayGrid,
+    required this.monthlyDefaultDayGrid,
+    required this.monthlyActiveDayGrid,
+    required this.monthlyCompleteDayGrid,
+    required this.monthlyActiveFriendDayGrid,
+    required this.monthlyFriendCompleteDayGrid,
+    required this.monthlyFriendUncompleteDayGrid,
   });
 }

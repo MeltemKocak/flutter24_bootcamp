@@ -1,7 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:planova/localization_checker.dart';
 import 'package:planova/pages/bottom_sheet_calendar.dart';
 import 'package:planova/pages/habit_add.dart';
@@ -19,6 +19,7 @@ import 'package:planova/pages/pin_entry_page.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:provider/provider.dart';
 import 'package:planova/utilities/theme.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'settings_page.dart';
 
 class LanguageChangeNotifier extends ChangeNotifier {
@@ -43,7 +44,7 @@ class Homes extends StatelessWidget {
           navigationBarTheme: NavigationBarThemeData(
             indicatorColor: theme.addButton,
             labelTextStyle: MaterialStateProperty.all(
-              TextStyle(color: theme.welcomeText),
+              GoogleFonts.didactGothic(color: theme.welcomeText),
             ),
           ),
         ),
@@ -89,12 +90,8 @@ class _NavigationExampleState extends State<NavigationExample> {
 
   static int currentPageIndex = 0;
 
-  List<String> get appBarTitles => [
-    tr("Today"),
-    tr("Habits"),
-    tr("Journal"),
-    tr("Profile")
-  ];
+  List<String> get appBarTitles =>
+      [tr("Today"), tr("Habits"), tr("Journal"), tr("Profile")];
 
   final EasyInfiniteDateTimelineController _controller =
       EasyInfiniteDateTimelineController();
@@ -125,7 +122,7 @@ class _NavigationExampleState extends State<NavigationExample> {
           backgroundColor: theme.background,
           title: Text(
             tr('Filter'),
-            style: TextStyle(color: theme.welcomeText),
+            style: GoogleFonts.didactGothic(color: theme.welcomeText),
           ),
           content: SingleChildScrollView(
             child: ListBody(
@@ -133,8 +130,8 @@ class _NavigationExampleState extends State<NavigationExample> {
                 RadioListTile<String>(
                   activeColor: theme.welcomeDotActive,
                   title: Text(
-                    tr('All Tasks'),
-                    style: TextStyle(color: theme.welcomeText),
+                    'All Tasks',
+                    style: GoogleFonts.didactGothic(color: theme.welcomeText),
                   ),
                   value: tr('All Tasks'),
                   groupValue: filter,
@@ -148,8 +145,8 @@ class _NavigationExampleState extends State<NavigationExample> {
                 RadioListTile<String>(
                   activeColor: theme.welcomeDotActive,
                   title: Text(
-                    tr('Favorite Tasks'),
-                    style: TextStyle(color: theme.welcomeText),
+                    'Favorite Tasks',
+                    style: GoogleFonts.didactGothic(color: theme.welcomeText),
                   ),
                   value: tr('Favorite Tasks'),
                   groupValue: filter,
@@ -163,8 +160,8 @@ class _NavigationExampleState extends State<NavigationExample> {
                 RadioListTile<String>(
                   activeColor: theme.welcomeDotActive,
                   title: Text(
-                    tr('Habits'),
-                    style: TextStyle(color: theme.welcomeText),
+                    'Habits',
+                    style: GoogleFonts.didactGothic(color: theme.welcomeText),
                   ),
                   value: tr('Habits'),
                   groupValue: filter,
@@ -183,72 +180,99 @@ class _NavigationExampleState extends State<NavigationExample> {
     );
   }
 
-  void _showAnonymousAlertDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Warning').tr(),
-          content: const Text(
-              'You cannot use the Habit section while logged in as a guest. Please create an account.').tr(),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  currentPageIndex = 0;
-                });
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel').tr(),
+ void _showAnonymousAlertDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      final theme = Provider.of<ThemeProvider>(context).currentTheme;
+      return AlertDialog(
+        backgroundColor: theme.background,
+        title: Text(
+          tr('Warning'),
+          style: GoogleFonts.didactGothic(color: theme.welcomeText),
+        ),
+        content: Text(
+          tr('You cannot use the Habit section while logged in as a guest. Please create an account.'),
+          style: GoogleFonts.didactGothic(color: theme.welcomeText),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              setState(() {
+                currentPageIndex = 0;
+              });
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              tr('Cancel'),
+              style: GoogleFonts.didactGothic(color: theme.addButton),
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                      builder: (context) => const WelcomeScreen()),
-                  (Route<dynamic> route) => false,
-                );
-              },
-              child: const Text('Confirm').tr(),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+                (Route<dynamic> route) => false,
+              );
+            },
+            child: Text(
+              tr('Confirm'),
+              style: GoogleFonts.didactGothic(color: theme.addButton),
             ),
-          ],
-        );
-      },
-    );
-  }
+          ),
+        ],
+      );
+    },
+  );
+}
+
 
   void _showProfileAlertDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Warning').tr(),
-          content: const Text(
-              'You need to create a profile to continue this action.\n\n(You can make the story part more detailed by adding text to the bio section.)').tr(),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  currentPageIndex = 0;
-                });
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel').tr(),
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      final theme = Provider.of<ThemeProvider>(context).currentTheme;
+      return AlertDialog(
+        backgroundColor: theme.background,
+        title: Text(
+          tr('Warning'),
+          style: GoogleFonts.didactGothic(color: theme.welcomeText),
+        ),
+        content: Text(
+          tr('You need to create a profile to continue this action.\n\n(You can make the story part more detailed by adding text to the bio section.)'),
+          style: GoogleFonts.didactGothic(color: theme.welcomeText),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              setState(() {
+                currentPageIndex = 0;
+              });
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              tr('Cancel'),
+              style: GoogleFonts.didactGothic(color: theme.addButton),
             ),
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  currentPageIndex = 3;
-                });
-                Navigator.of(context).pop();
-              },
-              child: const Text('Confirm').tr(),
+          ),
+          TextButton(
+            onPressed: () {
+              setState(() {
+                currentPageIndex = 3;
+              });
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              tr('Confirm'),
+              style: GoogleFonts.didactGothic(color: theme.addButton),
             ),
-          ],
-        );
-      },
-    );
-  }
+          ),
+        ],
+      );
+    },
+  );
+}
+
 
   Future<bool> _isUserInCollection(String userId) async {
     DocumentSnapshot userDoc =
@@ -283,7 +307,7 @@ class _NavigationExampleState extends State<NavigationExample> {
           children: [
             SizedBox(width: MediaQuery.of(context).size.width * 0.08),
             Text(appBarTitles[currentPageIndex],
-                style: TextStyle(color: theme.appBar)),
+                style: GoogleFonts.didactGothic(color: theme.appBar)),
           ],
         ),
         actions: [
@@ -321,7 +345,12 @@ class _NavigationExampleState extends State<NavigationExample> {
           if (currentPageIndex == 3)
             IconButton(
               icon: Icon(Icons.settings_outlined, color: theme.appBar),
-              onPressed: null,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsPage()),
+                );
+              },
             ),
           if (currentPageIndex == 0)
             IconButton(
@@ -382,19 +411,17 @@ class _NavigationExampleState extends State<NavigationExample> {
                         if (snapshot.hasData) {
                           return Text(
                             snapshot.data!,
-                            style: TextStyle(
+                            style: GoogleFonts.didactGothic(
                               color: theme.welcomeText,
                               fontSize: 18,
-                              overflow: TextOverflow.ellipsis,
                             ),
                           );
                         } else {
                           return Text(
                             (user?.email) ?? tr('Anonymous User'),
-                            style: TextStyle(
+                            style: GoogleFonts.didactGothic(
                               color: theme.welcomeText,
                               fontSize: 18,
-                              overflow: TextOverflow.ellipsis,
                             ),
                           ).tr();
                         }
@@ -406,42 +433,48 @@ class _NavigationExampleState extends State<NavigationExample> {
             ),
             ListTile(
               leading: Icon(Icons.list, color: theme.bottomBarIcon),
-              title: Text(tr('Today'), style: TextStyle(color: theme.bottomBarText)),
+              title: Text(tr('Today'),
+                  style: GoogleFonts.didactGothic(color: theme.bottomBarText)),
               onTap: () {
                 setState(() {
                   currentPageIndex = 0;
                 });
-                languageNotifier.notify(); // Dil değişikliğini dinleyiciye bildirin
+                languageNotifier
+                    .notify(); // Dil değişikliğini dinleyiciye bildirin
                 Navigator.of(context).pop();
               },
             ),
             ListTile(
               leading: Icon(Icons.check_circle, color: theme.bottomBarIcon),
-              title: Text(tr('Habits'), style: TextStyle(color: theme.bottomBarText)),
+              title: Text(tr('Habits'),
+                  style: GoogleFonts.didactGothic(color: theme.bottomBarText)),
               onTap: () {
                 setState(() {
                   currentPageIndex = 1;
                 });
-                languageNotifier.notify(); // Dil değişikliğini dinleyiciye bildirin
+                languageNotifier
+                    .notify(); // Dil değişikliğini dinleyiciye bildirin
                 Navigator.of(context).pop();
               },
             ),
             ListTile(
-              leading: Icon(Icons.library_books_outlined, color: theme.bottomBarIcon),
+              leading: Icon(Icons.library_books_outlined,
+                  color: theme.bottomBarIcon),
               title: Text(tr('Journal'),
-                  style: TextStyle(color: theme.bottomBarText)),
+                  style: GoogleFonts.didactGothic(color: theme.bottomBarText)),
               onTap: () {
                 setState(() {
                   currentPageIndex = 2;
                 });
-                languageNotifier.notify(); // Dil değişikliğini dinleyiciye bildirin
+                languageNotifier
+                    .notify(); // Dil değişikliğini dinleyiciye bildirin
                 Navigator.of(context).pop();
               },
             ),
             ListTile(
               leading: Icon(Icons.book, color: theme.bottomBarIcon),
               title: Text(tr('User Stories'),
-                  style: TextStyle(color: theme.bottomBarText)),
+                  style: GoogleFonts.didactGothic(color: theme.bottomBarText)),
               onTap: () async {
                 if (user != null && user.isAnonymous) {
                   _showAnonymousAlertDialog(context);
@@ -460,7 +493,8 @@ class _NavigationExampleState extends State<NavigationExample> {
             ),
             ListTile(
               leading: Icon(Icons.delete, color: theme.bottomBarIcon),
-              title: Text(tr('Deleted'), style: TextStyle(color: theme.bottomBarText)),
+              title: Text(tr('Deleted'),
+                  style: GoogleFonts.didactGothic(color: theme.bottomBarText)),
               onTap: () {
                 Navigator.push(
                   context,
@@ -472,7 +506,7 @@ class _NavigationExampleState extends State<NavigationExample> {
             ListTile(
               leading: Icon(Icons.settings, color: theme.bottomBarIcon),
               title: Text(tr('Settings'),
-                  style: TextStyle(color: theme.bottomBarText)),
+                  style: GoogleFonts.didactGothic(color: theme.bottomBarText)),
               onTap: () {
                 Navigator.push(
                   context,
@@ -482,7 +516,8 @@ class _NavigationExampleState extends State<NavigationExample> {
             ),
             ListTile(
               leading: Icon(Icons.logout, color: Colors.red),
-              title: Text(tr('Logout'), style: TextStyle(color: Colors.red)),
+              title: Text(tr('Logout'),
+                  style: GoogleFonts.didactGothic(color: Colors.red)),
               onTap: () async {
                 await Auth().signOut(context: context);
               },

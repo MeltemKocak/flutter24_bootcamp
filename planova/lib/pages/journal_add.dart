@@ -12,6 +12,7 @@ import 'package:audioplayers/audioplayers.dart' as ap;
 import 'package:planova/utilities/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class JournalAddSubPage extends StatefulWidget {
   const JournalAddSubPage({super.key});
@@ -130,7 +131,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
 
     if (nameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(tr('Header cannot be empty'))),
+        SnackBar(content: Text(tr('Header cannot be empty'), style: GoogleFonts.didactGothic())),
       );
       setState(() {
         _isSaving = false;
@@ -304,7 +305,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
       children: [
         Text(
           label,
-          style: TextStyle(
+          style: GoogleFonts.didactGothic(
               color: theme.welcomeText,
               fontSize: 15,
               fontWeight: FontWeight.w300),
@@ -312,11 +313,11 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
         const SizedBox(height: 2),
         TextFormField(
           controller: controller,
-          style: TextStyle(color: theme.welcomeText),
+          style: GoogleFonts.didactGothic(color: theme.welcomeText),
           maxLines: maxLines,
           decoration: InputDecoration(
             hintText: tr("Enter") + " $label",
-            hintStyle: TextStyle(color: theme.welcomeText.withAlpha(150)),
+            hintStyle: GoogleFonts.didactGothic(color: theme.welcomeText.withAlpha(150)),
             filled: true,
             fillColor: theme.toDoCardBackground,
             border: OutlineInputBorder(
@@ -335,7 +336,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
       children: [
         Text(
           tr("Date"),
-          style: TextStyle(
+          style: GoogleFonts.didactGothic(
               color: theme.welcomeText,
               fontSize: 15,
               fontWeight: FontWeight.w300),
@@ -343,6 +344,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
         const SizedBox(height: 2),
         GestureDetector(
           onTap: _showDatePicker,
+          
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             decoration: BoxDecoration(
@@ -354,7 +356,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
               children: [
                 Text(
                   formattedDate,
-                  style: TextStyle(color: theme.welcomeText),
+                  style: GoogleFonts.didactGothic(color: theme.welcomeText),
                 ),
                 Icon(Icons.calendar_today, color: theme.welcomeText),
               ],
@@ -371,7 +373,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
       children: [
         Text(
           tr("Images"),
-          style: TextStyle(
+          style: GoogleFonts.didactGothic(
               color: theme.welcomeText,
               fontSize: 15,
               fontWeight: FontWeight.w300),
@@ -430,7 +432,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
       children: [
         Text(
           tr("Audio"),
-          style: TextStyle(
+          style: GoogleFonts.didactGothic(
               color: theme.welcomeText,
               fontSize: 15,
               fontWeight: FontWeight.w300),
@@ -473,7 +475,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
                     : Center(
                         child: Text(
                           tr("Tap to record"),
-                          style: TextStyle(color: theme.welcomeText),
+                          style: GoogleFonts.didactGothic(color: theme.welcomeText),
                         ),
                       ),
               ),
@@ -490,7 +492,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               tr("Duration") + ": ${_recordedDuration.inMinutes}:${(_recordedDuration.inSeconds % 60).toString().padLeft(2, '0')}",
-              style: TextStyle(color: theme.welcomeText, fontSize: 12),
+              style: GoogleFonts.didactGothic(color: theme.welcomeText, fontSize: 12),
             ),
           ),
       ],
@@ -510,7 +512,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
       children: [
         Text(
           tr("Private"),
-          style: TextStyle(
+          style: GoogleFonts.didactGothic(
               color: theme.welcomeText,
               fontSize: 15,
               fontWeight: FontWeight.w300),
@@ -533,8 +535,8 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
               ),
             ),
             child: Text(
-              _isPrivate ? tr('Private') : tr('Public'),
-              style: TextStyle(color: theme.addButtonIcon),
+              _isPrivate ? tr('private') : tr('Public'),
+              style: GoogleFonts.didactGothic(color: theme.addButtonIcon),
             ),
           ),
         ),
@@ -554,7 +556,7 @@ class _JournalAddSubPageState extends State<JournalAddSubPage> {
         ),
         onPressed: _isSaving ? null : _saveJournalEntry,
         child: Text(tr("Save Journal Entry"),
-            style: TextStyle(color: theme.addButtonIcon)),
+            style: GoogleFonts.didactGothic(color: theme.addButtonIcon)),
       ),
     );
   }

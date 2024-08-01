@@ -117,14 +117,19 @@ flutter:
     - assets/icons/
     - assets/images/default_profile.png
     - assets/translations/
+    - assets/images/flags/uk.png
+    - assets/images/flags/turkey.png
+    - assets/images/flags/germany.png
+    - assets/images/flags/france.png
+    - assets/images/flags/russia.png
+    - assets/images/flags/china.png
+    - assets/images/flags/spain.png
+
 
   fonts:
-    - family: Lato
+    - family:
       fonts:
-        - asset: assets/fonts/LatoBold.ttf
-          weight: 700
-        - asset: assets/fonts/LatoRegular.ttf
-          weight: 400
+
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

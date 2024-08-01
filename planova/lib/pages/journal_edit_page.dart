@@ -13,6 +13,7 @@ import 'package:audioplayers/audioplayers.dart' as ap;
 import 'package:planova/utilities/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class JournalEditPage extends StatefulWidget {
   final String docId;
@@ -187,7 +188,11 @@ class _JournalEditPageState extends State<JournalEditPage> {
 
     if (nameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(tr('Header cannot be empty'))),
+        SnackBar(
+            content: Text(
+          tr('Header cannot be empty'),
+          style: GoogleFonts.didactGothic(),
+        )),
       );
       setState(() {
         _isSaving = false;
@@ -431,7 +436,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
       children: [
         Text(
           label,
-          style: TextStyle(
+          style: GoogleFonts.didactGothic(
               color: theme.welcomeText,
               fontSize: 15,
               fontWeight: FontWeight.w300),
@@ -439,11 +444,12 @@ class _JournalEditPageState extends State<JournalEditPage> {
         const SizedBox(height: 2),
         TextFormField(
           controller: controller,
-          style: TextStyle(color: theme.welcomeText),
+          style: GoogleFonts.didactGothic(color: theme.welcomeText),
           maxLines: maxLines,
           decoration: InputDecoration(
             hintText: tr("Enter") + " $label",
-            hintStyle: TextStyle(color: theme.borderColor.withOpacity(0.6)),
+            hintStyle:
+                GoogleFonts.didactGothic(color: theme.borderColor.withOpacity(0.6)),
             filled: true,
             fillColor: theme.habitCardBackground.withOpacity(0.5),
             border: OutlineInputBorder(
@@ -462,7 +468,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
       children: [
         Text(
           tr("Date"),
-          style: TextStyle(
+          style: GoogleFonts.didactGothic(
               color: theme.welcomeText,
               fontSize: 15,
               fontWeight: FontWeight.w300),
@@ -481,7 +487,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
               children: [
                 Text(
                   formattedDate,
-                  style: TextStyle(color: theme.welcomeText),
+                  style: GoogleFonts.didactGothic(color: theme.welcomeText),
                 ),
                 Icon(Icons.calendar_today, color: theme.welcomeText),
               ],
@@ -498,7 +504,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
       children: [
         Text(
           tr("Images"),
-          style: TextStyle(
+          style: GoogleFonts.didactGothic(
               color: theme.welcomeText,
               fontSize: 15,
               fontWeight: FontWeight.w300),
@@ -594,7 +600,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
       children: [
         Text(
           tr("Audio"),
-          style: TextStyle(
+          style: GoogleFonts.didactGothic(
               color: theme.welcomeText,
               fontSize: 15,
               fontWeight: FontWeight.w300),
@@ -655,7 +661,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
                     : Center(
                         child: Text(
                           tr("Tap to record"),
-                          style: TextStyle(color: theme.welcomeText),
+                          style: GoogleFonts.didactGothic(color: theme.welcomeText),
                         ),
                       ),
               ),
@@ -673,9 +679,10 @@ class _JournalEditPageState extends State<JournalEditPage> {
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               _audioDurations.containsKey(_existingAudioUrl)
-                  ? tr("Duration") + ": ${_formatDuration(_audioDurations[_existingAudioUrl]!)}"
+                  ? tr("Duration") +
+                      ": ${_formatDuration(_audioDurations[_existingAudioUrl]!)}"
                   : tr("Loading duration..."),
-              style: TextStyle(color: theme.welcomeText, fontSize: 12),
+              style: GoogleFonts.didactGothic(color: theme.welcomeText, fontSize: 12),
             ),
           ),
       ],
@@ -688,7 +695,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
       children: [
         Text(
           tr("Private"),
-          style: TextStyle(
+          style: GoogleFonts.didactGothic(
               color: theme.welcomeText,
               fontSize: 15,
               fontWeight: FontWeight.w300),
@@ -712,8 +719,8 @@ class _JournalEditPageState extends State<JournalEditPage> {
               ),
             ),
             child: Text(
-              _isPrivate ? tr('Private') : tr('Public'),
-              style: TextStyle(color: theme.addButtonIcon),
+              _isPrivate ? tr('private') : tr('Public'),
+              style: GoogleFonts.didactGothic(color: theme.addButtonIcon),
             ),
           ),
         ),
@@ -733,7 +740,7 @@ class _JournalEditPageState extends State<JournalEditPage> {
         ),
         onPressed: _isSaving ? null : _saveJournalEntry,
         child: Text(tr("Save Changes"),
-            style: TextStyle(color: theme.addButtonIcon)),
+            style: GoogleFonts.didactGothic(color: theme.addButtonIcon)),
       ),
     );
   }

@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:planova/utilities/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class IncomingRequestsPage extends StatefulWidget {
   @override
@@ -27,7 +28,7 @@ class _IncomingRequestsPageState extends State<IncomingRequestsPage> {
       appBar: AppBar(
         title: Text(
           tr('Incoming Requests'),
-          style: TextStyle(color: theme.welcomeText),
+          style: GoogleFonts.didactGothic(color: theme.welcomeText),
         ),
         backgroundColor: theme.background,
         iconTheme: IconThemeData(color: theme.welcomeText),
@@ -40,7 +41,7 @@ class _IncomingRequestsPageState extends State<IncomingRequestsPage> {
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
-            return Center(child: Text(tr('Something went wrong'), style: TextStyle(color: theme.welcomeText)));
+            return Center(child: Text(tr('Something went wrong'), style: GoogleFonts.didactGothic(color: theme.welcomeText)));
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -48,7 +49,7 @@ class _IncomingRequestsPageState extends State<IncomingRequestsPage> {
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(child: Text(tr('No incoming requests'), style: TextStyle(color: theme.welcomeText)));
+            return Center(child: Text(tr('No incoming requests'), style: GoogleFonts.didactGothic(color: theme.welcomeText)));
           }
 
           return ListView(
@@ -76,7 +77,7 @@ class _IncomingRequestsPageState extends State<IncomingRequestsPage> {
                         children: [
                           Text(
                             data['name'] ?? tr('No name'),
-                            style: TextStyle(
+                            style: GoogleFonts.didactGothic(
                               color: theme.toDoTitle,
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -89,14 +90,14 @@ class _IncomingRequestsPageState extends State<IncomingRequestsPage> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: theme.addButton,
                             ),
-                            child: Text(tr('Accept')),
+                            child: Text(tr('Accept'), style: GoogleFonts.didactGothic()),
                           ),
                         ],
                       ),
                       const SizedBox(height: 5),
                       Text(
                         data['description'] ?? tr('No description'),
-                        style: TextStyle(
+                        style: GoogleFonts.didactGothic(
                           color: theme.subText,
                           fontSize: 14,
                         ),

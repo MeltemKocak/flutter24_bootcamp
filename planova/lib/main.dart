@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:planova/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:planova/pages/home.dart';
 import 'package:planova/pages/login_page.dart';
 import 'package:planova/pages/welcome_screen.dart';
@@ -19,7 +20,15 @@ Future<void> main() async {
   );
   runApp(
     EasyLocalization(
-      supportedLocales: [Locale('en', 'US'), Locale('tr', 'TR')],
+      supportedLocales: [
+        Locale('en', 'US'), 
+        Locale('tr', 'TR'), 
+        Locale('de', 'DE'),
+        Locale('es', 'ES'),
+        Locale('fr', 'FR'),
+        Locale('zh', 'CN'),
+        Locale('ru', 'RU'),
+      ],
       path: 'assets/translations',
       fallbackLocale: Locale('en', 'US'),
       child: ChangeNotifierProvider(
@@ -40,10 +49,15 @@ class MyApp extends StatelessWidget {
       supportedLocales: context.supportedLocales,
       locale: context.locale,
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        textTheme: GoogleFonts.didactGothicTextTheme(
+          Theme.of(context).textTheme,
+        ),
+      ),
       home: const AuthCheck(),
       routes: {
         '/home': (context) => const Homes(),
-        '/login': (context) =>  LoginScreen(),
+        '/login': (context) => LoginScreen(),
       },
     );
   }

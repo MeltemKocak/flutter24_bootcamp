@@ -161,6 +161,9 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
         final theme = Provider.of<ThemeProvider>(context).currentTheme;
         return Theme(
           data: ThemeData.light().copyWith(
+            textTheme: GoogleFonts.didactGothicTextTheme(
+              Theme.of(context).textTheme,
+            ),
             colorScheme: ColorScheme.light(
               primary: theme.loginTextAndBorder,
               onPrimary: theme.welcomeText,
@@ -213,7 +216,9 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
               style: ElevatedButton.styleFrom(backgroundColor: theme.addButton),
               child: Text(
                 "Select Date",
-                style: TextStyle(color: theme.addButtonIcon),
+                style: GoogleFonts.didactGothic(
+                  color: theme.addButtonIcon,
+                ),
               ).tr(),
             ),
             const SizedBox(height: 30),
@@ -236,17 +241,7 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
       margin: EdgeInsets.fromLTRB(20, 0, 20, 17),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(17),
-        gradient: LinearGradient(
-          begin: Alignment(-1, 0),
-          end: Alignment(1, 0),
-          colors: <Color>[
-            theme.habitDetailEditBackground,
-            theme.habitCardBackground,
-            theme.habitCardBackground,
-            theme.habitDetailEditBackground,
-          ],
-          stops: <double>[0.331, 0.536, 0.821, 1],
-        ),
+        color: theme.monthlyActiveDayGrid
       ),
       child: Container(
         padding: EdgeInsets.fromLTRB(13, 17, 19, 17),
@@ -258,8 +253,7 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
               margin: EdgeInsets.fromLTRB(0, 0, 0, 17),
               child: Text(
                 '$userName\'s Story',
-                style: GoogleFonts.getFont(
-                  'Exo 2',
+                style: GoogleFonts.didactGothic(
                   fontWeight: FontWeight.w700,
                   fontSize: 24,
                   height: 1,
@@ -273,8 +267,7 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
                 alignment: Alignment.topLeft,
                 child: Text(
                   DateFormat('d MMMM').format(DateTime.parse(date)),
-                  style: GoogleFonts.getFont(
-                    'Exo 2',
+                  style: GoogleFonts.didactGothic(
                     fontWeight: FontWeight.w500,
                     fontSize: 20,
                     height: 1,
@@ -287,8 +280,7 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
               margin: EdgeInsets.fromLTRB(0, 0, 15.7, 0),
               child: Text(
                 story,
-                style: GoogleFonts.getFont(
-                  'Exo 2',
+                style: GoogleFonts.didactGothic(
                   fontWeight: FontWeight.w200,
                   fontSize: 14,
                   height: 1,
@@ -321,8 +313,7 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
               )
             : Text(
                 'Create Story',
-                style: GoogleFonts.getFont(
-                  'Exo 2',
+                style: GoogleFonts.didactGothic(
                   fontWeight: FontWeight.w500,
                   fontSize: 18,
                   color: theme.addButtonIcon,
@@ -338,8 +329,7 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
       margin: EdgeInsets.only(top: 20),
       child: Text(
         'No story available for this date.',
-        style: GoogleFonts.getFont(
-          'Exo 2',
+        style: GoogleFonts.didactGothic(
           fontWeight: FontWeight.w500,
           fontSize: 18,
           color: theme.welcomeText,

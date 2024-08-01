@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:planova/pages/habit_detail_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:planova/utilities/theme.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HabitPage extends StatefulWidget {
   const HabitPage({super.key});
@@ -44,11 +45,13 @@ class _HabitPageState extends State<HabitPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Warning').tr(),
-          content: const Text('You cannot check this habit today.').tr(),
+          title: Text('Warning', style: GoogleFonts.didactGothic()).tr(),
+          content: Text('You cannot check this habit today.',
+                  style: GoogleFonts.didactGothic())
+              .tr(),
           actions: <Widget>[
             TextButton(
-              child: const Text('OK').tr(),
+              child: Text('OK', style: GoogleFonts.didactGothic()).tr(),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -60,30 +63,45 @@ class _HabitPageState extends State<HabitPage> {
   }
 
   Future<bool> _showConfirmationDialog(BuildContext context) async {
-    return await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Confirm Deletion').tr(),
-          content: const Text('Are you sure you want to delete this habit?').tr(),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Cancel').tr(),
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
+  return await showDialog<bool>(
+    context: context,
+    builder: (BuildContext context) {
+      final theme = Provider.of<ThemeProvider>(context).currentTheme;
+      return AlertDialog(
+        backgroundColor: theme.background,
+        title: Text(
+          tr('Confirm Deletion'),
+          style: GoogleFonts.didactGothic(color: theme.welcomeText),
+        ),
+        content: Text(
+          tr('Are you sure you want to delete this entry?'),
+          style: GoogleFonts.didactGothic(color: theme.welcomeText),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text(
+              tr('Cancel'),
+              style: GoogleFonts.didactGothic(color: theme.addButton),
             ),
-            TextButton(
-              child: const Text('Delete').tr(),
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+          ),
+          TextButton(
+            child: Text(
+              tr('Delete'),
+              style: GoogleFonts.didactGothic(color: theme.addButton),
             ),
-          ],
-        );
-      },
-    ) ?? false;
-  }
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
+          ),
+        ],
+      );
+    },
+  ) ?? false;
+}
+
 
   String _findNearestOrTodayDate(Map<String, dynamic> days) {
     DateTime today = DateTime.now();
@@ -178,7 +196,8 @@ class _HabitPageState extends State<HabitPage> {
     });
   }
 
-  Widget _buildHabitCard(DocumentSnapshot document, bool isSharedHabit, CustomThemeData theme) {
+  Widget _buildHabitCard(
+      DocumentSnapshot document, bool isSharedHabit, CustomThemeData theme) {
     Map<String, dynamic>? data = document.data() as Map<String, dynamic>?;
 
     if (data == null) {
@@ -201,11 +220,11 @@ class _HabitPageState extends State<HabitPage> {
     return Dismissible(
       key: Key(document.id),
       background: Container(
-        color: Colors.red,
-        child: Align(
+        color: const Color.fromARGB(200, 250, 70, 60),
+        child: const Align(
           alignment: Alignment.centerRight,
           child: Padding(
-            padding: const EdgeInsets.only(right: 20.0),
+            padding: EdgeInsets.only(right: 20.0),
             child: Icon(Icons.delete, color: Colors.white),
           ),
         ),
@@ -246,7 +265,7 @@ class _HabitPageState extends State<HabitPage> {
                       children: [
                         Text(
                           data['name'] ?? tr('No name'),
-                          style: TextStyle(
+                          style: GoogleFonts.didactGothic(
                             color: theme.habitTitle,
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -255,7 +274,7 @@ class _HabitPageState extends State<HabitPage> {
                         const SizedBox(height: 5),
                         Text(
                           data['description'] ?? tr('No description'),
-                          style: TextStyle(
+                          style: GoogleFonts.didactGothic(
                             color: theme.subText,
                             fontSize: 14,
                           ),
@@ -284,7 +303,7 @@ class _HabitPageState extends State<HabitPage> {
                     const SizedBox(width: 5),
                     Text(
                       tr('Progress'),
-                      style: TextStyle(
+                      style: GoogleFonts.didactGothic(
                         color: theme.habitIcons,
                         fontSize: 14,
                       ),
@@ -292,7 +311,7 @@ class _HabitPageState extends State<HabitPage> {
                     Spacer(),
                     Text(
                       '$completedCount/$targetDays ${tr('days')}',
-                      style: TextStyle(
+                      style: GoogleFonts.didactGothic(
                         color: theme.habitTitle,
                         fontSize: 14,
                       ),
@@ -303,7 +322,8 @@ class _HabitPageState extends State<HabitPage> {
                 LinearProgressIndicator(
                   value: targetDays > 0 ? completedCount / targetDays : 0,
                   backgroundColor: theme.habitDetailEditBackground,
-                  valueColor: AlwaysStoppedAnimation<Color>(theme.habitProgress),
+                  valueColor:
+                      AlwaysStoppedAnimation<Color>(theme.habitProgress),
                 ),
                 const SizedBox(height: 20),
                 Row(
@@ -319,9 +339,9 @@ class _HabitPageState extends State<HabitPage> {
                       child: Text(
                         isActiveDay
                             ? tr('Active day')
-                            : DateFormat('dd MMM yyyy')
+                            : DateFormat('dd-MM-yyyy')
                                 .format(DateTime.parse(displayDate)),
-                        style: TextStyle(
+                        style: GoogleFonts.didactGothic(
                           color: theme.habitActiveDayText,
                           fontSize: 12,
                         ),
@@ -338,7 +358,7 @@ class _HabitPageState extends State<HabitPage> {
                           ),
                           Text(
                             userName,
-                            style: TextStyle(
+                            style: GoogleFonts.didactGothic(
                               color: theme.habitTitle,
                               fontSize: 12,
                             ),
@@ -370,7 +390,7 @@ class _HabitPageState extends State<HabitPage> {
                                   ),
                                   Text(
                                     friendName,
-                                    style: TextStyle(
+                                    style: GoogleFonts.didactGothic(
                                       color: theme.habitTitle,
                                       fontSize: 12,
                                     ),
@@ -412,10 +432,9 @@ class _HabitPageState extends State<HabitPage> {
     final themeProvider = Provider.of<ThemeProvider>(context);
     CustomThemeData theme = ThemeColors.getTheme(themeProvider.themeValue);
 
-    return Card(
-      color: theme.background,
-      shadowColor: Colors.transparent,
-      child: StreamBuilder<QuerySnapshot>(
+    return Scaffold(
+      backgroundColor: theme.background,
+      body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('habits')
             .where('user_id', isEqualTo: user?.uid)
@@ -425,7 +444,7 @@ class _HabitPageState extends State<HabitPage> {
           if (snapshot.hasError) {
             return Center(
                 child: Text(tr('Something went wrong'),
-                    style: TextStyle(color: theme.habitTitle)));
+                    style: GoogleFonts.didactGothic(color: theme.habitTitle)));
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -436,7 +455,7 @@ class _HabitPageState extends State<HabitPage> {
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return Center(
                 child: Text(tr('No habits available'),
-                    style: TextStyle(color: theme.habitTitle)));
+                    style: GoogleFonts.didactGothic(color: theme.habitTitle)));
           }
 
           return ListView(

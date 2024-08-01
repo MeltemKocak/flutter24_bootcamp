@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -148,10 +149,9 @@ class _ProfilePageState extends State<ProfilePage> {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
         CustomThemeData theme = ThemeColors.getTheme(themeProvider.themeValue);
-        return Card(
-          color: theme.background,
-          margin: const EdgeInsets.all(4),
-          child: SingleChildScrollView(
+        return Scaffold(
+          backgroundColor: theme.background,
+          body: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -169,10 +169,10 @@ class _ProfilePageState extends State<ProfilePage> {
                             backgroundImage: _image != null
                                 ? MemoryImage(_image!)
                                 : (imageUrl != null
-                                    ? NetworkImage(imageUrl!)
-                                    : const AssetImage(
+                                        ? NetworkImage(imageUrl!)
+                                        : const AssetImage(
                                             'assets/images/default_profile.png'))
-                                        as ImageProvider,
+                                    as ImageProvider,
                           ),
                         ),
                         Positioned(
@@ -195,36 +195,39 @@ class _ProfilePageState extends State<ProfilePage> {
                         children: [
                           TextField(
                             controller: nameController,
-                            style: TextStyle(color: theme.calenderNumbers),
+                            style: GoogleFonts.didactGothic(
+                                color: theme.calenderNumbers),
                             decoration: InputDecoration(
                               hintText: tr('Enter Name'),
-                              hintStyle: TextStyle(
-                                  color: theme.calenderNumbers.withOpacity(0.7)),
+                              hintStyle: GoogleFonts.didactGothic(
+                                  color:
+                                      theme.calenderNumbers.withOpacity(0.7)),
                               contentPadding: const EdgeInsets.all(10),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide:
-                                    BorderSide(color: theme.checkBoxBorderColor),
+                                borderSide: BorderSide(
+                                    color: theme.checkBoxBorderColor),
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide:
-                                    BorderSide(color: theme.checkBoxBorderColor),
+                                borderSide: BorderSide(
+                                    color: theme.checkBoxBorderColor),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide:
-                                    BorderSide(color: theme.checkBoxActiveColor),
+                                borderSide: BorderSide(
+                                    color: theme.checkBoxActiveColor),
                               ),
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 15),
                           ElevatedButton.icon(
                             onPressed: saveProfile,
-                            icon: Icon(Icons.save, color: theme.toDoCardBackground),
+                            icon: Icon(Icons.save,
+                                color: theme.toDoCardBackground),
                             label: Text(
                               tr('Save Profile'),
-                              style: TextStyle(
+                              style: GoogleFonts.didactGothic(
                                   color: theme.toDoCardBackground,
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold),
@@ -248,7 +251,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 const SizedBox(height: 30),
                 Text(
                   tr("Today's Story"),
-                  style: TextStyle(
+                  style: GoogleFonts.didactGothic(
                     fontSize: 23,
                     fontWeight: FontWeight.bold,
                     color: theme.calenderNumbers,
@@ -284,7 +287,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 const SizedBox(height: 30),
                 Text(
                   tr("Daily Task Overview"),
-                  style: TextStyle(
+                  style: GoogleFonts.didactGothic(
                       color: theme.calenderNumbers,
                       fontWeight: FontWeight.bold,
                       fontSize: 23),
@@ -306,7 +309,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 const SizedBox(height: 40),
                 Text(
                   tr("Daily Task Statistics"),
-                  style: TextStyle(
+                  style: GoogleFonts.didactGothic(
                       color: theme.calenderNumbers,
                       fontWeight: FontWeight.bold,
                       fontSize: 23),
@@ -320,7 +323,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 const SizedBox(height: 40),
                 Text(
                   "Habits Overview",
-                  style: TextStyle(
+                  style: GoogleFonts.didactGothic(
                       color: theme.calenderNumbers,
                       fontWeight: FontWeight.bold,
                       fontSize: 23),
@@ -385,8 +388,8 @@ class StoryWidget extends StatelessWidget {
             child: Center(
               child: Text(
                 displayedStory,
-                style: TextStyle(
-                  color: theme.calenderNumbers,
+                style: GoogleFonts.didactGothic(
+                  color: theme.addButtonIcon,
                   fontSize: 16,
                 ),
               ),
@@ -422,7 +425,7 @@ class TaskCard extends StatelessWidget {
               children: [
                 Text(
                   '$count',
-                  style: TextStyle(
+                  style: GoogleFonts.didactGothic(
                     fontSize: 48,
                     fontWeight: FontWeight.bold,
                     color: theme.checkBoxActiveColor,
@@ -431,8 +434,8 @@ class TaskCard extends StatelessWidget {
                 const SizedBox(height: 10),
                 Text(
                   title,
-                  style: TextStyle(
-                    fontSize: 18,
+                  style: GoogleFonts.didactGothic(
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: theme.calenderNumbers,
                   ),
@@ -453,10 +456,18 @@ class HabitOverviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
     final int currentStreak = _calculateCurrentStreak;
     final int longestStreak = _calculateLongestStreak;
     final int targetDays = habit['target_days'];
-    final int completedCount = habit['completed_days'].length;
+    final int completedCount = habit['completed_days'] != null &&
+            habit['completed_days'][userId] != null
+        ? habit['completed_days'][userId]
+            .values
+            .where((value) => value == true)
+            .length
+        : 0;
+
     double completionDouble = completedCount / targetDays * 100;
     int completion = completionDouble.isNaN ? 0 : completionDouble.toInt();
 
@@ -476,19 +487,19 @@ class HabitOverviewCard extends StatelessWidget {
               children: [
                 Text(
                   habit['name'],
-                  style: TextStyle(
+                  style: GoogleFonts.didactGothic(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: theme.calenderNumbers,
                   ),
                 ),
                 const SizedBox(height: 10),
-                _buildStatRow(tr('Current Streak'), "$currentStreak "+ tr("days"), theme),
-                _buildStatRow(tr('Longest Streak'), "$longestStreak "+ tr("days"), theme),
-                _buildStatRow(
-                    tr('Completion'),
-                    '$completion% ($completedCount / $targetDays)',
-                    theme),
+                _buildStatRow(tr('Current Streak'),
+                    "$currentStreak " + tr("days"), theme),
+                _buildStatRow(tr('Longest Streak'),
+                    "$longestStreak " + tr("days"), theme),
+                _buildStatRow(tr('Completion'),
+                    '$completion% ($completedCount / $targetDays)', theme),
                 _buildStatRow(
                     tr('Start Date'), _formatDate(habit['start_date']), theme),
                 _buildStatRow(
@@ -509,11 +520,12 @@ class HabitOverviewCard extends StatelessWidget {
         children: [
           Text(
             label,
-            style: TextStyle(color: theme.calenderNumbers.withOpacity(0.7)),
+            style: GoogleFonts.didactGothic(
+                color: theme.calenderNumbers.withOpacity(0.7)),
           ),
           Text(
             value,
-            style: TextStyle(color: theme.calenderNumbers),
+            style: GoogleFonts.didactGothic(color: theme.calenderNumbers),
           ),
         ],
       ),
@@ -635,7 +647,7 @@ class WeeklyStatsWidget extends StatelessWidget {
                       padding: const EdgeInsets.only(bottom: 10),
                       child: Text(
                         ' ',
-                        style: TextStyle(
+                        style: GoogleFonts.didactGothic(
                           color: theme.calenderNumbers,
                           fontSize: 1,
                           fontWeight: FontWeight.bold,
@@ -649,7 +661,8 @@ class WeeklyStatsWidget extends StatelessWidget {
                         titlesData: FlTitlesData(
                           rightTitles: AxisTitles(),
                           leftTitles: AxisTitles(
-                            sideTitles: SideTitles(showTitles: false), // Sol tarafı kaldır
+                            sideTitles: SideTitles(
+                                showTitles: false), // Sol tarafı kaldır
                           ),
                           topTitles: AxisTitles(
                             sideTitles: SideTitles(
@@ -662,19 +675,40 @@ class WeeklyStatsWidget extends StatelessWidget {
                               getTitlesWidget: (value, meta) {
                                 switch (value.toInt()) {
                                   case 0:
-                                    return Text(tr('Mon'), style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
+                                    return Text(tr('Mon'),
+                                        style: GoogleFonts.didactGothic(
+                                            color: theme.calenderNumbers,
+                                            fontSize: 12));
                                   case 1:
-                                    return Text(tr('Tue'), style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
+                                    return Text(tr('Tue'),
+                                        style: GoogleFonts.didactGothic(
+                                            color: theme.calenderNumbers,
+                                            fontSize: 12));
                                   case 2:
-                                    return Text(tr('Wed'), style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
+                                    return Text(tr('Wed'),
+                                        style: GoogleFonts.didactGothic(
+                                            color: theme.calenderNumbers,
+                                            fontSize: 12));
                                   case 3:
-                                    return Text(tr('Thu'), style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
+                                    return Text(tr('Thu'),
+                                        style: GoogleFonts.didactGothic(
+                                            color: theme.calenderNumbers,
+                                            fontSize: 12));
                                   case 4:
-                                    return Text(tr('Fri'), style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
+                                    return Text(tr('Fri'),
+                                        style: GoogleFonts.didactGothic(
+                                            color: theme.calenderNumbers,
+                                            fontSize: 12));
                                   case 5:
-                                    return Text(tr('Sat'), style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
+                                    return Text(tr('Sat'),
+                                        style: GoogleFonts.didactGothic(
+                                            color: theme.calenderNumbers,
+                                            fontSize: 12));
                                   case 6:
-                                    return Text(tr('Sun'), style: TextStyle(color: theme.calenderNumbers, fontSize: 12));
+                                    return Text(tr('Sun'),
+                                        style: GoogleFonts.didactGothic(
+                                            color: theme.calenderNumbers,
+                                            fontSize: 12));
                                   default:
                                     return Text('');
                                 }
@@ -682,24 +716,37 @@ class WeeklyStatsWidget extends StatelessWidget {
                             ),
                           ),
                         ),
-                        gridData: FlGridData(show: false), // Kesikli çizgileri kaldırır
+                        gridData: FlGridData(
+                            show: false), // Kesikli çizgileri kaldırır
                         borderData: FlBorderData(show: false),
                         barGroups: [
                           for (int i = 0; i < 7; i++)
                             BarChartGroupData(x: i, barRods: [
                               BarChartRodData(
-                                toY: taskCounts != null ? taskCounts[weekDays[i]]!['total']!.toDouble() : 0,
+                                toY: taskCounts != null
+                                    ? taskCounts[weekDays[i]]!['total']!
+                                        .toDouble()
+                                    : 0,
                                 color: theme.weeklyStatsBackgroundColor,
                                 width: 22,
                                 rodStackItems: [
                                   BarChartRodStackItem(
                                     0,
-                                    taskCounts != null ? taskCounts[weekDays[i]]!['completed']!.toDouble() : 0,
+                                    taskCounts != null
+                                        ? taskCounts[weekDays[i]]!['completed']!
+                                            .toDouble()
+                                        : 0,
                                     theme.checkBoxActiveColor,
                                   ),
                                   BarChartRodStackItem(
-                                    taskCounts != null ? taskCounts[weekDays[i]]!['completed']!.toDouble() : 0,
-                                    taskCounts != null ? taskCounts[weekDays[i]]!['total']!.toDouble() : 0,
+                                    taskCounts != null
+                                        ? taskCounts[weekDays[i]]!['completed']!
+                                            .toDouble()
+                                        : 0,
+                                    taskCounts != null
+                                        ? taskCounts[weekDays[i]]!['total']!
+                                            .toDouble()
+                                        : 0,
                                     theme.habitDetailEditBackground,
                                   ),
                                 ],
@@ -733,5 +780,13 @@ class WeeklyStatsWidget extends StatelessWidget {
     return taskCounts;
   }
 
-  static List<String> weekDays = [tr('Mon'), tr('Tue'), tr('Wed'), tr('Thu'), tr('Fri'), tr('Sat'), tr('Sun')];
+  static List<String> weekDays = [
+    tr('Mon'),
+    tr('Tue'),
+    tr('Wed'),
+    tr('Thu'),
+    tr('Fri'),
+    tr('Sat'),
+    tr('Sun')
+  ];
 }

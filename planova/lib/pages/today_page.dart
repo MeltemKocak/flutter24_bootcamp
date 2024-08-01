@@ -1,7 +1,10 @@
+// TodayPage.dart
+
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:planova/pages/habit_detail_screen.dart';
@@ -112,14 +115,14 @@ class _TodayPageState extends State<TodayPage> {
     final themeProvider = Provider.of<ThemeProvider>(context);
     CustomThemeData theme = ThemeColors.getTheme(themeProvider.themeValue);
 
-    return Card(
-      color: theme.background,
-      shadowColor: Colors.transparent,
-      child: Column(
+    return Scaffold(
+      backgroundColor: theme.background,
+      body: Column(
         children: [
           Container(
             margin: const EdgeInsets.only(right: 18),
             child: EasyInfiniteDateTimeLine(
+              locale: tr("en"),
               showTimelineHeader: false,
               selectionMode: const SelectionMode.autoCenter(),
               controller: widget.controller,
@@ -150,8 +153,8 @@ class _TodayPageState extends State<TodayPage> {
                 dayStructure: DayStructure.dayStrDayNum,
                 inactiveDayStyle: DayStyle(
                   borderRadius: 18,
-                  dayNumStyle:
-                      TextStyle(fontSize: 18.0, color: theme.calenderDays),
+                  dayNumStyle: GoogleFonts.didactGothic(
+                      fontSize: 18.0, color: theme.calenderDays),
                 ),
               ),
             ),
@@ -173,7 +176,7 @@ class _TodayPageState extends State<TodayPage> {
                 if (snapshots.hasError) {
                   return Text(
                     "Error" + ":" + " ${snapshots.error}",
-                    style: TextStyle(color: theme.toDoTitle),
+                    style: GoogleFonts.didactGothic(color: theme.toDoTitle),
                   );
                 }
 
@@ -300,9 +303,10 @@ class _TodayPageState extends State<TodayPage> {
         InkWell(
           onTap: () {
             setState(() {
-              if (title == 'Incomplete') {
+              if (title == tr('Incomplete')) {
                 _showIncomplete = !_showIncomplete;
-              } else {
+              }
+              if (title == tr('Completed')) {
                 _showCompleted = !_showCompleted;
               }
             });
@@ -313,7 +317,7 @@ class _TodayPageState extends State<TodayPage> {
               children: [
                 Text(
                   '$title (${tasks.length})',
-                  style: TextStyle(
+                  style: GoogleFonts.didactGothic(
                     color: theme.toDoTitle,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -348,21 +352,21 @@ class _TodayPageState extends State<TodayPage> {
     return Dismissible(
       key: Key(task.id),
       background: Container(
-        color: Colors.red,
-        child: Align(
+        color: const Color.fromARGB(200, 250, 70, 60),
+        child: const Align(
           alignment: Alignment.centerLeft,
           child: Padding(
-            padding: const EdgeInsets.only(left: 20.0),
+            padding: EdgeInsets.only(left: 20.0),
             child: Icon(Icons.delete, color: Colors.white),
           ),
         ),
       ),
       secondaryBackground: Container(
-        color: Colors.amber,
-        child: Align(
+        color: const Color.fromARGB(200, 255, 190, 10),
+        child: const Align(
           alignment: Alignment.centerRight,
           child: Padding(
-            padding: const EdgeInsets.only(right: 20.0),
+            padding: EdgeInsets.only(right: 20.0),
             child: Icon(Icons.star, color: Colors.white),
           ),
         ),
@@ -377,7 +381,7 @@ class _TodayPageState extends State<TodayPage> {
           return false;
         } else if (direction == DismissDirection.endToStart) {
           if (isHabit) {
-            await _showHabitAlert();
+            await _showHabitAlert(context);
             return false;
           } else {
             _toggleFavorite(task);
@@ -457,7 +461,7 @@ class _TodayPageState extends State<TodayPage> {
                       children: [
                         Text(
                           taskName,
-                          style: TextStyle(
+                          style: GoogleFonts.didactGothic(
                               color: theme.toDoTitle,
                               fontWeight: FontWeight.bold),
                         ),
@@ -465,7 +469,7 @@ class _TodayPageState extends State<TodayPage> {
                         if (!isHabit)
                           Row(
                             children: [
-                              if (data['taskRecurring'] != 'Tekrar yapma')
+                              if (data['taskRecurring'] != 'Do not repeat')
                                 Padding(
                                   padding: const EdgeInsets.only(right: 10),
                                   child: Icon(Icons.repeat,
@@ -542,26 +546,27 @@ class _TodayPageState extends State<TodayPage> {
     setState(() {});
   }
 
-  Future<void> _showHabitAlert() async {
+  Future<void> _showHabitAlert(BuildContext context) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
+        final theme = Provider.of<ThemeProvider>(context).currentTheme;
         return AlertDialog(
-          backgroundColor: const Color(0xFF1E1E1E),
+          backgroundColor: theme.background,
           title: Text(
             tr("Error"),
-            style: TextStyle(color: Colors.white),
+            style: GoogleFonts.didactGothic(color: theme.welcomeText),
           ),
           content: Text(
             tr("Only tasks can be marked as favorites."),
-            style: TextStyle(color: Colors.white70),
+            style: GoogleFonts.didactGothic(color: theme.welcomeText),
           ),
           actions: <Widget>[
             TextButton(
               child: Text(
                 tr("Okay"),
-                style: TextStyle(color: Color(0xFF03DAC6)),
+                style: GoogleFonts.didactGothic(color: theme.addButton),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -585,13 +590,14 @@ class _TodayPageState extends State<TodayPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Invalid Transaction").tr(),
-          content:
-              const Text("Only quests with the current date can be completed.")
-                  .tr(),
+          title: Text("Invalid Transaction", style: GoogleFonts.didactGothic())
+              .tr(),
+          content: Text("Only quests with the current date can be completed.",
+                  style: GoogleFonts.didactGothic())
+              .tr(),
           actions: <Widget>[
             TextButton(
-              child: const Text("Okay").tr(),
+              child: Text("Okay", style: GoogleFonts.didactGothic()).tr(),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -606,12 +612,12 @@ class _TodayPageState extends State<TodayPage> {
     String selectedDate = DateFormat('yyyy-MM-dd').format(_focusDate!);
     Map<String, dynamic> taskData = task.data() as Map<String, dynamic>;
     String taskTime = taskData.containsKey('taskTimes')
-        ? taskData['taskTimes'][selectedDate] ?? "boş"
-        : "boş";
+        ? taskData['taskTimes'][selectedDate] ?? "empty"
+        : "empty";
 
     return Row(
       children: [
-        if (taskTime != "boş") ...[
+        if (taskTime != "empty") ...[
           const Padding(
             padding: EdgeInsets.only(left: 0),
             child: Icon(Icons.access_time,
@@ -621,7 +627,8 @@ class _TodayPageState extends State<TodayPage> {
             padding: const EdgeInsets.only(left: 4),
             child: Text(
               taskTime,
-              style: TextStyle(color: theme.toDoIcons, fontSize: 16),
+              style: GoogleFonts.didactGothic(
+                  color: theme.toDoIcons, fontSize: 16),
             ),
           ),
         ],
@@ -636,29 +643,29 @@ class _TodayPageState extends State<TodayPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: const Color(0xFF1E1E1E),
-          title: const Text(
+          title: Text(
             "Repetitive Task",
-            style: TextStyle(color: Colors.white),
+            style: GoogleFonts.didactGothic(color: Colors.white),
           ).tr(),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
                 Text(
                   "Repetitive Task",
-                  style: TextStyle(color: Colors.white70),
+                  style: GoogleFonts.didactGothic(color: Colors.white70),
                 ).tr(),
                 Text(
                   'Tüm tekrarlı görevleri silmek için görev detaylarına gidiniz.',
-                  style: TextStyle(color: Colors.white70),
+                  style: GoogleFonts.didactGothic(color: Colors.white70),
                 ),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text(
+              child: Text(
                 "Okay",
-                style: TextStyle(color: Color(0xFF03DAC6)),
+                style: GoogleFonts.didactGothic(color: Color(0xFF03DAC6)),
               ).tr(),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -709,33 +716,36 @@ class _TodayPageState extends State<TodayPage> {
   }
 
   Future<bool?> _showDeleteConfirmDialog() async {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    final theme = themeProvider.currentTheme;
+
     return showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: const Color(0xFF1E1E1E),
-          title: const Text(
+          backgroundColor: theme.background,
+          title: Text(
             "Delete",
-            style: TextStyle(color: Colors.white),
+            style: GoogleFonts.didactGothic(color: theme.welcomeText),
           ).tr(),
-          content: const Text(
+          content: Text(
             "Are you sure you want to delete this task?",
-            style: TextStyle(color: Colors.white70),
+            style: GoogleFonts.didactGothic(color: theme.subText),
           ).tr(),
           actions: <Widget>[
             TextButton(
-              child: const Text(
+              child: Text(
                 "Cancel",
-                style: TextStyle(color: Color(0xFF03DAC6)),
+                style: GoogleFonts.didactGothic(color: theme.addButton),
               ).tr(),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
             ),
             TextButton(
-              child: const Text(
+              child: Text(
                 "Delete",
-                style: TextStyle(color: Colors.red),
+                style: GoogleFonts.didactGothic(color: Colors.red),
               ).tr(),
               onPressed: () {
                 Navigator.of(context).pop(true);

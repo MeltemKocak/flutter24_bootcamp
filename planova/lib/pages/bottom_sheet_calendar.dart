@@ -1,16 +1,17 @@
-// bottom_sheet_calendar.dart
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:provider/provider.dart';
 import 'package:planova/utilities/theme.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class BottomSheetCalendar extends StatefulWidget {
   final EasyInfiniteDateTimelineController controller;
   final Function(DateTime) onDateSelected;
 
-  const BottomSheetCalendar({super.key, required this.controller, required this.onDateSelected});
+  const BottomSheetCalendar(
+      {super.key, required this.controller, required this.onDateSelected});
 
   @override
   _BottomSheetCalendarState createState() => _BottomSheetCalendarState();
@@ -45,7 +46,7 @@ class _BottomSheetCalendarState extends State<BottomSheetCalendar> {
           ),
           Expanded(
             child: TableCalendar(
-              locale: context.locale.toString(), // Set locale dynamically
+              locale: context.locale.toString(),
               firstDay: DateTime.utc(2024, 1, 1),
               lastDay: DateTime.utc(2024, 12, 31),
               focusedDay: _focusedDay,
@@ -71,9 +72,12 @@ class _BottomSheetCalendarState extends State<BottomSheetCalendar> {
                 _focusedDay = focusedDay;
               },
               calendarStyle: CalendarStyle(
-                defaultTextStyle: TextStyle(color: theme.calenderDays),
-                weekendTextStyle: TextStyle(color: theme.calenderDays.withOpacity(0.7)),
-                outsideTextStyle: TextStyle(color: theme.calenderDays.withOpacity(0.5)),
+                defaultTextStyle:
+                    GoogleFonts.didactGothic(color: theme.calenderDays),
+                weekendTextStyle: GoogleFonts.didactGothic(
+                    color: theme.calenderDays.withOpacity(0.7)),
+                outsideTextStyle: GoogleFonts.didactGothic(
+                    color: theme.calenderDays.withOpacity(0.5)),
                 selectedDecoration: BoxDecoration(
                   color: theme.focusDayColor,
                   shape: BoxShape.circle,
@@ -86,13 +90,20 @@ class _BottomSheetCalendarState extends State<BottomSheetCalendar> {
               headerStyle: HeaderStyle(
                 formatButtonVisible: false,
                 titleCentered: true,
-                titleTextStyle: TextStyle(color: theme.calenderNumbers, fontSize: 18),
-                leftChevronIcon: Icon(Icons.chevron_left, color: theme.calenderNumbers),
-                rightChevronIcon: Icon(Icons.chevron_right, color: theme.calenderNumbers),
+                titleTextStyle: GoogleFonts.didactGothic(
+                    color: theme.calenderNumbers, fontSize: 18),
+                leftChevronIcon:
+                    Icon(Icons.chevron_left, color: theme.calenderNumbers),
+                rightChevronIcon:
+                    Icon(Icons.chevron_right, color: theme.calenderNumbers),
               ),
               daysOfWeekStyle: DaysOfWeekStyle(
-                weekdayStyle: TextStyle(color: theme.calenderDays),
-                weekendStyle: TextStyle(color: theme.calenderDays.withOpacity(0.7)),
+                weekdayStyle: GoogleFonts.didactGothic(
+                    color: theme.calenderDays, fontSize: 14, height: 1.0),
+                weekendStyle: GoogleFonts.didactGothic(
+                    color: theme.calenderDays.withOpacity(0.7),
+                    fontSize: 14,
+                    height: 1.0),
               ),
             ),
           ),

@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:planova/pages/home.dart';
 import 'package:planova/utilities/theme.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'habit_page.dart';
 
 class HabitEditPage extends StatefulWidget {
@@ -285,7 +286,7 @@ class _HabitEditPageState extends State<HabitEditPage> {
                     const SizedBox(height: 20),
                     Text(
                       tr("Target Days:")+" $_targetDays",
-                      style: TextStyle(color: theme.welcomeText, fontSize: 16),
+                      style: GoogleFonts.didactGothic(color: theme.welcomeText, fontSize: 16),
                     ),
                     const SizedBox(height: 20),
                     _buildDaySelectionSection(theme),
@@ -302,7 +303,7 @@ class _HabitEditPageState extends State<HabitEditPage> {
                           ),
                           onPressed: _deleteHabit,
                           child: Text(tr("Delete Habit"),
-                          style: TextStyle(color: theme.welcomeText)),
+                          style: GoogleFonts.didactGothic(color: theme.welcomeText)),
                         ),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -313,7 +314,7 @@ class _HabitEditPageState extends State<HabitEditPage> {
                           ),
                           onPressed: _editHabit,
                           child: Text(tr("Update Habit"),
-                          style: TextStyle(color: theme.welcomeText)),
+                          style: GoogleFonts.didactGothic(color: theme.welcomeText)),
                         ),
                       ],
                     ),
@@ -332,18 +333,18 @@ class _HabitEditPageState extends State<HabitEditPage> {
       children: [
         Text(
           label,
-          style: TextStyle(
+          style: GoogleFonts.didactGothic(
               color: theme.welcomeText, fontSize: 15, fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 2),
         TextFormField(
           controller: controller,
-          style: TextStyle(color: theme.welcomeText),
+          style: GoogleFonts.didactGothic(color: theme.welcomeText),
           maxLines: maxLines,
           enabled: enabled,
           decoration: InputDecoration(
             hintText: tr('Enter') + " $label",
-            hintStyle: TextStyle(color: theme.welcomeText.withAlpha(150)),
+            hintStyle: GoogleFonts.didactGothic(color: theme.welcomeText.withAlpha(150)),
             filled: true,
             fillColor: theme.toDoCardBackground,
             focusedBorder: OutlineInputBorder(
@@ -376,7 +377,7 @@ class _HabitEditPageState extends State<HabitEditPage> {
       children: [
         Text(
           label,
-          style: TextStyle(
+          style: GoogleFonts.didactGothic(
               color: theme.welcomeText, fontSize: 15, fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 2),
@@ -395,7 +396,7 @@ class _HabitEditPageState extends State<HabitEditPage> {
             ),
             child: Text(
               controller.text.isEmpty ? tr('Select Date') : controller.text,
-              style: TextStyle(color: theme.welcomeText),
+              style: GoogleFonts.didactGothic(color: theme.welcomeText),
             ),
           ),
         ),
@@ -411,7 +412,7 @@ class _HabitEditPageState extends State<HabitEditPage> {
         return FilterChip(
           label: Text(
             _getDayName(index).tr(),
-            style: TextStyle(color: theme.welcomeText),
+            style: GoogleFonts.didactGothic(color: theme.welcomeText),
           ),
           selected: _selectedDays[index],
           onSelected: (bool selected) {

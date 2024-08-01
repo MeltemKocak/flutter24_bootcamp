@@ -7,6 +7,7 @@ import 'package:planova/pages/home.dart';
 import 'package:planova/utilities/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LoginSubPage extends StatelessWidget {
   LoginSubPage({super.key});
@@ -44,10 +45,9 @@ class LoginSubPage extends StatelessWidget {
                 "If you are creating a new account,\nTerms & Conditions and Privacy Policy will apply.",
                 maxLines: 2,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: GoogleFonts.didactGothic(
                   color: theme.subText,
                   fontSize: 13,
-                  fontFamily: 'Lato',
                   fontWeight: FontWeight.w400,
                 ),
               ).tr(),
@@ -117,10 +117,9 @@ class LoginSubPage extends StatelessWidget {
             },
             child: Text(
               "Continue with Email",
-              style: TextStyle(
+              style: GoogleFonts.didactGothic(
                 color: theme.welcomeText,
                 fontSize: 16,
-                fontFamily: 'Lato',
                 fontWeight: FontWeight.w600,
               ),
             ).tr(),
@@ -142,10 +141,9 @@ class LoginSubPage extends StatelessWidget {
                 _signInAnonymously(context), // Anonymous authentication
             child: Text(
               "Continue as a Guest",
-              style: TextStyle(
+              style: GoogleFonts.didactGothic(
                 color: theme.welcomeText,
                 fontSize: 16,
-                fontFamily: 'Lato',
                 fontWeight: FontWeight.w600,
               ),
             ).tr(),
@@ -246,7 +244,7 @@ class LoginSubPage extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(
         message,
-        style: TextStyle(color: theme.welcomeText),
+        style: GoogleFonts.didactGothic(color: theme.welcomeText),
       ),
       backgroundColor: theme.welcomeButton,
     ));
@@ -264,10 +262,9 @@ class WelcomesliderItemWidget extends StatelessWidget {
       children: [
         Text(
           "Login or Sign Up",
-          style: TextStyle(
+          style: GoogleFonts.didactGothic(
             color: theme.welcomeText,
             fontSize: 24,
-            fontFamily: 'Lato',
             fontWeight: FontWeight.w700,
           ),
         ).tr(),
@@ -276,10 +273,9 @@ class WelcomesliderItemWidget extends StatelessWidget {
           "Please select your preferred method to continue setting up your account",
           maxLines: 3,
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: GoogleFonts.didactGothic(
             color: theme.subText,
             fontSize: 18,
-            fontFamily: 'Lato',
             fontWeight: FontWeight.w400,
           ),
         ).tr(),

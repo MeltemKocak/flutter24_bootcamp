@@ -8,6 +8,7 @@ import 'package:planova/pages/photo_view_page.dart';
 import 'package:planova/utilities/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class PrivateJournalPage extends StatefulWidget {
   const PrivateJournalPage({super.key});
@@ -27,19 +28,19 @@ class _PrivateJournalPageState extends State<PrivateJournalPage> {
         color: themeData.background,
         child: Center(
             child: Text('Please sign in',
-                style: TextStyle(color: themeData.welcomeText)).tr()),
+                style: GoogleFonts.didactGothic(color: themeData.welcomeText)).tr()),
       );
     }
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Private Journal',
-            style: TextStyle(color: themeData.welcomeText)).tr(),
+            style: GoogleFonts.didactGothic(color: themeData.welcomeText)).tr(),
         backgroundColor: themeData.background,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: themeData.welcomeText),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context,);
           },
         ),
       ),
@@ -62,12 +63,12 @@ class _PrivateJournalPageState extends State<PrivateJournalPage> {
             if (snapshot.hasError) {
               return Center(
                   child: Text('Error: ${snapshot.error}',
-                      style: TextStyle(color: themeData.welcomeText)).tr());
+                      style: GoogleFonts.didactGothic(color: themeData.welcomeText)).tr());
             }
             if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
               return Center(
                   child: Text('No entries found',
-                      style: TextStyle(color: themeData.welcomeText)).tr());
+                      style: GoogleFonts.didactGothic(color: themeData.welcomeText)).tr());
             }
 
             return ListView.builder(
@@ -125,7 +126,7 @@ class _PrivateJournalPageState extends State<PrivateJournalPage> {
                               children: [
                                 Text(
                                   formattedDate,
-                                  style: TextStyle(
+                                  style: GoogleFonts.didactGothic(
                                     color: themeData.focusDayColor,
                                     fontSize: 24,
                                     fontWeight: FontWeight.w500,
@@ -153,7 +154,7 @@ class _PrivateJournalPageState extends State<PrivateJournalPage> {
                             const SizedBox(height: 10),
                             Text(
                               data['name'],
-                              style: TextStyle(
+                              style: GoogleFonts.didactGothic(
                                 color: themeData.welcomeText,
                                 fontSize: 22,
                                 fontWeight: FontWeight.w700,
@@ -164,7 +165,7 @@ class _PrivateJournalPageState extends State<PrivateJournalPage> {
                               description.length > 100
                                   ? '${description.substring(0, 100)}...'
                                   : description,
-                              style: TextStyle(
+                              style: GoogleFonts.didactGothic(
                                 color: themeData.welcomeText.withOpacity(0.7),
                                 fontSize: 16,
                                 fontWeight: FontWeight.w300,

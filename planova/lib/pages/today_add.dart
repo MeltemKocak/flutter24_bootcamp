@@ -1,6 +1,9 @@
+// TodayAddPage.dart
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
@@ -105,10 +108,9 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                 Expanded(
                   child: Text(
                     "Task Name",
-                    style: TextStyle(
+                    style: GoogleFonts.didactGothic(
                       color: theme.welcomeText,
                       fontSize: 15,
-                      fontFamily: 'Lato',
                       fontWeight: FontWeight.w300,
                     ),
                   ).tr(),
@@ -136,26 +138,25 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
             child: TextFormField(
               controller: nameController,
               focusNode: taskNameFocusNode,
-              style: TextStyle(
-                color: theme.welcomeText,
-              ),
+              style: GoogleFonts.didactGothic(color: theme.welcomeText),
               decoration: InputDecoration(
                 hintText: tr("Enter Task Name"),
-                hintStyle: TextStyle(
+                hintStyle: GoogleFonts.didactGothic(
                   color: theme.subText,
                   fontSize: 15,
-                  fontFamily: 'Lato',
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide(
-                    color: isTaskNameEmpty ? Colors.red : theme.toDoCardBackground,
+                    color:
+                        isTaskNameEmpty ? Colors.red : theme.toDoCardBackground,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide(
-                    color: isTaskNameEmpty ? Colors.red : theme.toDoCardBackground,
+                    color:
+                        isTaskNameEmpty ? Colors.red : theme.toDoCardBackground,
                   ),
                 ),
                 disabledBorder: OutlineInputBorder(
@@ -200,10 +201,9 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                 Expanded(
                   child: Text(
                     "Description",
-                    style: TextStyle(
+                    style: GoogleFonts.didactGothic(
                       color: theme.welcomeText,
                       fontSize: 15,
-                      fontFamily: 'Lato',
                       fontWeight: FontWeight.w300,
                     ),
                   ).tr(),
@@ -228,17 +228,14 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
             child: TextFormField(
               controller: edittextController,
               focusNode: descriptionFocusNode,
-              style: TextStyle(
-                color: theme.welcomeText,
-              ),
+              style: GoogleFonts.didactGothic(color: theme.welcomeText),
               textInputAction: TextInputAction.done,
               maxLines: 6,
               decoration: InputDecoration(
                 hintText: tr("Enter Description"),
-                hintStyle: TextStyle(
+                hintStyle: GoogleFonts.didactGothic(
                   color: theme.subText,
                   fontSize: 15,
-                  fontFamily: 'Lato',
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -305,10 +302,9 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                           const SizedBox(width: 12),
                           Text(
                             "Recurring",
-                            style: TextStyle(
+                            style: GoogleFonts.didactGothic(
                               color: theme.welcomeText,
                               fontSize: 16,
-                              fontFamily: 'Lato',
                             ),
                           ).tr()
                         ],
@@ -339,14 +335,20 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                           initialTime: TimeOfDay.now(),
                           builder: (BuildContext context, Widget? child) {
                             return Theme(
-                              data: ThemeData.dark().copyWith(
+                              data: ThemeData(
                                 colorScheme: ColorScheme.dark(
-                                  primary: theme.checkBoxActiveColor,
-                                  onPrimary: Colors.black,
+                                  primary: theme.addButton,
+                                  onPrimary: theme.addButtonIcon,
                                   surface: theme.background,
                                   onSurface: theme.welcomeText,
                                 ),
                                 dialogBackgroundColor: theme.background,
+                                textButtonTheme: TextButtonThemeData(
+                                  style: TextButton.styleFrom(
+                                    backgroundColor: theme.addButton,
+                                    foregroundColor: theme.welcomeText
+                                  ),
+                                ),
                               ),
                               child: child!,
                             );
@@ -367,10 +369,9 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
                             selectedTime != null
                                 ? selectedTime!.format(context)
                                 : "Select Time",
-                            style: TextStyle(
+                            style: GoogleFonts.didactGothic(
                               color: theme.welcomeText,
                               fontSize: 16,
-                              fontFamily: 'Lato',
                             ),
                           ).tr(),
                         ],
@@ -386,7 +387,8 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
     );
   }
 
-  Widget _buildDaySelectionSection(BuildContext context, CustomThemeData theme) {
+  Widget _buildDaySelectionSection(
+      BuildContext context, CustomThemeData theme) {
     return Container(
       alignment: Alignment.center,
       width: MediaQuery.of(context).size.width * 0.8,
@@ -399,7 +401,8 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
           return FilterChip(
             label: Text(
               _getDayName(index + 1),
-              style: TextStyle(color: theme.welcomeText, fontSize: 18),
+              style: GoogleFonts.didactGothic(
+                  color: theme.welcomeText, fontSize: 18),
             ),
             selected: selectedDays.contains(index + 1),
             onSelected: (bool selected) {
@@ -433,7 +436,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
         ),
         child: Text(
           'Confirm Task',
-          style: TextStyle(
+          style: GoogleFonts.didactGothic(
             color: theme.addButtonIcon,
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -444,7 +447,8 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
   }
 
   void _showRecurringDialog() {
-    final theme = Provider.of<ThemeProvider>(context, listen: false).currentTheme;
+    final theme =
+        Provider.of<ThemeProvider>(context, listen: false).currentTheme;
 
     showDialog(
       context: context,
@@ -460,41 +464,54 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
             dialogBackgroundColor: theme.background,
           ),
           child: AlertDialog(
-            title: Text("Select Recurrence",
-                style: TextStyle(color: theme.welcomeText)).tr(),
-            content: DropdownButton<String>(
-              value: selectedRecurrence,
-              items: [
-                'Do not repeat',
-                'Repeat every week',
-                'Repeat every 2 weeks',
-                'Repeat every 3 weeks',
-                'Repeat every month'
-              ].map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value).tr(),
-                );
-              }).toList(),
-              onChanged: (String? newValue) {
-                setState(() {
-                  selectedRecurrence = newValue!;
-                });
-                Navigator.of(context).pop();
-              },
-              dropdownColor: theme.background,
-              style: TextStyle(color: theme.welcomeText),
-            ),
+          title: Text("Select Recurrence",
+              style: TextStyle(color: theme.welcomeText)).tr(),
+          content: DropdownButton<String>(
+            value: selectedRecurrence, // Bu değer "items" listesindeki bir öğeyle eşleşmelidir
+  items: [
+    DropdownMenuItem(
+      value: 'Do not repeat',
+      child: Text('Do not repeat'),
+    ),
+    DropdownMenuItem(
+      value: 'Repeat every week',
+      child: Text('Repeat every week'),
+    ),
+    DropdownMenuItem(
+      value: 'Repeat every 2 weeks',
+      child: Text('Repeat every 2 weeks'),
+    ),
+    DropdownMenuItem(
+      value: 'Repeat every 3 weeks',
+      child: Text('Repeat every 3 weeks'),
+    ),
+    DropdownMenuItem(
+      value: 'Repeat every month',
+      child: Text('Repeat every month'),
+    ),
+  ],
+  onChanged: (String? newValue) {
+    setState(() {
+      selectedRecurrence = newValue!;
+    });
+              Navigator.of(context).pop();
+            },
+            dropdownColor: theme.background,
+            style: TextStyle(color: theme.welcomeText),
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
+}
 
   void _addTodo() {
     if (_user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('You must be logged in to add a task').tr()),
+        SnackBar(
+            content: Text('You must be logged in to add a task',
+                    style: GoogleFonts.didactGothic())
+                .tr()),
       );
       return;
     }
@@ -505,7 +522,10 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
 
     if (isTaskNameEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Task name cannot be empty").tr()),
+        SnackBar(
+            content: Text("Task name cannot be empty",
+                    style: GoogleFonts.didactGothic())
+                .tr()),
       );
       return;
     }
@@ -529,7 +549,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
     Map<String, String> taskTimes = {};
     DateTime currentDate = widget.focusDate ?? DateTime.now();
     String taskTime =
-        selectedTime != null ? selectedTime!.format(context) : "empty";
+        selectedTime != null ? _formatTimeOfDay(selectedTime!) : "empty";
 
     if (selectedDays.isNotEmpty) {
       for (int i = 0; i < recurrenceDays; i++) {
@@ -555,12 +575,17 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
 
     FirebaseFirestore.instance.collection('todos').add(taskData).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Task added successfully').tr()),
+        SnackBar(
+            content: Text('Task added successfully',
+                    style: GoogleFonts.didactGothic())
+                .tr()),
       );
       Navigator.pop(context);
     }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(tr("Error") + " $error")),
+        SnackBar(
+            content: Text(tr("Error") + " $error",
+                style: GoogleFonts.didactGothic())),
       );
     });
   }
@@ -584,5 +609,12 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
       default:
         return '';
     }
+  }
+
+  String _formatTimeOfDay(TimeOfDay time) {
+    final now = DateTime.now();
+    final dt = DateTime(now.year, now.month, now.day, time.hour, time.minute);
+    final format = DateFormat.jm(); // AM/PM format
+    return format.format(dt);
   }
 }

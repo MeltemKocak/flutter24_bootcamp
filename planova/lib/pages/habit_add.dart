@@ -1,4 +1,3 @@
-// habitAddPage.dart
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:planova/utilities/theme.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HabitAddPage extends StatefulWidget {
   const HabitAddPage({super.key});
@@ -32,16 +32,27 @@ class _HabitAddPageState extends State<HabitAddPage> {
       return;
     }
 
+    DateTime startDate =
+        DateFormat('yyyy-MM-dd').parse(_startDateController.text);
+    DateTime endDate = DateFormat('yyyy-MM-dd').parse(_endDateController.text);
+
+    // Start date and end date check
+    if (startDate.isAfter(endDate)) {
+      // Error handling: Start date should not be after end date
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(tr("Start date cannot be after end date.")),
+      ));
+      return;
+    }
+
     User? user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
       Map<String, dynamic> habitData = {
         'name': _nameController.text,
         'description': _descriptionController.text,
-        'start_date': Timestamp.fromDate(
-            DateFormat('yyyy-MM-dd').parse(_startDateController.text)),
-        'end_date': Timestamp.fromDate(
-            DateFormat('yyyy-MM-dd').parse(_endDateController.text)),
+        'start_date': Timestamp.fromDate(startDate),
+        'end_date': Timestamp.fromDate(endDate),
         'target_days': _targetDays,
         'recurring_days': _selectedDays,
         'user_id': user.uid,
@@ -185,23 +196,32 @@ class _HabitAddPageState extends State<HabitAddPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildTextField(_nameController, tr("Habit Name"), _isNameEmpty, theme),
+            _buildTextField(
+                _nameController, tr("Habit Name"), _isNameEmpty, theme),
             const SizedBox(height: 20),
-            _buildTextField(_descriptionController, tr("Description"), false, theme, maxLines: 3),
+            _buildTextField(
+                _descriptionController, tr("Description"), false, theme,
+                maxLines: 3),
             const SizedBox(height: 20),
-            _buildTextField(_friendEmailController, tr("Friend's Email"), false, theme),
+            _buildTextField(
+                _friendEmailController, tr("Friend's Email"), false, theme),
             const SizedBox(height: 20),
             Row(
               children: [
-                Expanded(child: _buildDateField(_startDateController, tr("Start Date"), theme)),
+                Expanded(
+                    child: _buildDateField(
+                        _startDateController, tr("Start Date"), theme)),
                 const SizedBox(width: 20),
-                Expanded(child: _buildDateField(_endDateController, tr("End Date"), theme)),
+                Expanded(
+                    child: _buildDateField(
+                        _endDateController, tr("End Date"), theme)),
               ],
             ),
             const SizedBox(height: 20),
             Text(
               "${tr("Target Days")}: $_targetDays",
-              style: TextStyle(color: theme.subText, fontSize: 16),
+              style:
+                  GoogleFonts.didactGothic(color: theme.subText, fontSize: 16),
             ),
             const SizedBox(height: 20),
             _buildDaySelectionSection(theme),
@@ -213,35 +233,45 @@ class _HabitAddPageState extends State<HabitAddPage> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String label, bool isEmpty, CustomThemeData theme, {int maxLines = 1}) {
+  Widget _buildTextField(TextEditingController controller, String label,
+      bool isEmpty, CustomThemeData theme,
+      {int maxLines = 1}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: TextStyle(color: theme.subText, fontSize: 15, fontWeight: FontWeight.w300),
+          style: GoogleFonts.didactGothic(
+              color: theme.subText, fontSize: 15, fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 2),
         TextFormField(
           controller: controller,
-          style: TextStyle(color: theme.welcomeText),
+          style: GoogleFonts.didactGothic(color: theme.welcomeText),
           maxLines: maxLines,
           decoration: InputDecoration(
             hintText: "${tr("Enter")} $label",
-            hintStyle: TextStyle(color: theme.welcomeText.withOpacity(0.6)),
+            hintStyle: GoogleFonts.didactGothic(
+                color: theme.welcomeText.withOpacity(0.6)),
             filled: true,
             fillColor: theme.toDoCardBackground.withOpacity(1),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20),
-              borderSide: isEmpty ? const BorderSide(color: Colors.red) : BorderSide.none,
+              borderSide: isEmpty
+                  ? const BorderSide(color: Colors.red)
+                  : BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20),
-              borderSide: isEmpty ? const BorderSide(color: Colors.red) : BorderSide.none,
+              borderSide: isEmpty
+                  ? const BorderSide(color: Colors.red)
+                  : BorderSide.none,
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20),
-              borderSide: isEmpty ? const BorderSide(color: Colors.red) : BorderSide.none,
+              borderSide: isEmpty
+                  ? const BorderSide(color: Colors.red)
+                  : BorderSide.none,
             ),
           ),
         ),
@@ -249,18 +279,21 @@ class _HabitAddPageState extends State<HabitAddPage> {
     );
   }
 
-  Widget _buildDateField(TextEditingController controller, String label, CustomThemeData theme) {
+  Widget _buildDateField(
+      TextEditingController controller, String label, CustomThemeData theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: TextStyle(color: theme.subText, fontSize: 15, fontWeight: FontWeight.w300),
+          style: GoogleFonts.didactGothic(
+              color: theme.subText, fontSize: 15, fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 2),
         GestureDetector(
           onTap: () => _selectDate(context, controller,
-              firstDate: controller == _endDateController && _startDateController.text.isNotEmpty
+              firstDate: controller == _endDateController &&
+                      _startDateController.text.isNotEmpty
                   ? DateFormat('yyyy-MM-dd').parse(_startDateController.text)
                   : DateTime.now()),
           child: Container(
@@ -272,7 +305,7 @@ class _HabitAddPageState extends State<HabitAddPage> {
             ),
             child: Text(
               controller.text.isEmpty ? tr("Select Date") : controller.text,
-              style: TextStyle(color: theme.welcomeText),
+              style: GoogleFonts.didactGothic(color: theme.welcomeText),
             ),
           ),
         ),
@@ -288,7 +321,7 @@ class _HabitAddPageState extends State<HabitAddPage> {
         return FilterChip(
           label: Text(
             _getDayName(index).tr(),
-            style: TextStyle(color: theme.addButtonIcon),
+            style: GoogleFonts.didactGothic(color: theme.addButtonIcon),
           ),
           selected: _selectedDays[index],
           onSelected: (bool selected) {
@@ -336,7 +369,9 @@ class _HabitAddPageState extends State<HabitAddPage> {
           ),
         ),
         onPressed: _addHabit,
-        child: Text("Confirm Habit", style: TextStyle(color: theme.addButtonIcon)).tr(),
+        child: Text("Confirm Habit",
+                style: GoogleFonts.didactGothic(color: theme.addButtonIcon))
+            .tr(),
       ),
     );
   }

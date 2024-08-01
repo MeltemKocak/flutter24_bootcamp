@@ -5,6 +5,7 @@ import 'package:planova/utilities/theme.dart';
 import 'private_journal_page.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class PatternLockPage extends StatefulWidget {
   @override
@@ -18,7 +19,11 @@ class _PatternLockPageState extends State<PatternLockPage> {
 
   void _addPattern(int index) {
     setState(() {
-      _pattern.add(index);
+      if (_pattern.contains(index)) {
+        _pattern.remove(index); // Eğer index zaten varsa, çıkart
+      } else {
+        _pattern.add(index); // Eğer index yoksa, ekle
+      }
     });
   }
 
@@ -58,8 +63,10 @@ class _PatternLockPageState extends State<PatternLockPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Enter Pattern').tr(),
+
         backgroundColor: theme.background,
+        iconTheme: IconThemeData(
+            color: theme.addButton), // Geri butonunun rengini buradan ayarlayın
       ),
       backgroundColor: theme.background,
       body: Padding(
@@ -68,7 +75,8 @@ class _PatternLockPageState extends State<PatternLockPage> {
           children: [
             Text(
               'Draw your pattern to unlock',
-              style: TextStyle(color: theme.welcomeText, fontSize: 18),
+              style: GoogleFonts.didactGothic(
+                  color: theme.welcomeText, fontSize: 18),
             ).tr(),
             SizedBox(height: 20),
             _buildPatternLock(theme),
@@ -80,7 +88,7 @@ class _PatternLockPageState extends State<PatternLockPage> {
               ),
               child: Text(
                 'Verify Pattern',
-                style: TextStyle(color: theme.addButtonIcon),
+                style: GoogleFonts.didactGothic(color: theme.addButtonIcon),
               ).tr(),
             ),
             if (_isPatternIncorrect)
@@ -88,7 +96,7 @@ class _PatternLockPageState extends State<PatternLockPage> {
                 padding: const EdgeInsets.only(top: 10),
                 child: Text(
                   'Incorrect Pattern, please try again',
-                  style: TextStyle(color: Colors.red),
+                  style: GoogleFonts.didactGothic(color: Colors.red),
                 ).tr(),
               ),
           ],
@@ -112,7 +120,9 @@ class _PatternLockPageState extends State<PatternLockPage> {
             child: Container(
               margin: EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: isSelected ? theme.welcomeDotActive : theme.welcomeDot,
+                color: isSelected
+                    ? theme.welcomeDotActive
+                    : theme.welcomeDot.withAlpha(150),
                 shape: BoxShape.circle,
               ),
             ),

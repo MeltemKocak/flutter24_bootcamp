@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
@@ -79,22 +80,22 @@ class _TrashPageState extends State<TrashPage> {
             return Dismissible(
               key: Key(taskData.id),
               background: Container(
-                color: theme.checkBoxActiveColor,
+                color: const Color.fromARGB(200, 250, 70, 60),
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: Padding(
                     padding: EdgeInsets.only(right: 20.0),
-                    child: Icon(Icons.restore, color: theme.welcomeText),
+                    child: Icon(Icons.delete, color: theme.welcomeText),
                   ),
                 ),
               ),
               secondaryBackground: Container(
-                color: theme.habitIcons,
+                color: const Color.fromARGB(200, 77, 177, 81),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Padding(
                     padding: EdgeInsets.only(left: 20.0),
-                    child: Icon(Icons.delete, color: theme.welcomeText),
+                    child: Icon(Icons.restore, color: theme.welcomeText),
                   ),
                 ),
               ),
@@ -125,10 +126,13 @@ class _TrashPageState extends State<TrashPage> {
     return Card(
       color: theme.toDoCardBackground,
       child: ListTile(
-        title: Text(taskName, style: TextStyle(color: theme.welcomeText)),
+        title: Text(
+          taskName,
+          style: GoogleFonts.didactGothic(color: theme.welcomeText),
+        ),
         subtitle: Text(
           DateFormat('dd/MM/yyyy').format(deletedDate.toDate()),
-          style: TextStyle(color: theme.subText),
+          style: GoogleFonts.didactGothic(color: theme.subText),
         ),
         trailing: Icon(Icons.swipe_left, color: theme.welcomeText),
         onTap: () => _showRestoreBottomSheet(taskData, theme),
@@ -152,10 +156,18 @@ class _TrashPageState extends State<TrashPage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(taskName,
-                  style: TextStyle(color: theme.welcomeText, fontSize: 20)),
+              Text(
+                taskName,
+                style: GoogleFonts.didactGothic(
+                  color: theme.welcomeText,
+                  fontSize: 20,
+                ),
+              ),
               const SizedBox(height: 10),
-              Text(taskDescription, style: TextStyle(color: theme.subText)),
+              Text(
+                taskDescription,
+                style: GoogleFonts.didactGothic(color: theme.subText),
+              ),
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -163,18 +175,23 @@ class _TrashPageState extends State<TrashPage> {
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: theme.subText),
-                    child: Text("Cancel",
-                            style: TextStyle(color: theme.welcomeText))
-                        .tr(),
+                      backgroundColor: theme.subText,
+                    ),
+                    child: Text(
+                      "Cancel",
+                      style: GoogleFonts.didactGothic(color: theme.welcomeText),
+                    ).tr(),
                   ),
                   ElevatedButton(
                     onPressed: () => _restoreTask(taskData),
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: theme.checkBoxActiveColor),
-                    child: Text("Bring Back",
-                            style: TextStyle(color: theme.addButtonIcon))
-                        .tr(),
+                      backgroundColor: theme.checkBoxActiveColor,
+                    ),
+                    child: Text(
+                      "Bring Back",
+                      style:
+                          GoogleFonts.didactGothic(color: theme.addButtonIcon),
+                    ).tr(),
                   ),
                 ],
               ),
@@ -194,18 +211,19 @@ class _TrashPageState extends State<TrashPage> {
           backgroundColor: theme.background,
           title: Text(
             "Delete",
-            style: TextStyle(color: theme.welcomeText),
+            style: GoogleFonts.didactGothic(color: theme.welcomeText),
           ).tr(),
           content: Text(
             "Are you sure you want to permanently delete this item?",
-            style: TextStyle(color: theme.subText),
+            style: GoogleFonts.didactGothic(color: theme.subText),
           ).tr(),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: Text(
                 "Cancel",
-                style: TextStyle(color: theme.checkBoxActiveColor),
+                style:
+                    GoogleFonts.didactGothic(color: theme.checkBoxActiveColor),
               ).tr(),
             ),
             TextButton(
@@ -215,7 +233,8 @@ class _TrashPageState extends State<TrashPage> {
               },
               child: Text(
                 "Delete",
-                style: TextStyle(color: theme.checkBoxActiveColor),
+                style:
+                    GoogleFonts.didactGothic(color: theme.checkBoxActiveColor),
               ).tr(),
             ),
           ],
@@ -232,18 +251,19 @@ class _TrashPageState extends State<TrashPage> {
           backgroundColor: theme.background,
           title: Text(
             "Delete All",
-            style: TextStyle(color: theme.welcomeText),
+            style: GoogleFonts.didactGothic(color: theme.welcomeText),
           ).tr(),
           content: Text(
             "Are you sure you want to permanently delete all deleted items?",
-            style: TextStyle(color: theme.subText),
+            style: GoogleFonts.didactGothic(color: theme.subText),
           ).tr(),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: Text(
                 'İptal',
-                style: TextStyle(color: theme.checkBoxActiveColor),
+                style:
+                    GoogleFonts.didactGothic(color: theme.checkBoxActiveColor),
               ),
             ),
             TextButton(
@@ -253,7 +273,8 @@ class _TrashPageState extends State<TrashPage> {
               },
               child: Text(
                 "Delete",
-                style: TextStyle(color: theme.checkBoxActiveColor),
+                style:
+                    GoogleFonts.didactGothic(color: theme.checkBoxActiveColor),
               ).tr(),
             ),
           ],
@@ -277,7 +298,8 @@ class _TrashPageState extends State<TrashPage> {
         .delete();
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Deleted").tr()),
+      SnackBar(
+          content: Text("Deleted", style: GoogleFonts.didactGothic()).tr()),
     );
   }
 
@@ -306,7 +328,8 @@ class _TrashPageState extends State<TrashPage> {
     }
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Deleted").tr()),
+      SnackBar(
+          content: Text("Deleted", style: GoogleFonts.didactGothic()).tr()),
     );
   }
 
@@ -329,7 +352,10 @@ class _TrashPageState extends State<TrashPage> {
         .delete();
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Mission successfully brought back").tr()),
+      SnackBar(
+          content: Text("Mission successfully brought back",
+                  style: GoogleFonts.didactGothic())
+              .tr()),
     );
   }
 }
