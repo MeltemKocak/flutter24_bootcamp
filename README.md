@@ -576,8 +576,16 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 <details>
   <summary><h2>Project Management</h2></summary>
-    
 
+![pm_1](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_3/Sprint3_PM/Sprint3_pm_1.png)
+
+![pm_2](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_3/Sprint3_PM/Sprint3_pm_2.png)
+
+![pm_3](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_3/Sprint3_PM/Sprint3_pm_3.png)
+
+![pm_4](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_3/Sprint3_PM/Sprint3_pm_4.png)
+
+![pm_1](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_3/Sprint3_PM/Sprint3_pm_5.png)
 </details>
 
 ---
@@ -597,7 +605,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
   * `450`
 
 - **Point Completion Logic:**
-  * A total target of `1200` points was set. `300` points were completed in the first sprint. In the second sprint, `450` points completed. In the third sprint, since the remaining tasks will be completed and integration studies will be carried out, a target of '450' points was set and completed.
+  * A total target of `1200` points was set. `300` points were completed in the first sprint. In the second sprint, `450` points completed. In the third sprint, since the remaining tasks will be completed and integration studies will be carried out, a target of `450` points was set and completed.
 
 - **Daily Scrum:**  [Sprint 3 Daily Scrum](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Project_Management_Files/Sprint_3/Sprint3_Daily_Scrum)
 
