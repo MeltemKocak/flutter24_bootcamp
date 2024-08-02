@@ -723,16 +723,26 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 ![Endnotes](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/General_Documents/Github_Pages_Images/Endnotes.png)
 
 ---
-<details>
-  <summary><h2>Logo</h2></summary>
 
-  ![Logo](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/General_Documents/LOGO.png )  
 
-</details>
+## PlanovaApp Promo
 
----
+### Turkish Video
 
-## PlanovApp Promo
+<div align="center">
+  <a href="https://youtu.be/dib6HTylFpI" target="_blank">
+    <img src="https://img.youtube.com/vi/dib6HTylFpI/maxresdefault.jpg" alt="Bunny Video" style="width:100%; height:auto;">
+  </a>
+</div>
+
+### English Video
+
+<div align="center">
+  <a href="https://youtu.be/CBsXVptBGIU" target="_blank">
+    <img src="https://img.youtube.com/vi/CBsXVptBGIU/maxresdefault.jpg" alt="Planova Video" style="width:100%; height:auto;">
+  </a>
+</div>
+
 
 ---
 
