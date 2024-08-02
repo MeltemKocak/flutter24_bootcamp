@@ -741,8 +741,10 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 ---
 <details>
   <summary><h2>Tech Tree</h2></summary>
-  
-  
+
+  ![Tech_tree](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/General_Documents/Planova_tech_tree.png)
+
+
 </details>
 
 ---
