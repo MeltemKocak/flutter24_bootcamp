@@ -28,83 +28,80 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
   }
 
   Future<void> _loadHabitData() async {
-  setState(() {
-    isLoading = true;
-  });
-  DocumentSnapshot doc = await FirebaseFirestore.instance
-      .collection('habits')
-      .doc(widget.habitId)
-      .get();
-  setState(() {
-    habitData = doc.data() as Map<String, dynamic>?;
-    isLoading = false;
-    if (habitData != null) {
-      print('Habit data loaded: $habitData'); // Bu satırı ekleyin
-    } else {
-      print('No habit data found.'); // Bu satırı ekleyin
-    }
-  });
-}
-
+    setState(() {
+      isLoading = true;
+    });
+    DocumentSnapshot doc = await FirebaseFirestore.instance
+        .collection('habits')
+        .doc(widget.habitId)
+        .get();
+    setState(() {
+      habitData = doc.data() as Map<String, dynamic>?;
+      isLoading = false;
+      if (habitData != null) {
+        print('Habit data loaded: $habitData'); // Bu satırı ekleyin
+      } else {
+        print('No habit data found.'); // Bu satırı ekleyin
+      }
+    });
+  }
 
   Future<void> _updateCompletionStatus(bool? value, String date) async {
-  if (habitData == null) return;
+    if (habitData == null) return;
 
-  String userId = FirebaseAuth.instance.currentUser!.uid;
-  Map<String, dynamic> completedDays =
-      (habitData!['completed_days'] ?? {}).cast<String, dynamic>();
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    Map<String, dynamic> completedDays =
+        (habitData!['completed_days'] ?? {}).cast<String, dynamic>();
 
-  if (!completedDays.containsKey(userId)) {
-    completedDays[userId] = {};
-  }
+    if (!completedDays.containsKey(userId)) {
+      completedDays[userId] = {};
+    }
 
-  completedDays[userId][date] = value ?? false;
+    completedDays[userId][date] = value ?? false;
 
+    await FirebaseFirestore.instance
+        .collection('habits')
+        .doc(widget.habitId)
+        .update({
+      'completed_days': completedDays,
+    });
 
-  await FirebaseFirestore.instance
-      .collection('habits')
-      .doc(widget.habitId)
-      .update({
-    'completed_days': completedDays,
-  });
-
-  List<dynamic> friends = habitData!['friends'] ?? [];
-  if (friends.isNotEmpty) {
-    for (String friendId in friends.cast<String>()) {
-      QuerySnapshot friendHabits = await FirebaseFirestore.instance
-          .collection('habits')
-          .where('user_id', isEqualTo: friendId)
-          .where('name', isEqualTo: habitData!['name'])
-          .get();
-
-      for (var habit in friendHabits.docs) {
-        Map<String, dynamic> friendCompletedDays =
-            (habit['completed_days'] ?? {}).cast<String, dynamic>();
-
-        if (!friendCompletedDays.containsKey(userId)) {
-          friendCompletedDays[userId] = {};
-        }
-
-        friendCompletedDays[userId][date] = value ?? false;
-
-        await FirebaseFirestore.instance
+    List<dynamic> friends = habitData!['friends'] ?? [];
+    if (friends.isNotEmpty) {
+      for (String friendId in friends.cast<String>()) {
+        QuerySnapshot friendHabits = await FirebaseFirestore.instance
             .collection('habits')
-            .doc(habit.id)
-            .update({
-          'completed_days': friendCompletedDays,
-        });
+            .where('user_id', isEqualTo: friendId)
+            .where('name', isEqualTo: habitData!['name'])
+            .get();
+
+        for (var habit in friendHabits.docs) {
+          Map<String, dynamic> friendCompletedDays =
+              (habit['completed_days'] ?? {}).cast<String, dynamic>();
+
+          if (!friendCompletedDays.containsKey(userId)) {
+            friendCompletedDays[userId] = {};
+          }
+
+          friendCompletedDays[userId][date] = value ?? false;
+
+          await FirebaseFirestore.instance
+              .collection('habits')
+              .doc(habit.id)
+              .update({
+            'completed_days': friendCompletedDays,
+          });
+        }
       }
     }
+
+    setState(() {
+      habitData!['completed_days'] = completedDays;
+      print('Updated habit data: $habitData'); // Bu satırı ekleyin
+    });
+
+    Provider.of<HabitProvider>(context, listen: false).setHabitData(habitData!);
   }
-
-  setState(() {
-    habitData!['completed_days'] = completedDays;
-    print('Updated habit data: $habitData'); // Bu satırı ekleyin
-  });
-
-  Provider.of<HabitProvider>(context, listen: false).setHabitData(habitData!);
-}
-
 
   void _showEditBottomSheet(BuildContext context) {
     showModalBottomSheet(
@@ -221,6 +218,16 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
                 },
               ),
               backgroundColor: theme.background,
+              actions: [
+                IconButton(
+                  icon: Icon(Icons.edit,
+                      color: theme
+                          .welcomeText), // Burada istediğiniz ikonu seçebilirsiniz
+                  onPressed: () {
+                    _showEditBottomSheet(context);
+                  },
+                ),
+              ],
             ),
             body: Container(
               color: theme.background,
@@ -233,45 +240,7 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
                       Center(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            ElevatedButton.icon(
-                              icon: const Icon(Icons.edit),
-                              label:
-                                  Text(tr('Edit'), style: GoogleFonts.didactGothic()),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: theme.habitCardBackground,
-                                foregroundColor: theme.habitIcons,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                minimumSize: const Size(160, 42),
-                              ),
-                              onPressed: () {
-                                _showEditBottomSheet(context);
-                              },
-                            ),
-                            ElevatedButton.icon(
-                              icon: const Icon(Icons.notifications),
-                              label: Text(tr('Reminder'),
-                                  style: GoogleFonts.didactGothic()),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: theme.habitCardBackground,
-                                foregroundColor: theme.habitIcons,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                minimumSize: const Size(160, 42),
-                              ),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const ReminderPage(),
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
+                          children: [],
                         ),
                       ),
                       const SizedBox(height: 15),
@@ -668,14 +637,19 @@ class AllTimeStats extends StatelessWidget {
     final habitData = habitProvider.habitData;
     final theme = Provider.of<ThemeProvider>(context).currentTheme;
     Map<String, dynamic> completedDays =
-        (habitData['completed_days'] ?? <String, dynamic>{}).cast<String, dynamic>();
+        (habitData['completed_days'] ?? <String, dynamic>{})
+            .cast<String, dynamic>();
     int targetDays = habitData['target_days'] ?? 0;
 
     final int completedCount = habitData['completed_days'] != null &&
-                            habitData['completed_days'][userId] != null
-    ? habitData['completed_days'][userId].values.where((value) => value == true).length
-    : 0;
-    double completionDouble = targetDays != 0 ? (completedCount / targetDays) * 100 : 0.0;
+            habitData['completed_days'][userId] != null
+        ? habitData['completed_days'][userId]
+            .values
+            .where((value) => value == true)
+            .length
+        : 0;
+    double completionDouble =
+        targetDays != 0 ? (completedCount / targetDays) * 100 : 0.0;
     int completion = completionDouble.isNaN ? 0 : completionDouble.toInt();
 
     return Card(
@@ -772,7 +746,6 @@ class AllTimeStats extends StatelessWidget {
   }
 }
 
-
 class MonthlyStats extends StatefulWidget {
   final String habitId;
   final Map<String, dynamic> completedDates;
@@ -858,11 +831,8 @@ class _MonthlyStatsState extends State<MonthlyStats> {
                         year = newValue!;
                       });
                     },
-                    items: [
-                      DateTime.now().year - 1,
-                      DateTime.now().year,
-                      DateTime.now().year + 1
-                    ].map<DropdownMenuItem<int>>((int value) {
+                    items: [DateTime.now().year, DateTime.now().year + 1]
+                        .map<DropdownMenuItem<int>>((int value) {
                       return DropdownMenuItem<int>(
                         value: value,
                         child: Text('$value ${tr("Stats")}',
@@ -1034,40 +1004,42 @@ class DayPainter extends CustomPainter {
         Provider.of<ThemeProvider>(context, listen: false).currentTheme;
     final double halfHeight = size.height / 2;
 
-
-   if (isHabitDay) {
-    if (friendCompleted == null) {
-      paint.color = userCompleted 
-          ? theme.monthlyCompleteDayGrid  // monthlyCompleteDayGrid
-          : theme.monthlyActiveDayGrid; // monthlyActiveDayGrid
-      canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
-    } else {
-      if (isFutureDate) {
-        paint.color = theme.monthlyActiveDayGrid; // monthlyDefaultDayGrid
-        canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
-      } else if (isPastDate) {
-        paint.color = userCompleted 
-            ? theme.monthlyCompleteDayGrid  // monthlyCompleteDayGrid
+    if (isHabitDay) {
+      if (friendCompleted == null) {
+        paint.color = userCompleted
+            ? theme.monthlyCompleteDayGrid // monthlyCompleteDayGrid
             : theme.monthlyActiveDayGrid; // monthlyActiveDayGrid
-        canvas.drawRect(Rect.fromLTWH(0, 0, size.width, halfHeight), paint);
-
-        paint.color = friendCompleted! 
-            ? theme.monthlyFriendCompleteDayGrid // monthlyFriendCompleteDayGrid
-            : theme.monthlyFriendUncompleteDayGrid; // monthlyFriendUncompleteDayGrid
-        canvas.drawRect(Rect.fromLTWH(0, halfHeight, size.width, halfHeight), paint);
-      } else {
-        paint.color = userCompleted 
-            ? theme.monthlyCompleteDayGrid  // monthlyCompleteDayGrid
-            : theme.monthlyDefaultDayGrid; // monthlyDefaultDayGrid
         canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
-      }
-    }
-  } else {
-    paint.color = theme.monthlyDefaultDayGrid.withOpacity(0.5); // monthlyInvalidDayGrid
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
-  }
-}
+      } else {
+        if (isFutureDate) {
+          paint.color = theme.monthlyActiveDayGrid; // monthlyDefaultDayGrid
+          canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
+        } else if (isPastDate) {
+          paint.color = userCompleted
+              ? theme.monthlyCompleteDayGrid // monthlyCompleteDayGrid
+              : theme.monthlyActiveDayGrid; // monthlyActiveDayGrid
+          canvas.drawRect(Rect.fromLTWH(0, 0, size.width, halfHeight), paint);
 
+          paint.color = friendCompleted!
+              ? theme
+                  .monthlyFriendCompleteDayGrid // monthlyFriendCompleteDayGrid
+              : theme
+                  .monthlyFriendUncompleteDayGrid; // monthlyFriendUncompleteDayGrid
+          canvas.drawRect(
+              Rect.fromLTWH(0, halfHeight, size.width, halfHeight), paint);
+        } else {
+          paint.color = userCompleted
+              ? theme.monthlyCompleteDayGrid // monthlyCompleteDayGrid
+              : theme.monthlyDefaultDayGrid; // monthlyDefaultDayGrid
+          canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
+        }
+      }
+    } else {
+      paint.color =
+          theme.monthlyDefaultDayGrid.withOpacity(0.5); // monthlyInvalidDayGrid
+      canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
+    }
+  }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;

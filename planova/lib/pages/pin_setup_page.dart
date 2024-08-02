@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:planova/pages/home.dart';
 import 'package:planova/pages/pattern_lock_page.dart';
 import 'package:planova/utilities/theme.dart';
 import 'pattern_setup_page.dart';
@@ -74,7 +75,10 @@ class _PinSetupPageState extends State<PinSetupPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Set Up PIN', style: GoogleFonts.didactGothic()).tr(),
+        title: Text(
+          'Set Up PIN',
+          style: GoogleFonts.didactGothic(color: theme.welcomeText),
+        ).tr(),
         backgroundColor: theme.background,
         iconTheme: IconThemeData(color: theme.addButton),
         leading: IconButton(
@@ -82,7 +86,7 @@ class _PinSetupPageState extends State<PinSetupPage> {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => JournalPage()),
+              MaterialPageRoute(builder: (context) => Homes()),
             );
           },
         ),
@@ -103,8 +107,11 @@ class _PinSetupPageState extends State<PinSetupPage> {
                   labelText: 'PIN'.tr(),
                   labelStyle:
                       GoogleFonts.didactGothic(color: theme.welcomeText),
+                  filled: true,
+                  fillColor: theme.addButton.withOpacity(0.2),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: theme.welcomeText),
+                    borderRadius: BorderRadius.circular(20.0),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: theme.welcomeText),
@@ -121,9 +128,12 @@ class _PinSetupPageState extends State<PinSetupPage> {
                   labelText: 'Confirm PIN'.tr(),
                   labelStyle:
                       GoogleFonts.didactGothic(color: theme.welcomeText),
+                  filled: true,
+                  fillColor: theme.addButton.withOpacity(0.2),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
                         color: _isPinMismatch ? Colors.red : theme.welcomeText),
+                    borderRadius: BorderRadius.circular(20.0),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(
@@ -136,11 +146,17 @@ class _PinSetupPageState extends State<PinSetupPage> {
                 onPressed: _setupPin,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: theme.addButton,
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(12.0), // Kenarları yuvarlar
+                    side: BorderSide(
+                        color: Colors.transparent), // Beyaz renkli kenar
+                  ),
                 ),
                 child: Text(
                   'Confirm PIN',
                   style: GoogleFonts.didactGothic(
-                    color: theme.welcomeText,
+                    color: theme.addButtonIcon,
                   ),
                 ).tr(),
               ),

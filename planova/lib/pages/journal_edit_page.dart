@@ -448,8 +448,8 @@ class _JournalEditPageState extends State<JournalEditPage> {
           maxLines: maxLines,
           decoration: InputDecoration(
             hintText: tr("Enter") + " $label",
-            hintStyle:
-                GoogleFonts.didactGothic(color: theme.borderColor.withOpacity(0.6)),
+            hintStyle: GoogleFonts.didactGothic(
+                color: theme.borderColor.withOpacity(0.6)),
             filled: true,
             fillColor: theme.habitCardBackground.withOpacity(0.5),
             border: OutlineInputBorder(
@@ -661,7 +661,8 @@ class _JournalEditPageState extends State<JournalEditPage> {
                     : Center(
                         child: Text(
                           tr("Tap to record"),
-                          style: GoogleFonts.didactGothic(color: theme.welcomeText),
+                          style: GoogleFonts.didactGothic(
+                              color: theme.welcomeText),
                         ),
                       ),
               ),
@@ -682,7 +683,8 @@ class _JournalEditPageState extends State<JournalEditPage> {
                   ? tr("Duration") +
                       ": ${_formatDuration(_audioDurations[_existingAudioUrl]!)}"
                   : tr("Loading duration..."),
-              style: GoogleFonts.didactGothic(color: theme.welcomeText, fontSize: 12),
+              style: GoogleFonts.didactGothic(
+                  color: theme.welcomeText, fontSize: 12),
             ),
           ),
       ],
@@ -740,7 +742,8 @@ class _JournalEditPageState extends State<JournalEditPage> {
         ),
         onPressed: _isSaving ? null : _saveJournalEntry,
         child: Text(tr("Save Changes"),
-            style: GoogleFonts.didactGothic(color: theme.addButtonIcon)),
+            style: GoogleFonts.didactGothic(
+                color: theme.addButtonIcon, fontWeight: FontWeight.w800)),
       ),
     );
   }

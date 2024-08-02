@@ -63,45 +63,45 @@ class _HabitPageState extends State<HabitPage> {
   }
 
   Future<bool> _showConfirmationDialog(BuildContext context) async {
-  return await showDialog<bool>(
-    context: context,
-    builder: (BuildContext context) {
-      final theme = Provider.of<ThemeProvider>(context).currentTheme;
-      return AlertDialog(
-        backgroundColor: theme.background,
-        title: Text(
-          tr('Confirm Deletion'),
-          style: GoogleFonts.didactGothic(color: theme.welcomeText),
-        ),
-        content: Text(
-          tr('Are you sure you want to delete this entry?'),
-          style: GoogleFonts.didactGothic(color: theme.welcomeText),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text(
-              tr('Cancel'),
-              style: GoogleFonts.didactGothic(color: theme.addButton),
-            ),
-            onPressed: () {
-              Navigator.of(context).pop(false);
-            },
-          ),
-          TextButton(
-            child: Text(
-              tr('Delete'),
-              style: GoogleFonts.didactGothic(color: theme.addButton),
-            ),
-            onPressed: () {
-              Navigator.of(context).pop(true);
-            },
-          ),
-        ],
-      );
-    },
-  ) ?? false;
-}
-
+    return await showDialog<bool>(
+          context: context,
+          builder: (BuildContext context) {
+            final theme = Provider.of<ThemeProvider>(context).currentTheme;
+            return AlertDialog(
+              backgroundColor: theme.background,
+              title: Text(
+                tr('Confirm Deletion'),
+                style: GoogleFonts.didactGothic(color: theme.welcomeText),
+              ),
+              content: Text(
+                tr('Are you sure you want to delete this entry?'),
+                style: GoogleFonts.didactGothic(color: theme.welcomeText),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                    tr('Cancel'),
+                    style: GoogleFonts.didactGothic(color: theme.addButton),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+                TextButton(
+                  child: Text(
+                    tr('Delete'),
+                    style: GoogleFonts.didactGothic(color: theme.addButton),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                ),
+              ],
+            );
+          },
+        ) ??
+        false;
+  }
 
   String _findNearestOrTodayDate(Map<String, dynamic> days) {
     DateTime today = DateTime.now();
@@ -272,11 +272,16 @@ class _HabitPageState extends State<HabitPage> {
                           ),
                         ),
                         const SizedBox(height: 5),
-                        Text(
-                          data['description'] ?? tr('No description'),
-                          style: GoogleFonts.didactGothic(
-                            color: theme.subText,
-                            fontSize: 14,
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.67,
+                          child: Text(
+                            data['description'] ?? tr('No description'),
+                            style: GoogleFonts.didactGothic(
+                              color: theme.subText,
+                              fontSize: 14,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
@@ -458,9 +463,44 @@ class _HabitPageState extends State<HabitPage> {
                     style: GoogleFonts.didactGothic(color: theme.habitTitle)));
           }
 
+          // Sıralama işlemi
+          List<DocumentSnapshot> activeDayHabits = [];
+          List<DocumentSnapshot> otherDayHabits = [];
+
+          for (DocumentSnapshot document in snapshot.data!.docs) {
+            Map<String, dynamic>? data =
+                document.data() as Map<String, dynamic>?;
+            if (data == null) continue;
+
+            String displayDate = _findNearestOrTodayDate(data['days']);
+            bool isActiveDay =
+                displayDate == DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+            if (isActiveDay) {
+              activeDayHabits.add(document);
+            } else {
+              otherDayHabits.add(document);
+            }
+          }
+
+          otherDayHabits.sort((a, b) {
+            Map<String, dynamic>? aData = a.data() as Map<String, dynamic>?;
+            Map<String, dynamic>? bData = b.data() as Map<String, dynamic>?;
+
+            String aDate = _findNearestOrTodayDate(aData?['days'] ?? {});
+            String bDate = _findNearestOrTodayDate(bData?['days'] ?? {});
+
+            return aDate.compareTo(bDate);
+          });
+
+          List<DocumentSnapshot> sortedHabits = [
+            ...activeDayHabits,
+            ...otherDayHabits
+          ];
+
           return ListView(
             padding: const EdgeInsets.all(16),
-            children: snapshot.data!.docs.map((DocumentSnapshot document) {
+            children: sortedHabits.map((DocumentSnapshot document) {
               Map<String, dynamic>? data =
                   document.data() as Map<String, dynamic>?;
 

@@ -677,7 +677,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
           color: Color.fromARGB(150, 200, 0, 0),
           borderRadius: BorderRadius.circular(16),
         ),
-        child: Text(tr("Delete Task")),
+        child: Text(tr("Delete Task"),),
       ),
     );
   }

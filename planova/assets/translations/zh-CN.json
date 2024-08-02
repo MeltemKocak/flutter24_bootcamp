@@ -276,5 +276,6 @@
     "onur_role": "Onur Turan - 开发人员",
     "contact_us": "联系我们：",
     "contact_info": "如有任何疑问或支持请求，请联系我们 support@planovaapp.com。",
-    "managing_time": "正确管理时间是实现所有领域成功的基础，Planova 应用程序将在这条道路上成为您的最大助手。"
+    "managing_time": "正确管理时间是实现所有领域成功的基础，Planova 应用程序将在这条道路上成为您的最大助手。",
+    "You cannot use this section while logged in as a guest. Please create an account.":"以访客身份登录时无法使用本部分。请创建一个账户。"
 }

@@ -12,7 +12,7 @@ void main() async {
   await Firebase.initializeApp();
   runApp(EasyLocalization(
     supportedLocales: [Locale('en', 'US'), Locale('tr', 'TR')],
-    path: 'assets/translations', // <-- change the path of the translation files 
+    path: 'assets/translations', // <-- change the path of the translation files
     fallbackLocale: Locale('en', 'US'),
     child: MyApp(),
   ));
@@ -212,7 +212,11 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(
               height: 40,
               width: 40,
-              child: Icon(Icons.email_outlined, size: 40, color: theme.welcomeText,),
+              child: Icon(
+                Icons.email_outlined,
+                size: 40,
+                color: theme.welcomeText,
+              ),
             ),
             const SizedBox(height: 10),
             Text(
@@ -264,7 +268,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 filled: true,
-                fillColor: theme.habitDetailEditBackground,
+                fillColor: theme.habitDetailEditBackground.withOpacity(0.5),
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 14,
@@ -285,7 +289,9 @@ class _LoginScreenState extends State<LoginScreen> {
         children: [
           const SizedBox(height: 20),
           Text(
-            isExistingUser ? tr("Enter your password") : tr("Create a new password"),
+            isExistingUser
+                ? tr("Enter your password")
+                : tr("Create a new password"),
             style: GoogleFonts.didactGothic(
               color: theme.welcomeText,
               fontSize: 18,
@@ -319,7 +325,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               filled: true,
-              fillColor: theme.habitDetailEditBackground,
+              fillColor: theme.habitDetailEditBackground.withOpacity(0.5),
             ),
           ),
         ],
@@ -504,7 +510,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     ),
                   ),
                   filled: true,
-                  fillColor: theme.habitDetailEditBackground,
+                  fillColor: theme.habitDetailEditBackground.withOpacity(0.5),
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 14,

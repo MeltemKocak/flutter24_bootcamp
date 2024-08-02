@@ -248,13 +248,15 @@ class _HabitEditPageState extends State<HabitEditPage> {
       color: theme.habitDetailEditBackground,
       child: isLoading
           ? Center(
-              child: CircularProgressIndicator(color: theme.checkBoxActiveColor),
+              child:
+                  CircularProgressIndicator(color: theme.checkBoxActiveColor),
             )
           : Container(
               padding: const EdgeInsets.all(20.0),
               decoration: BoxDecoration(
                 color: theme.background,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(15)),
               ),
               child: SingleChildScrollView(
                 child: Column(
@@ -268,8 +270,8 @@ class _HabitEditPageState extends State<HabitEditPage> {
                         _descriptionController, false, tr('Description'), theme,
                         maxLines: 3),
                     const SizedBox(height: 20),
-                    _buildTextField(
-                        _friendEmailController, false, tr("Friend's Email"), theme,
+                    _buildTextField(_friendEmailController, false,
+                        tr("Friend's Email"), theme,
                         enabled: false),
                     const SizedBox(height: 20),
                     Row(
@@ -285,8 +287,9 @@ class _HabitEditPageState extends State<HabitEditPage> {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      tr("Target Days:")+" $_targetDays",
-                      style: GoogleFonts.didactGothic(color: theme.welcomeText, fontSize: 16),
+                      tr("Target Days:") + " $_targetDays",
+                      style: GoogleFonts.didactGothic(
+                          color: theme.welcomeText, fontSize: 16),
                     ),
                     const SizedBox(height: 20),
                     _buildDaySelectionSection(theme),
@@ -303,7 +306,9 @@ class _HabitEditPageState extends State<HabitEditPage> {
                           ),
                           onPressed: _deleteHabit,
                           child: Text(tr("Delete Habit"),
-                          style: GoogleFonts.didactGothic(color: theme.welcomeText)),
+                              style: GoogleFonts.didactGothic(
+                                  color: theme.welcomeText,
+                                  fontWeight: FontWeight.w800)),
                         ),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -314,7 +319,9 @@ class _HabitEditPageState extends State<HabitEditPage> {
                           ),
                           onPressed: _editHabit,
                           child: Text(tr("Update Habit"),
-                          style: GoogleFonts.didactGothic(color: theme.welcomeText)),
+                              style: GoogleFonts.didactGothic(
+                                  color: theme.welcomeText,
+                                  fontWeight: FontWeight.w800)),
                         ),
                       ],
                     ),
@@ -334,7 +341,9 @@ class _HabitEditPageState extends State<HabitEditPage> {
         Text(
           label,
           style: GoogleFonts.didactGothic(
-              color: theme.welcomeText, fontSize: 15, fontWeight: FontWeight.w300),
+              color: theme.welcomeText,
+              fontSize: 15,
+              fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 2),
         TextFormField(
@@ -344,7 +353,8 @@ class _HabitEditPageState extends State<HabitEditPage> {
           enabled: enabled,
           decoration: InputDecoration(
             hintText: tr('Enter') + " $label",
-            hintStyle: GoogleFonts.didactGothic(color: theme.welcomeText.withAlpha(150)),
+            hintStyle: GoogleFonts.didactGothic(
+                color: theme.welcomeText.withAlpha(150)),
             filled: true,
             fillColor: theme.toDoCardBackground,
             focusedBorder: OutlineInputBorder(
@@ -371,14 +381,17 @@ class _HabitEditPageState extends State<HabitEditPage> {
     );
   }
 
-  Widget _buildDateField(TextEditingController controller, String label, CustomThemeData theme) {
+  Widget _buildDateField(
+      TextEditingController controller, String label, CustomThemeData theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
           style: GoogleFonts.didactGothic(
-              color: theme.welcomeText, fontSize: 15, fontWeight: FontWeight.w300),
+              color: theme.welcomeText,
+              fontSize: 15,
+              fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 2),
         GestureDetector(

@@ -9,6 +9,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:planova/pages/today_page.dart';
 import 'package:intl/intl.dart';
+import 'package:planova/pages/welcome_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:planova/utilities/theme.dart';
 import 'package:planova/pages/user_stories_page.dart';
@@ -273,6 +274,16 @@ class _ProfilePageState extends State<ProfilePage> {
                       )
                     : GestureDetector(
                         onTap: () async {
+                          if (user != null && user!.isAnonymous) {
+                            _showAnonymousAlertDialog(context);
+                            return;
+                          }
+                          bool userExists =
+                              await _isUserInCollection(user!.uid);
+                          if (!userExists) {
+                            _showProfileAlertDialog(context);
+                            return;
+                          }
                           await Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -341,6 +352,100 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  void _showAnonymousAlertDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        final theme = Provider.of<ThemeProvider>(context).currentTheme;
+        return AlertDialog(
+          backgroundColor: theme.background,
+          title: Text(
+            tr('Warning'),
+            style: GoogleFonts.didactGothic(color: theme.welcomeText),
+          ),
+          content: Text(
+            tr('You cannot use this section while logged in as a guest. Please create an account.'),
+            style: GoogleFonts.didactGothic(color: theme.welcomeText),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                tr('Cancel'),
+                style: GoogleFonts.didactGothic(
+                    color: Colors.red, fontWeight: FontWeight.w200),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                      builder: (context) => const WelcomeScreen()),
+                  (Route<dynamic> route) => false,
+                );
+              },
+              child: Text(
+                tr('Confirm'),
+                style: GoogleFonts.didactGothic(
+                    color: Colors.green, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showProfileAlertDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        final theme = Provider.of<ThemeProvider>(context).currentTheme;
+        return AlertDialog(
+          backgroundColor: theme.background,
+          title: Text(
+            tr('Warning'),
+            style: GoogleFonts.didactGothic(color: theme.welcomeText),
+          ),
+          content: Text(
+            tr('You need to create a profile to continue this action.'),
+            style: GoogleFonts.didactGothic(color: theme.welcomeText),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                tr('Cancel'),
+                style: GoogleFonts.didactGothic(
+                    color: Colors.red, fontWeight: FontWeight.w200),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                tr('Confirm'),
+                style: GoogleFonts.didactGothic(
+                    color: Colors.green, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<bool> _isUserInCollection(String userId) async {
+    DocumentSnapshot userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    return userDoc.exists;
+  }
+
   Future<Uint8List> pickImage(ImageSource source) async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: source);
@@ -389,7 +494,8 @@ class StoryWidget extends StatelessWidget {
               child: Text(
                 displayedStory,
                 style: GoogleFonts.didactGothic(
-                  color: theme.addButtonIcon,
+                  color: theme.addButton,
+                  fontWeight: FontWeight.bold,
                   fontSize: 16,
                 ),
               ),
@@ -432,12 +538,16 @@ class TaskCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Text(
-                  title,
-                  style: GoogleFonts.didactGothic(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: theme.calenderNumbers,
+                Center(
+                  child: Text(
+                    title,
+                    textAlign: TextAlign
+                        .center, // Text widget'ının içinde yazıyı ortalar
+                    style: GoogleFonts.didactGothic(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: theme.calenderNumbers,
+                    ),
                   ),
                 ),
               ],
@@ -659,12 +769,12 @@ class WeeklyStatsWidget extends StatelessWidget {
                         alignment: BarChartAlignment.spaceEvenly,
                         maxY: maxY.toDouble(),
                         titlesData: FlTitlesData(
-                          rightTitles: AxisTitles(),
-                          leftTitles: AxisTitles(
+                          rightTitles: const AxisTitles(),
+                          leftTitles: const AxisTitles(
                             sideTitles: SideTitles(
                                 showTitles: false), // Sol tarafı kaldır
                           ),
-                          topTitles: AxisTitles(
+                          topTitles: const AxisTitles(
                             sideTitles: SideTitles(
                               showTitles: false,
                             ),
@@ -710,13 +820,13 @@ class WeeklyStatsWidget extends StatelessWidget {
                                             color: theme.calenderNumbers,
                                             fontSize: 12));
                                   default:
-                                    return Text('');
+                                    return const Text('');
                                 }
                               },
                             ),
                           ),
                         ),
-                        gridData: FlGridData(
+                        gridData: const FlGridData(
                             show: false), // Kesikli çizgileri kaldırır
                         borderData: FlBorderData(show: false),
                         barGroups: [

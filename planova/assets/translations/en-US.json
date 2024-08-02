@@ -220,7 +220,7 @@
     "Public":"Open",
 
     "Filter":"Filtrele",
-    "Favorite Tasks":"Favorilenmiş Görevler",
+    "Favorite Tasks":"Favorite Tasks",
 
     "Create Story":"Create Your Story",
 
@@ -272,7 +272,7 @@
 
     "Select Language":"Select Language",
 
-    "You need to create a profile to continue this action.\n\n(You can make the story part more detailed by adding text to the bio section.)":"You need to create a profile to continue this action.\n\n(You can make the story part more detailed by adding text to the bio section.)",
+    "You need to create a profile to continue this action.)":"You need to create a profile to continue this action.\n\n(You can make the story part more detailed by adding text to the bio section.)",
     "Confirm Deletion":"Confirm Deletion",
     "Are you sure you want to delete this entry?":"Are you sure you want to delete this entry?",
     "feedback_and_support": "Feedback and Support",
@@ -303,8 +303,8 @@
     "onur_role": "Onur Turan - Developer",
     "contact_us": "Contact Us:",
     "contact_info": "For any inquiries or support, please reach out to us at support@planovaapp.com.",
-    "managing_time": "Managing time correctly is the foundation of achieving success in all areas of life, and the Planova application will be your greatest assistant on this path."
-  
+    "managing_time": "Managing time correctly is the foundation of achieving success in all areas of life, and the Planova application will be your greatest assistant on this path.",
+   "You cannot use this section while logged in as a guest. Please create an account.":"You cannot use this section while logged in as a guest. Please create an account."
   
 
 }

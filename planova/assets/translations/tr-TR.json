@@ -217,7 +217,7 @@
     "Public":"Açık",
 
     "Filter":"Filter",
-    "Favorite Tasks":"Favorite Tasks",
+    "Favorite Tasks":"Favori Görevler",
 
     "Create Story":"Hikayeni Oluştur",
 
@@ -281,7 +281,7 @@
     "contact_support_content": "Yardım mı lazım? SSS bölümünde aradığınızı bulamazsanız, destek ekibimiz size yardımcı olmak için burada. Bize doğrudan support@planovaapp.com adresinden e-posta ile ulaşın. Lütfen adınızı, e-posta adresinizi, sorun kategorisini ve sorununuzun ayrıntılı bir açıklamasını sağlayın ki size daha etkili bir şekilde yardımcı olabilelim.",
     "visit_our_website": "Web Sitemizi Ziyaret Edin:",
     "visit_our_website_content": "Daha Fazla Bilgi: Planova, özelliklerimiz ve güncellemeler hakkında daha detaylı bilgi almak için web sitemizi ziyaret edin. Burada ek kaynaklar, blog yazıları ve Planova hakkında en son haberleri bulabilirsiniz.",
-    
+
         "about": "Hakkında",
         "about_planova": "Planova Hakkında",
         "about_description": "Günümüzün hızlı tempolu dünyasında zamanı verimli kullanmak ve kişisel zamanı doğru yönetmek, hem profesyonel hem de kişisel başarıya ulaşmanın en önemli anahtarlarından biridir. Planova, kullanıcıların kişisel zaman yönetimini kolaylaştırmak için tasarlanmış kapsamlı bir mobil uygulamadır.",
@@ -300,8 +300,8 @@
         "onur_role": "Onur Turan - Geliştirici",
         "contact_us": "Bize Ulaşın:",
         "contact_info": "Herhangi bir soru veya destek için, lütfen support@planovaapp.com adresinden bize ulaşın.",
-        "managing_time": "Zamanı doğru yönetmek, hayatın tüm alanlarında başarıya ulaşmanın temelidir ve Planova uygulaması bu yolda en büyük yardımcınız olacaktır."
-      
+        "managing_time": "Zamanı doğru yönetmek, hayatın tüm alanlarında başarıya ulaşmanın temelidir ve Planova uygulaması bu yolda en büyük yardımcınız olacaktır.",
+        "You cannot use this section while logged in as a guest. Please create an account.":"Misafir olarak oturum açtığında bu bölümü kullanamazsın. Lütfen bir hesap oluştur."
       
 
 

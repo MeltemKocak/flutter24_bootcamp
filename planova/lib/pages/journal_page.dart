@@ -51,7 +51,8 @@ class _JournalPageState extends State<JournalPage> {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(
-                    child: CircularProgressIndicator(color: theme.habitProgress),
+                    child:
+                        CircularProgressIndicator(color: theme.habitProgress),
                   );
                 }
                 if (snapshot.hasError) {
@@ -77,8 +78,12 @@ class _JournalPageState extends State<JournalPage> {
                     var doc = snapshot.data!.docs[index];
                     var data = doc.data() as Map<String, dynamic>;
                     DateTime date = (data['date'] as Timestamp).toDate();
-                    String formattedDate = DateFormat('d MMMM').format(date);
-                    List<String> imageUrls = data['imageUrls'] != null ? List<String>.from(data['imageUrls']) : [];
+                    String formattedDate =
+                        DateFormat('d MMMM', context.locale.toString())
+                            .format(date);
+                    List<String> imageUrls = data['imageUrls'] != null
+                        ? List<String>.from(data['imageUrls'])
+                        : [];
                     String? audioUrl = data['audioUrl'];
                     String description = data['description'] ?? '';
 
@@ -96,7 +101,8 @@ class _JournalPageState extends State<JournalPage> {
                       ),
                       direction: DismissDirection.endToStart,
                       onDismissed: (direction) async {
-                        bool? confirmed = await _showConfirmationDialog(context);
+                        bool? confirmed =
+                            await _showConfirmationDialog(context);
                         if (confirmed == true) {
                           _moveJournalEntryToTrash(doc);
                         } else {
@@ -108,12 +114,14 @@ class _JournalPageState extends State<JournalPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => JournalDetailPage(docId: doc.id, data: data),
+                              builder: (context) =>
+                                  JournalDetailPage(docId: doc.id, data: data),
                             ),
                           );
                         },
                         child: Card(
-                          margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                          margin: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 20),
                           color: theme.toDoCardBackground,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
@@ -130,19 +138,23 @@ class _JournalPageState extends State<JournalPage> {
                                       style: GoogleFonts.didactGothic(
                                         color: theme.habitProgress,
                                         fontSize: 24,
-                                        fontWeight: FontWeight.w500,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                     const Spacer(),
                                     if (audioUrl != null && audioUrl.isNotEmpty)
-                                      Icon(Icons.audiotrack, color: theme.habitProgress),
+                                      Icon(Icons.audiotrack,
+                                          color: theme.habitProgress),
                                     IconButton(
-                                      icon: Icon(Icons.edit, color: theme.habitProgress),
+                                      icon: Icon(Icons.edit,
+                                          color: theme.habitProgress),
                                       onPressed: () {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => JournalEditPage(docId: doc.id, data: data),
+                                            builder: (context) =>
+                                                JournalEditPage(
+                                                    docId: doc.id, data: data),
                                           ),
                                         );
                                       },
@@ -160,7 +172,9 @@ class _JournalPageState extends State<JournalPage> {
                                 ),
                                 const SizedBox(height: 10),
                                 Text(
-                                  description.length > 100 ? '${description.substring(0, 100)}...' : description,
+                                  description.length > 100
+                                      ? '${description.substring(0, 100)}...'
+                                      : description,
                                   style: GoogleFonts.didactGothic(
                                     color: theme.toDoIcons,
                                     fontSize: 16,
@@ -176,15 +190,19 @@ class _JournalPageState extends State<JournalPage> {
                                       itemCount: imageUrls.length,
                                       itemBuilder: (context, index) {
                                         return GestureDetector(
-                                          onTap: () => _viewPhoto(imageUrls[index]),
+                                          onTap: () =>
+                                              _viewPhoto(imageUrls[index]),
                                           child: Container(
                                             width: 100,
                                             height: 100,
-                                            margin: const EdgeInsets.only(right: 10),
+                                            margin: const EdgeInsets.only(
+                                                right: 10),
                                             decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(10),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                               image: DecorationImage(
-                                                image: NetworkImage(imageUrls[index]),
+                                                image: NetworkImage(
+                                                    imageUrls[index]),
                                                 fit: BoxFit.cover,
                                               ),
                                             ),
@@ -210,45 +228,45 @@ class _JournalPageState extends State<JournalPage> {
   }
 
   Future<bool> _showConfirmationDialog(BuildContext context) async {
-  return await showDialog<bool>(
-    context: context,
-    builder: (BuildContext context) {
-      final theme = Provider.of<ThemeProvider>(context).currentTheme;
-      return AlertDialog(
-        backgroundColor: theme.background,
-        title: Text(
-          tr('Confirm Deletion'),
-          style: GoogleFonts.didactGothic(color: theme.welcomeText),
-        ),
-        content: Text(
-          tr('Are you sure you want to delete this entry?'),
-          style: GoogleFonts.didactGothic(color: theme.welcomeText),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text(
-              tr('Cancel'),
-              style: GoogleFonts.didactGothic(color: theme.addButton),
-            ),
-            onPressed: () {
-              Navigator.of(context).pop(false);
-            },
-          ),
-          TextButton(
-            child: Text(
-              tr('Delete'),
-              style: GoogleFonts.didactGothic(color: theme.addButton),
-            ),
-            onPressed: () {
-              Navigator.of(context).pop(true);
-            },
-          ),
-        ],
-      );
-    },
-  ) ?? false;
-}
-
+    return await showDialog<bool>(
+          context: context,
+          builder: (BuildContext context) {
+            final theme = Provider.of<ThemeProvider>(context).currentTheme;
+            return AlertDialog(
+              backgroundColor: theme.background,
+              title: Text(
+                tr('Confirm Deletion'),
+                style: GoogleFonts.didactGothic(color: theme.welcomeText),
+              ),
+              content: Text(
+                tr('Are you sure you want to delete this entry?'),
+                style: GoogleFonts.didactGothic(color: theme.welcomeText),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                    tr('Cancel'),
+                    style: GoogleFonts.didactGothic(color: theme.addButton),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+                TextButton(
+                  child: Text(
+                    tr('Delete'),
+                    style: GoogleFonts.didactGothic(color: theme.addButton),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                ),
+              ],
+            );
+          },
+        ) ??
+        false;
+  }
 
   void _moveJournalEntryToTrash(DocumentSnapshot entry) async {
     final data = entry.data() as Map<String, dynamic>;
@@ -263,7 +281,10 @@ class _JournalPageState extends State<JournalPage> {
       'data': data,
     });
 
-    await FirebaseFirestore.instance.collection('journal').doc(entry.id).delete();
+    await FirebaseFirestore.instance
+        .collection('journal')
+        .doc(entry.id)
+        .delete();
   }
 
   void _viewPhoto(String imageUrl) {

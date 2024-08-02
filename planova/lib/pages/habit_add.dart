@@ -370,7 +370,8 @@ class _HabitAddPageState extends State<HabitAddPage> {
         ),
         onPressed: _addHabit,
         child: Text("Confirm Habit",
-                style: GoogleFonts.didactGothic(color: theme.addButtonIcon))
+                style: GoogleFonts.didactGothic(
+                    color: theme.addButtonIcon, fontWeight: FontWeight.w800))
             .tr(),
       ),
     );

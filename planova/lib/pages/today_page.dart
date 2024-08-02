@@ -1,5 +1,3 @@
-// TodayPage.dart
-
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -70,18 +68,14 @@ class TodayPage extends StatefulWidget {
       final data = doc.data();
       if (data['days'] != null && data['days'].containsKey(formattedDate)) {
         DateTime focusDateOnly = DateTime(date.year, date.month, date.day);
-        DateTime now = DateTime.now();
-        DateTime nowDate = DateTime(now.year, now.month, now.day);
 
-        if (nowDate == focusDateOnly) {
-          final completedDays = data['completed_days'] as Map<String, dynamic>?;
-          if (completedDays != null &&
-              completedDays[user.uid] is Map &&
-              completedDays[user.uid][formattedDate] == true) {
-            completedCount++;
-          } else {
-            incompleteCount++;
-          }
+        final completedDays = data['completed_days'] as Map<String, dynamic>?;
+        if (completedDays != null &&
+            completedDays[user.uid] is Map &&
+            completedDays[user.uid][formattedDate] == true) {
+          completedCount++;
+        } else {
+          incompleteCount++;
         }
       }
     }
@@ -122,7 +116,7 @@ class _TodayPageState extends State<TodayPage> {
           Container(
             margin: const EdgeInsets.only(right: 18),
             child: EasyInfiniteDateTimeLine(
-              locale: tr("en"),
+              locale: EasyLocalization.of(context)!.currentLocale.toString(),
               showTimelineHeader: false,
               selectionMode: const SelectionMode.autoCenter(),
               controller: widget.controller,
@@ -138,13 +132,13 @@ class _TodayPageState extends State<TodayPage> {
                 todayStyle: DayStyle(
                   decoration: BoxDecoration(
                     color: theme.activeDayColor.withOpacity(0.4),
-                    borderRadius: BorderRadius.all(Radius.circular(18)),
+                    borderRadius: const BorderRadius.all(Radius.circular(18)),
                   ),
                 ),
                 activeDayStyle: DayStyle(
                   decoration: BoxDecoration(
                     color: theme.focusDayColor,
-                    borderRadius: BorderRadius.all(Radius.circular(18)),
+                    borderRadius: const BorderRadius.all(Radius.circular(18)),
                   ),
                 ),
                 borderColor: Colors.transparent,
@@ -165,6 +159,7 @@ class _TodayPageState extends State<TodayPage> {
                 FirebaseFirestore.instance
                     .collection('todos')
                     .where('userId', isEqualTo: _user!.uid)
+                    .orderBy('taskTimes')
                     .snapshots(),
                 FirebaseFirestore.instance
                     .collection('habits')

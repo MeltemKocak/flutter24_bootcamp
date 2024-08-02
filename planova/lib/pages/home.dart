@@ -48,6 +48,7 @@ class Homes extends StatelessWidget {
             ),
           ),
         ),
+        locale: EasyLocalization.of(context)!.currentLocale,
         home: const NavigationExample(),
       ),
     );
@@ -130,7 +131,7 @@ class _NavigationExampleState extends State<NavigationExample> {
                 RadioListTile<String>(
                   activeColor: theme.welcomeDotActive,
                   title: Text(
-                    'All Tasks',
+                    tr('All Tasks'),
                     style: GoogleFonts.didactGothic(color: theme.welcomeText),
                   ),
                   value: tr('All Tasks'),
@@ -145,7 +146,7 @@ class _NavigationExampleState extends State<NavigationExample> {
                 RadioListTile<String>(
                   activeColor: theme.welcomeDotActive,
                   title: Text(
-                    'Favorite Tasks',
+                    tr('Favorite Tasks'),
                     style: GoogleFonts.didactGothic(color: theme.welcomeText),
                   ),
                   value: tr('Favorite Tasks'),
@@ -160,7 +161,7 @@ class _NavigationExampleState extends State<NavigationExample> {
                 RadioListTile<String>(
                   activeColor: theme.welcomeDotActive,
                   title: Text(
-                    'Habits',
+                    tr('Habits'),
                     style: GoogleFonts.didactGothic(color: theme.welcomeText),
                   ),
                   value: tr('Habits'),
@@ -180,99 +181,99 @@ class _NavigationExampleState extends State<NavigationExample> {
     );
   }
 
- void _showAnonymousAlertDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      final theme = Provider.of<ThemeProvider>(context).currentTheme;
-      return AlertDialog(
-        backgroundColor: theme.background,
-        title: Text(
-          tr('Warning'),
-          style: GoogleFonts.didactGothic(color: theme.welcomeText),
-        ),
-        content: Text(
-          tr('You cannot use the Habit section while logged in as a guest. Please create an account.'),
-          style: GoogleFonts.didactGothic(color: theme.welcomeText),
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              setState(() {
-                currentPageIndex = 0;
-              });
-              Navigator.of(context).pop();
-            },
-            child: Text(
-              tr('Cancel'),
-              style: GoogleFonts.didactGothic(color: theme.addButton),
-            ),
+  void _showAnonymousAlertDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        final theme = Provider.of<ThemeProvider>(context).currentTheme;
+        return AlertDialog(
+          backgroundColor: theme.background,
+          title: Text(
+            tr('Warning'),
+            style: GoogleFonts.didactGothic(color: theme.welcomeText),
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => const WelcomeScreen()),
-                (Route<dynamic> route) => false,
-              );
-            },
-            child: Text(
-              tr('Confirm'),
-              style: GoogleFonts.didactGothic(color: theme.addButton),
-            ),
+          content: Text(
+            tr('You cannot use this section while logged in as a guest. Please create an account.'),
+            style: GoogleFonts.didactGothic(color: theme.welcomeText),
           ),
-        ],
-      );
-    },
-  );
-}
-
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  currentPageIndex = 0;
+                });
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                tr('Cancel'),
+                style: GoogleFonts.didactGothic(
+                    color: Colors.red, fontWeight: FontWeight.w200),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                      builder: (context) => const WelcomeScreen()),
+                  (Route<dynamic> route) => false,
+                );
+              },
+              child: Text(
+                tr('Confirm'),
+                style: GoogleFonts.didactGothic(
+                    color: Colors.green, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void _showProfileAlertDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      final theme = Provider.of<ThemeProvider>(context).currentTheme;
-      return AlertDialog(
-        backgroundColor: theme.background,
-        title: Text(
-          tr('Warning'),
-          style: GoogleFonts.didactGothic(color: theme.welcomeText),
-        ),
-        content: Text(
-          tr('You need to create a profile to continue this action.\n\n(You can make the story part more detailed by adding text to the bio section.)'),
-          style: GoogleFonts.didactGothic(color: theme.welcomeText),
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              setState(() {
-                currentPageIndex = 0;
-              });
-              Navigator.of(context).pop();
-            },
-            child: Text(
-              tr('Cancel'),
-              style: GoogleFonts.didactGothic(color: theme.addButton),
-            ),
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        final theme = Provider.of<ThemeProvider>(context).currentTheme;
+        return AlertDialog(
+          backgroundColor: theme.background,
+          title: Text(
+            tr('Warning'),
+            style: GoogleFonts.didactGothic(color: theme.welcomeText),
           ),
-          TextButton(
-            onPressed: () {
-              setState(() {
-                currentPageIndex = 3;
-              });
-              Navigator.of(context).pop();
-            },
-            child: Text(
-              tr('Confirm'),
-              style: GoogleFonts.didactGothic(color: theme.addButton),
-            ),
+          content: Text(
+            tr('You need to create a profile to continue this action.\n\n(You can make the story part more detailed by adding text to the bio section.)'),
+            style: GoogleFonts.didactGothic(color: theme.welcomeText),
           ),
-        ],
-      );
-    },
-  );
-}
-
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                tr('Cancel'),
+                style: GoogleFonts.didactGothic(
+                    color: Colors.red, fontWeight: FontWeight.w200),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  currentPageIndex = 3;
+                });
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                tr('Confirm'),
+                style: GoogleFonts.didactGothic(
+                    color: Colors.green, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Future<bool> _isUserInCollection(String userId) async {
     DocumentSnapshot userDoc =
@@ -307,7 +308,10 @@ class _NavigationExampleState extends State<NavigationExample> {
           children: [
             SizedBox(width: MediaQuery.of(context).size.width * 0.08),
             Text(appBarTitles[currentPageIndex],
-                style: GoogleFonts.didactGothic(color: theme.appBar)),
+                style: GoogleFonts.didactGothic(
+                  color: theme.appBar,
+                  fontWeight: FontWeight.bold,
+                )),
           ],
         ),
         actions: [
