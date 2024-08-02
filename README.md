@@ -610,7 +610,14 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 
 - **Sprint Notes:**
-   * 
+   * Collaborative habit tracking was decided to be implemented using `users' email` addresses.
+   * `Gemini API` was used for Story AI.
+   * `Forgot Password` Firebase authentication integration was implemented for users.
+   * A `PIN` and `pattern` system was created for the locked journal page, and the data was updated to be stored in Firebase.
+   * Localization with support for `10 different languages` was added.
+   * `Persona`, `FAQ`, and `Lean Canvas` documents were created with the goal of turning the project into a startup.
+   * `User Agreement`, `Explicit Consent Agreement`, and `Personal Data Protection Clarification Text` were created according to Turkish legal regulations.
+   * `LinkedIn` and `YouTube` accounts were opened for the promotion of the application.
  
 - **Expected point completion within Sprint:**
   * `450`
@@ -648,8 +655,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 - **Sprint Retrospective:**
    * Starting from the third sprint, evaluations of all sprints were conducted, and plans were made in line with the application's future goals.
-  * The team gathered on the Discord platform and celebrated the completion of the application.
-  * It was decided that Olgun and Melisa would begin preparing for the jury presentation
+  * The team gathered together on the Discord platform, everyone congratulated each other, watched a video together, and it was decided that Olgun and Melisa would start preparing for the jury presentation.
 
 - **Additional Files:**
    * [Express Consent Agreement](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Project_Management_Files/Sprint_3/Sprint3_Additional_Files/Planova_Acik_Riza_Sözleşmesi.pdf)
@@ -666,7 +672,14 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 
 - **Sprint Notları:**
-   * 
+  * Birlikte alışkanlık takibi eklemesinin kullanıcıların `e-posta adresiyle` yapılmasına karar verildi.
+  * Story AI için `Gemini API` kullanıldı.
+  * Kullanıcılar için `Şifremi unuttum` Firebase kimlik doğrulama entegrasyonu yapıldı.
+  * Kilitli günlük sayfası için `PIN` ve `desen sistemi` oluşturuldu ve veriler Firebase'de tutulacak şekilde güncellendi.
+  * Lokalizasyon ile `10 farklı dil` desteği eklendi.
+  * `Persona`, `SSS` ve `yalın kanvas` dosyaları girişime dönüşme hedefiyle oluşturuldu.
+  * Kullanıcı Sözleşmesi, Açık Rıza Sözleşmesi ve Kişisel Verilerin Korunması Aydınlatma Metni, `Türk hukuk kurallarına` göre oluşturuldu.
+  * Uygulamanın tanıtımı için `LinkedIn` ve `YouTube` hesapları açıldı.
  
 - **Sprint İçinde Tamamlanması Beklenen Puan:**
   * `450`
@@ -700,8 +713,8 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 - **Sprint Retrospektifi:**
    * Üçüncü sprint ile başlayarak tüm sprintlerin değerlendirmesi ve uygulamanın gelecek hedefleri doğrultusunda planlamalar yapıldı.
-   * Ekip hep birlikte Discord platformunda toplandı ve uygulama bitiş kutlaması yapıldı.
-   * Jüri sunumu için Olgun ve Melisa'nın hazırlanmaya başlamasına karar verildi.
+   * Ekip hep birlikte Discord platformunda toplandı, herkes birbirini tebrik etti, video birlikte izlenildi ve jüri sunumu için Olgun ve Melisa'nın hazırlanmaya başlamasına karar verildi. 
+     
 </details>
 
 </details>
