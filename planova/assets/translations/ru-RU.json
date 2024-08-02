@@ -284,5 +284,9 @@
     "Click the plus button to add tasks.\nSwipe left to favorite, right to delete.": "Нажмите кнопку плюс, чтобы добавить задачи.\nСвайп влево, чтобы добавить в избранное, вправо — чтобы удалить.",
     "Track habits and view progress.\nAdd new habits with the plus button.": "Отслеживайте привычки и смотрите прогресс.\nДобавляйте новые привычки с помощью кнопки плюс.",
     "Add notes, pictures, and voice.\nLock private notes with a pin.": "Добавляйте заметки, картинки и голосовые записи.\nЗакрывайте личные заметки пин-кодом.",
-    "View and edit your profile.\nAnalyze your daily and weekly progress.": "Просматривайте и редактируйте свой профиль.\nАнализируйте ваш ежедневный и еженедельный прогресс."
+    "View and edit your profile.\nAnalyze your daily and weekly progress.": "Просматривайте и редактируйте свой профиль.\nАнализируйте ваш ежедневный и еженедельный прогресс.",
+    "Welcome to Profile Page!":"Добро пожаловать на страницу профиля!",
+"Welcome to Journal Page!":"Добро пожаловать на страницу журнала!",
+"Welcome to Habits Page!":"Добро пожаловать на страницу привычек!",
+"Welcome to Today Page!":"Добро пожаловать на страницу Сегодня!"
 }

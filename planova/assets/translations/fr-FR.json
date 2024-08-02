@@ -310,5 +310,9 @@
     "Click the plus button to add tasks.\nSwipe left to favorite, right to delete.": "Cliquez sur le bouton plus pour ajouter des tâches.\nFaites glisser vers la gauche pour marquer comme favori, vers la droite pour supprimer.",
     "Track habits and view progress.\nAdd new habits with the plus button.": "Suivez les habitudes et voyez les progrès.\nAjoutez de nouvelles habitudes avec le bouton plus.",
     "Add notes, pictures, and voice.\nLock private notes with a pin.": "Ajoutez des notes, des images et de la voix.\nVerrouillez les notes privées avec un code PIN.",
-    "View and edit your profile.\nAnalyze your daily and weekly progress.": "Voir et modifier votre profil.\nAnalysez vos progrès quotidiens et hebdomadaires."
+    "View and edit your profile.\nAnalyze your daily and weekly progress.": "Voir et modifier votre profil.\nAnalysez vos progrès quotidiens et hebdomadaires.",
+    "Welcome to Profile Page!":"Bienvenue sur la page de profil !",
+"Welcome to Journal Page!":"Bienvenue sur la page du journal !",
+"Welcome to Habits Page!":"Bienvenue sur la page des habitudes !",
+"Welcome to Today Page!":"Bienvenue sur la page d'aujourd'hui !"
 }

@@ -284,6 +284,10 @@
     "Click the plus button to add tasks.\nSwipe left to favorite, right to delete.": "点击加号按钮添加任务。\n向左滑动以收藏，向右滑动以删除。",
   "Track habits and view progress.\nAdd new habits with the plus button.": "跟踪习惯并查看进度。\n使用加号按钮添加新习惯。",
   "Add notes, pictures, and voice.\nLock private notes with a pin.": "添加笔记、图片和语音。\n使用密码锁定私人笔记。",
-  "View and edit your profile.\nAnalyze your daily and weekly progress.": "查看并编辑您的个人资料。\n分析您的每日和每周进展。"
+  "View and edit your profile.\nAnalyze your daily and weekly progress.": "查看并编辑您的个人资料。\n分析您的每日和每周进展。",
+  "Welcome to Profile Page!":"欢迎来到个人资料页面！",
+"Welcome to Journal Page!":"欢迎来到日记页面！",
+"Welcome to Habits Page!":"欢迎来到习惯页面！",
+"Welcome to Today Page!":"欢迎来到今天页面！"
 
 }

@@ -542,8 +542,7 @@ class _NavigationExampleState extends State<NavigationExample> {
                 setState(() {
                   currentPageIndex = 0;
                 });
-                languageNotifier
-                    .notify();
+                languageNotifier.notify();
                 Navigator.of(context).pop();
               },
             ),
@@ -555,8 +554,7 @@ class _NavigationExampleState extends State<NavigationExample> {
                 setState(() {
                   currentPageIndex = 1;
                 });
-                languageNotifier
-                    .notify();
+                languageNotifier.notify();
                 Navigator.of(context).pop();
               },
             ),
@@ -569,8 +567,7 @@ class _NavigationExampleState extends State<NavigationExample> {
                 setState(() {
                   currentPageIndex = 2;
                 });
-                languageNotifier
-                    .notify();
+                languageNotifier.notify();
                 Navigator.of(context).pop();
               },
             ),
@@ -802,9 +799,9 @@ class _NavigationExampleState extends State<NavigationExample> {
               right: 0,
               child: HintWidget(
                 onClose: _closeHintToday,
-                title: "Welcome to Today Page!",
-                message:
-                    "Click the plus button to add tasks.\nSwipe left to favorite, right to delete.",
+                title: tr("Welcome to Today Page!"),
+                message: tr(
+                    "Click the plus button to add tasks.\nSwipe left to favorite, right to delete."),
               ),
             ),
           if (currentPageIndex == 1 && showHintHabits)
@@ -814,9 +811,9 @@ class _NavigationExampleState extends State<NavigationExample> {
               right: 0,
               child: HintWidget(
                 onClose: _closeHintHabits,
-                title: "Welcome to Habits Page!",
-                message:
-                    "Track habits and view progress.\nAdd new habits with the plus button.",
+                title: tr("Welcome to Habits Page!"),
+                message: tr(
+                    "Track habits and view progress.\nAdd new habits with the plus button."),
               ),
             ),
           if (currentPageIndex == 2 && showHintJournal)
@@ -826,9 +823,9 @@ class _NavigationExampleState extends State<NavigationExample> {
               right: 0,
               child: HintWidget(
                 onClose: _closeHintJournal,
-                title: "Welcome to Journal Page!",
-                message:
-                    "Add notes, pictures, and voice.\nLock private notes with a pin.",
+                title: tr("Welcome to Journal Page!"),
+                message: tr(
+                    "Add notes, pictures, and voice.\nLock private notes with a pin."),
               ),
             ),
           if (currentPageIndex == 3 && showHintProfile)
@@ -838,9 +835,9 @@ class _NavigationExampleState extends State<NavigationExample> {
               right: 0,
               child: HintWidget(
                 onClose: _closeHintProfile,
-                title: "Welcome to Profile Page!",
-                message:
-                    "View and edit your profile.\nAnalyze your daily and weekly progress.",
+                title: tr("Welcome to Profile Page!"),
+                message: tr(
+                    "View and edit your profile.\nAnalyze your daily and weekly progress."),
               ),
             ),
         ],
@@ -884,8 +881,7 @@ class HintWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.0),
         boxShadow: [
           BoxShadow(
-            color: theme.addButtonIcon
-                .withOpacity(0.2),
+            color: theme.addButtonIcon.withOpacity(0.2),
             spreadRadius: 1,
             blurRadius: 6,
             offset: const Offset(0, 2),
@@ -917,8 +913,7 @@ class HintWidget extends StatelessWidget {
             child: Row(
               children: [
                 IconButton(
-                  icon: Icon(Icons.close,
-                      color: theme.toDoIcons),
+                  icon: Icon(Icons.close, color: theme.toDoIcons),
                   onPressed: onClose,
                 ),
                 Text(

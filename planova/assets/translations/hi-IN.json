@@ -310,5 +310,9 @@
    "Click the plus button to add tasks.\nSwipe left to favorite, right to delete.": "कार्य जोड़ने के लिए प्लस बटन पर क्लिक करें।\nफेवरेट के लिए बाएं स्वाइप करें, हटाने के लिए दाएं स्वाइप करें।",
    "Track habits and view progress.\nAdd new habits with the plus button.": "आदतों को ट्रैक करें और प्रगति देखें।\nनए आदतें जोड़ने के लिए प्लस बटन का उपयोग करें।",
    "Add notes, pictures, and voice.\nLock private notes with a pin.": "नोट्स, तस्वीरें और आवाज़ जोड़ें।\nनिजी नोट्स को पिन के साथ लॉक करें।",
-   "View and edit your profile.\nAnalyze your daily and weekly progress.": "अपनी प्रोफ़ाइल देखें और संपादित करें।\nअपने दैनिक और साप्ताहिक प्रगति का विश्लेषण करें।"
+   "View and edit your profile.\nAnalyze your daily and weekly progress.": "अपनी प्रोफ़ाइल देखें और संपादित करें।\nअपने दैनिक और साप्ताहिक प्रगति का विश्लेषण करें।",
+   "Welcome to Profile Page!":"प्रोफाइल पेज पर आपका स्वागत है!",
+"Welcome to Journal Page!":"जर्नल पेज पर आपका स्वागत है!",
+"Welcome to Habits Page!":"आदतों के पेज पर आपका स्वागत है!",
+"Welcome to Today Page!":"आज के पेज पर आपका स्वागत है!"
 }

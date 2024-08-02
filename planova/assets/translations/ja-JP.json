@@ -309,5 +309,9 @@
     "Click the plus button to add tasks.\nSwipe left to favorite, right to delete.": "タスクを追加するにはプラスボタンをクリックします。\n左にスワイプしてお気に入り、右にスワイプして削除。",
     "Track habits and view progress.\nAdd new habits with the plus button.": "習慣を追跡して進捗を確認します。\nプラスボタンで新しい習慣を追加します。",
     "Add notes, pictures, and voice.\nLock private notes with a pin.": "ノート、写真、音声を追加します。\nピンでプライベートノートをロックします。",
-    "View and edit your profile.\nAnalyze your daily and weekly progress.": "プロフィールを表示して編集します。\n日々と週ごとの進捗を分析します。"
+    "View and edit your profile.\nAnalyze your daily and weekly progress.": "プロフィールを表示して編集します。\n日々と週ごとの進捗を分析します。",
+    "Welcome to Profile Page!":"プロフィールページへようこそ！",
+"Welcome to Journal Page!":"ジャーナルページへようこそ！",
+"Welcome to Habits Page!":"習慣ページへようこそ！",
+"Welcome to Today Page!":"今日のページへようこそ！"
 }

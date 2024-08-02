@@ -308,7 +308,11 @@
         "Click the plus button to add tasks.\nSwipe left to favorite, right to delete.": "Görev eklemek için artı butonuna tıklayın.\nFavorilere eklemek için sola, silmek için sağa kaydırın.",
         "Track habits and view progress.\nAdd new habits with the plus button.": "Alışkanlıkları takip edin ve ilerlemeyi görün.\nYeni alışkanlıklar eklemek için artı butonunu kullanın.",
         "Add notes, pictures, and voice.\nLock private notes with a pin.": "Notlar, resimler ve ses ekleyin.\nÖzel notları bir pin ile kilitleyin.",
-        "View and edit your profile.\nAnalyze your daily and weekly progress.": "Profilinizi görüntüleyin ve düzenleyin.\nGünlük ve haftalık ilerlemenizi analiz edin."
+        "View and edit your profile.\nAnalyze your daily and weekly progress.": "Profilinizi görüntüleyin ve düzenleyin.\nGünlük ve haftalık ilerlemenizi analiz edin.",
+        "Welcome to Profile Page!":"Profil Sayfasına Hoş Geldiniz!",
+"Welcome to Journal Page!":"Günlük Sayfasına Hoş Geldiniz!",
+"Welcome to Habits Page!":"Alışkanlıklar Sayfasına Hoş Geldiniz!",
+"Welcome to Today Page!":"Bugün Sayfasına Hoş Geldiniz!"
 }
 
 
