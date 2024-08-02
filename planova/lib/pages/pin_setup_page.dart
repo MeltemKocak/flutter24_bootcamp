@@ -148,9 +148,9 @@ class _PinSetupPageState extends State<PinSetupPage> {
                   backgroundColor: theme.addButton,
                   shape: RoundedRectangleBorder(
                     borderRadius:
-                        BorderRadius.circular(12.0), // Kenarları yuvarlar
+                        BorderRadius.circular(12.0),
                     side: BorderSide(
-                        color: Colors.transparent), // Beyaz renkli kenar
+                        color: Colors.transparent),
                   ),
                 ),
                 child: Text(

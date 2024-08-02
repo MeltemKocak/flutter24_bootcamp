@@ -676,7 +676,6 @@ class _TodayPageState extends State<TodayPage> {
     final data = task.data() as Map<String, dynamic>;
     final collection = data.containsKey('completed_days') ? 'habits' : 'todos';
 
-    // Silinen görevi 'deleted_tasks' koleksiyonuna taşı
     await FirebaseFirestore.instance.collection('deleted_tasks').add({
       'name': data['name'] ?? data['taskName'],
       'description': data['description'] ?? '',
@@ -687,7 +686,6 @@ class _TodayPageState extends State<TodayPage> {
       'data': data,
     });
 
-    // Görevi orijinal koleksiyonundan sil
     await FirebaseFirestore.instance
         .collection(collection)
         .doc(task.id)

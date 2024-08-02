@@ -463,7 +463,6 @@ class _HabitPageState extends State<HabitPage> {
                     style: GoogleFonts.didactGothic(color: theme.habitTitle)));
           }
 
-          // Sıralama işlemi
           List<DocumentSnapshot> activeDayHabits = [];
           List<DocumentSnapshot> otherDayHabits = [];
 

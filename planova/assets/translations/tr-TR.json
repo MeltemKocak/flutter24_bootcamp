@@ -216,7 +216,7 @@
     "private":"Gizli",
     "Public":"Açık",
 
-    "Filter":"Filter",
+    "Filter":"Filtrele",
     "Favorite Tasks":"Favori Görevler",
 
     "Create Story":"Hikayeni Oluştur",
@@ -301,14 +301,21 @@
         "contact_us": "Bize Ulaşın:",
         "contact_info": "Herhangi bir soru veya destek için, lütfen support@planovaapp.com adresinden bize ulaşın.",
         "managing_time": "Zamanı doğru yönetmek, hayatın tüm alanlarında başarıya ulaşmanın temelidir ve Planova uygulaması bu yolda en büyük yardımcınız olacaktır.",
-        "You cannot use this section while logged in as a guest. Please create an account.":"Misafir olarak oturum açtığında bu bölümü kullanamazsın. Lütfen bir hesap oluştur."
-      
-
-
-
-
-
-
-
-
+        "You cannot use this section while logged in as a guest. Please create an account.":"Misafir olarak oturum açtığında bu bölümü kullanamazsın. Lütfen bir hesap oluştur.",
+        "Name cannot be empty":"İsim alanı boş bırakılamaz.",
+        "Profile saved successfully":"Profil başarıyla kaydedildi",
+        "I understand":"Anlıyorum",
+        "Click the plus button to add tasks.\nSwipe left to favorite, right to delete.": "Görev eklemek için artı butonuna tıklayın.\nFavorilere eklemek için sola, silmek için sağa kaydırın.",
+        "Track habits and view progress.\nAdd new habits with the plus button.": "Alışkanlıkları takip edin ve ilerlemeyi görün.\nYeni alışkanlıklar eklemek için artı butonunu kullanın.",
+        "Add notes, pictures, and voice.\nLock private notes with a pin.": "Notlar, resimler ve ses ekleyin.\nÖzel notları bir pin ile kilitleyin.",
+        "View and edit your profile.\nAnalyze your daily and weekly progress.": "Profilinizi görüntüleyin ve düzenleyin.\nGünlük ve haftalık ilerlemenizi analiz edin."
 }
+
+
+
+
+
+
+
+
+

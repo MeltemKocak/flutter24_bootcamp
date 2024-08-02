@@ -39,9 +39,9 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
       habitData = doc.data() as Map<String, dynamic>?;
       isLoading = false;
       if (habitData != null) {
-        print('Habit data loaded: $habitData'); // Bu satırı ekleyin
+        print('Habit data loaded: $habitData');
       } else {
-        print('No habit data found.'); // Bu satırı ekleyin
+        print('No habit data found.');
       }
     });
   }
@@ -97,7 +97,7 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
 
     setState(() {
       habitData!['completed_days'] = completedDays;
-      print('Updated habit data: $habitData'); // Bu satırı ekleyin
+      print('Updated habit data: $habitData');
     });
 
     Provider.of<HabitProvider>(context, listen: false).setHabitData(habitData!);
@@ -222,7 +222,7 @@ class _HabitDetailPageState extends State<HabitDetailPage> {
                 IconButton(
                   icon: Icon(Icons.edit,
                       color: theme
-                          .welcomeText), // Burada istediğiniz ikonu seçebilirsiniz
+                          .welcomeText),
                   onPressed: () {
                     _showEditBottomSheet(context);
                   },
@@ -1007,36 +1007,36 @@ class DayPainter extends CustomPainter {
     if (isHabitDay) {
       if (friendCompleted == null) {
         paint.color = userCompleted
-            ? theme.monthlyCompleteDayGrid // monthlyCompleteDayGrid
-            : theme.monthlyActiveDayGrid; // monthlyActiveDayGrid
+            ? theme.monthlyCompleteDayGrid
+            : theme.monthlyActiveDayGrid;
         canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
       } else {
         if (isFutureDate) {
-          paint.color = theme.monthlyActiveDayGrid; // monthlyDefaultDayGrid
+          paint.color = theme.monthlyActiveDayGrid;
           canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
         } else if (isPastDate) {
           paint.color = userCompleted
-              ? theme.monthlyCompleteDayGrid // monthlyCompleteDayGrid
-              : theme.monthlyActiveDayGrid; // monthlyActiveDayGrid
+              ? theme.monthlyCompleteDayGrid
+              : theme.monthlyActiveDayGrid;
           canvas.drawRect(Rect.fromLTWH(0, 0, size.width, halfHeight), paint);
 
           paint.color = friendCompleted!
               ? theme
-                  .monthlyFriendCompleteDayGrid // monthlyFriendCompleteDayGrid
+                  .monthlyFriendCompleteDayGrid
               : theme
-                  .monthlyFriendUncompleteDayGrid; // monthlyFriendUncompleteDayGrid
+                  .monthlyFriendUncompleteDayGrid;
           canvas.drawRect(
               Rect.fromLTWH(0, halfHeight, size.width, halfHeight), paint);
         } else {
           paint.color = userCompleted
-              ? theme.monthlyCompleteDayGrid // monthlyCompleteDayGrid
-              : theme.monthlyDefaultDayGrid; // monthlyDefaultDayGrid
+              ? theme.monthlyCompleteDayGrid
+              : theme.monthlyDefaultDayGrid;
           canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
         }
       }
     } else {
       paint.color =
-          theme.monthlyDefaultDayGrid.withOpacity(0.5); // monthlyInvalidDayGrid
+          theme.monthlyDefaultDayGrid.withOpacity(0.5);
       canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
     }
   }
@@ -1045,7 +1045,6 @@ class DayPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-// Asenkron veri hazırlama fonksiyonu
 Future<Map<String, dynamic>> prepareData() async {
   await Future.delayed(Duration(seconds: 2));
 

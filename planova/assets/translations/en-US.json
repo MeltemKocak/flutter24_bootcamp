@@ -147,7 +147,6 @@
     "Cancel":"Cancel",
     "Mission successfully brought back":"Mission successfully brought back",
     "Get started":"Get started",
-    
     "Only tasks can be marked as favorites.":"Only tasks can be marked as favorites.",
     "Repetitive Task":"Repetitive Task",
     "Delete":"Delete",
@@ -219,7 +218,7 @@
     "private":"Hidden",
     "Public":"Open",
 
-    "Filter":"Filtrele",
+    "Filter":"Filter",
     "Favorite Tasks":"Favorite Tasks",
 
     "Create Story":"Create Your Story",
@@ -284,7 +283,6 @@
   "contact_support_content": "Need Assistance? If you can't find what you're looking for in the FAQ section, our support team is here to help. Reach out to us directly via email at support@planovaapp.com. Please provide your name, email address, issue category, and a detailed description of your problem so we can assist you more effectively.",
   "visit_our_website": "Visit Our Website:",
   "visit_our_website_content": "More Information: For more detailed information about Planova, our features, and updates, visit our website at www.planovaapp.com. Here you can find additional resources, blog posts, and the latest news about Planova.",
-  
     "about": "About",
     "about_planova": "About Planova",
     "about_description": "In today's fast-paced world, using time efficiently and managing personal time correctly is one of the most important keys to achieving both professional and personal success. Planova is a comprehensive mobile application designed to facilitate users' personal time management.",
@@ -304,7 +302,15 @@
     "contact_us": "Contact Us:",
     "contact_info": "For any inquiries or support, please reach out to us at support@planovaapp.com.",
     "managing_time": "Managing time correctly is the foundation of achieving success in all areas of life, and the Planova application will be your greatest assistant on this path.",
-   "You cannot use this section while logged in as a guest. Please create an account.":"You cannot use this section while logged in as a guest. Please create an account."
-  
+    "You cannot use this section while logged in as a guest. Please create an account.":"You cannot use this section while logged in as a guest. Please create an account.",
+    "Name cannot be empty":"Name cannot be empty",
+    "Profile saved successfully":"Profile saved successfully",
+    "I understand":"I understand",
+    "Click the plus button to add tasks.\nSwipe left to favorite, right to delete.": "Click the plus button to add tasks.\nSwipe left to favorite, right to delete.",
+  "Track habits and view progress.\nAdd new habits with the plus button.": "Track habits and view progress.\nAdd new habits with the plus button.",
+  "Add notes, pictures, and voice.\nLock private notes with a pin.": "Add notes, pictures, and voice.\nLock private notes with a pin.",
+  "View and edit your profile.\nAnalyze your daily and weekly progress.": "View and edit your profile.\nAnalyze your daily and weekly progress."
+
+
 
 }

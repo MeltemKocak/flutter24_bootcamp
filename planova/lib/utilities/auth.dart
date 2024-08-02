@@ -18,7 +18,7 @@ class Auth {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (BuildContext context) => const Homes(),
+          builder: (BuildContext context) =>  Homes(),
         ),
       );
     } on FirebaseAuthException catch (e) {
@@ -51,7 +51,7 @@ class Auth {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (BuildContext context) => const Homes(),
+          builder: (BuildContext context) =>  Homes(),
         ),
       );
     } on FirebaseAuthException catch (e) {

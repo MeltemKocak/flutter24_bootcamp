@@ -12,7 +12,7 @@ void main() async {
   await Firebase.initializeApp();
   runApp(EasyLocalization(
     supportedLocales: [Locale('en', 'US'), Locale('tr', 'TR')],
-    path: 'assets/translations', // <-- change the path of the translation files
+    path: 'assets/translations',
     fallbackLocale: Locale('en', 'US'),
     child: MyApp(),
   ));

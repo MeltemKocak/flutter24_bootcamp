@@ -36,9 +36,7 @@ class _HabitAddPageState extends State<HabitAddPage> {
         DateFormat('yyyy-MM-dd').parse(_startDateController.text);
     DateTime endDate = DateFormat('yyyy-MM-dd').parse(_endDateController.text);
 
-    // Start date and end date check
     if (startDate.isAfter(endDate)) {
-      // Error handling: Start date should not be after end date
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(tr("Start date cannot be after end date.")),
       ));
@@ -91,7 +89,6 @@ class _HabitAddPageState extends State<HabitAddPage> {
           .then((value) {
         Navigator.pop(context);
       }).catchError((error) {
-        // Error handling
       });
     }
   }

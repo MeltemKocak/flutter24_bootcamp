@@ -35,7 +35,7 @@ class _TrashPageState extends State<TrashPage> {
             Navigator.pop(context);
           },
         ),
-        title: Container(), // Empty Container to center the title properly
+        title: Container(),
         actions: [
           IconButton(
             icon: Icon(
@@ -288,10 +288,8 @@ class _TrashPageState extends State<TrashPage> {
     var docId = data['docId'];
     var collection = data['collection'];
 
-    // Orijinal koleksiyondan sil
     await FirebaseFirestore.instance.collection(collection).doc(docId).delete();
 
-    // 'deleted_tasks' koleksiyonundan sil
     await FirebaseFirestore.instance
         .collection('deleted_tasks')
         .doc(taskData.id)
@@ -314,13 +312,11 @@ class _TrashPageState extends State<TrashPage> {
       var docId = data['docId'];
       var collection = data['collection'];
 
-      // Orijinal koleksiyondan sil
       await FirebaseFirestore.instance
           .collection(collection)
           .doc(docId)
           .delete();
 
-      // 'deleted_tasks' koleksiyonundan sil
       await FirebaseFirestore.instance
           .collection('deleted_tasks')
           .doc(doc.id)
@@ -339,13 +335,11 @@ class _TrashPageState extends State<TrashPage> {
     var docId = data['docId'];
     var taskDataOriginal = data['data'];
 
-    // Orijinal koleksiyona geri yükle
     await FirebaseFirestore.instance
         .collection(collection)
         .doc(docId)
         .set(taskDataOriginal);
 
-    // 'deleted_tasks' koleksiyonundan sil
     await FirebaseFirestore.instance
         .collection('deleted_tasks')
         .doc(taskData.id)

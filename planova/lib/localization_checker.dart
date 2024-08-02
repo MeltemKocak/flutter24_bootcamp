@@ -17,6 +17,10 @@ class LocalizationChecker {
       EasyLocalization.of(context)!.setLocale(const Locale('zh', 'CN'));
     } else if (currentLocale == const Locale('zh', 'CN')) {
       EasyLocalization.of(context)!.setLocale(const Locale('ru', 'RU'));
+    } else if (currentLocale == const Locale('ru', 'RU')) {
+      EasyLocalization.of(context)!.setLocale(const Locale('ja', 'JP'));
+    } else if (currentLocale == const Locale('ja', 'JP')) {
+      EasyLocalization.of(context)!.setLocale(const Locale('hi', 'IN'));
     } else {
       EasyLocalization.of(context)!.setLocale(const Locale('en', 'US'));
     }

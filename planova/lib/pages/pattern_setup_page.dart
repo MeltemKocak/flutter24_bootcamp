@@ -5,7 +5,7 @@ import 'package:planova/utilities/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'journal_page.dart'; // JournalPage'i import edin
+import 'journal_page.dart';
 
 class PatternSetupPage extends StatefulWidget {
   @override

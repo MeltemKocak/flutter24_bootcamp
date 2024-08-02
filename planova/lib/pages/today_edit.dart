@@ -1,5 +1,3 @@
-// TodayEditPage.dart
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -451,7 +449,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
                 fontSize: 18,
                 fontWeight: FontWeight.bold),
             selected: selectedDays.contains(index + 1),
-            onSelected: null, // Günlerin değiştirilemez olmasını sağlamak için
+            onSelected: null,
             backgroundColor: theme.checkBoxBorderColor,
             selectedColor: theme.checkBoxActiveColor,
             disabledColor: theme.checkBoxBorderColor,
@@ -461,7 +459,6 @@ class _TodayEditPageState extends State<TodayEditPage> {
     );
   }
 
-  // Güncelleme Butonunu sadece saat değiştiğinde göstermek için _buildUpdateButton widget'ında şart ekleniyor.
   Widget _buildUpdateButton(BuildContext context, CustomThemeData theme) {
     return selectedTime != null
         ? GestureDetector(
@@ -478,7 +475,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
               child: Text(tr("Update Task")),
             ),
           )
-        : Container(); // Eğer saat seçilmemişse boş bir widget döndürüyor.
+        : Container();
   }
 
   void _updateTodo() {
@@ -497,7 +494,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
             padding: const EdgeInsets.all(20),
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center, // Merkezi hizalama
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   "Hour Update",
@@ -511,7 +508,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
                 Text(
                   "Do you want to update the time for this task or for all recurring tasks?",
                   style: GoogleFonts.didactGothic(color: theme.subText),
-                  textAlign: TextAlign.center, // Merkezi hizalama
+                  textAlign: TextAlign.center,
                 ).tr(),
                 const SizedBox(height: 20),
                 Column(
@@ -582,12 +579,10 @@ class _TodayEditPageState extends State<TodayEditPage> {
         selectedTime != null ? _formatTimeOfDay(selectedTime!) : "empty";
 
     if (updateAll) {
-      // Tüm tekrarlanan görevlerin saatini güncelle
       for (String date in taskTimes.keys) {
         taskTimes[date] = newTime;
       }
     } else {
-      // Sadece seçilen günün saatini güncelle
       taskTimes[selectedDate] = newTime;
     }
 
@@ -695,7 +690,6 @@ class _TodayEditPageState extends State<TodayEditPage> {
             borderRadius: BorderRadius.circular(20),
           ),
           title: Center(
-            // Başlığı ortalamak için Center widget'ı eklendi
             child: Text(
               "Delete Task",
               style: GoogleFonts.didactGothic(
@@ -707,7 +701,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
           content: Text(
             "Do you want to delete this task or all recurring tasks?",
             style: GoogleFonts.didactGothic(color: theme.welcomeText),
-            textAlign: TextAlign.center, // İçerik metni de ortalandı
+            textAlign: TextAlign.center,
           ).tr(),
           actions: <Widget>[
             Column(
@@ -774,14 +768,12 @@ class _TodayEditPageState extends State<TodayEditPage> {
     }
 
     if (deleteAll) {
-      // Tüm tekrarlanan görevleri sil
       taskCompletionStatus.forEach((date, _) {
         deletedTasks.add(date);
       });
       taskCompletionStatus.clear();
       taskTimes.clear();
     } else {
-      // Sadece seçili tarihi sil
       if (taskCompletionStatus.containsKey(formattedSelectedDate)) {
         taskCompletionStatus.remove(formattedSelectedDate);
         deletedTasks.add(formattedSelectedDate);
@@ -821,7 +813,6 @@ class _TodayEditPageState extends State<TodayEditPage> {
     if (user != null) {
       final taskData = widget.task.data() as Map<String, dynamic>;
 
-      // Silinen görevi 'deleted_tasks' koleksiyonuna taşı
       await FirebaseFirestore.instance.collection('deleted_tasks').add({
         'name': taskData['taskName'],
         'description': taskData['taskDescription'],
@@ -833,7 +824,6 @@ class _TodayEditPageState extends State<TodayEditPage> {
         'deletedTasks': deletedTasks,
       });
 
-      // Orijinal görevden sadece belirli bir günü silme
       if (!deleteAll) {
         Map<String, dynamic> updatedTaskData =
             Map<String, dynamic>.from(taskData);
@@ -845,7 +835,6 @@ class _TodayEditPageState extends State<TodayEditPage> {
             .doc(taskId)
             .update(updatedTaskData);
       } else {
-        // Orijinal görevden tüm günleri silme
         await FirebaseFirestore.instance
             .collection('todos')
             .doc(taskId)
@@ -876,7 +865,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
   }
 
   TimeOfDay _parseTimeOfDay(String timeString) {
-    final format = DateFormat.jm(); // AM/PM format
+    final format = DateFormat.jm();
     final dateTime = format.parse(timeString);
     return TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
   }
@@ -884,7 +873,7 @@ class _TodayEditPageState extends State<TodayEditPage> {
   String _formatTimeOfDay(TimeOfDay time) {
     final now = DateTime.now();
     final dt = DateTime(now.year, now.month, now.day, time.hour, time.minute);
-    final format = DateFormat.jm(); // AM/PM format
+    final format = DateFormat.jm();
     return format.format(dt);
   }
 }

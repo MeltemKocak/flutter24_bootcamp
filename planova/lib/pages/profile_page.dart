@@ -121,7 +121,19 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void saveProfile() async {
     String name = nameController.text;
+
+    if (name.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(tr('Name cannot be empty')),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     String email = user?.email ?? tr('Anonymous User');
+
     if (_image != null) {
       imageUrl = await _uploadImageToStorage(_image!);
     }
@@ -133,8 +145,15 @@ class _ProfilePageState extends State<ProfilePage> {
       'userEmail': email,
     });
 
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(tr('Profile saved successfully')),
+        backgroundColor: Colors.green,
+      ),
+    );
+
     setState(() {
-      _image = null; // Clear the image after uploading
+      _image = null;
     });
   }
 
@@ -469,7 +488,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
 class StoryWidget extends StatelessWidget {
   final String story;
-  static const int maxLength = 200; // Güncellenen uzunluk
+  static const int maxLength = 200;
 
   const StoryWidget({required this.story});
 
@@ -542,7 +561,7 @@ class TaskCard extends StatelessWidget {
                   child: Text(
                     title,
                     textAlign: TextAlign
-                        .center, // Text widget'ının içinde yazıyı ortalar
+                        .center,
                     style: GoogleFonts.didactGothic(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -735,7 +754,6 @@ class WeeklyStatsWidget extends StatelessWidget {
             } else {
               Map<String, Map<String, int>>? taskCounts = snapshot.data;
 
-              // Max değeri belirle
               int maxY = 0;
               if (taskCounts != null) {
                 for (var counts in taskCounts.values) {
@@ -772,7 +790,7 @@ class WeeklyStatsWidget extends StatelessWidget {
                           rightTitles: const AxisTitles(),
                           leftTitles: const AxisTitles(
                             sideTitles: SideTitles(
-                                showTitles: false), // Sol tarafı kaldır
+                                showTitles: false),
                           ),
                           topTitles: const AxisTitles(
                             sideTitles: SideTitles(
@@ -827,7 +845,7 @@ class WeeklyStatsWidget extends StatelessWidget {
                           ),
                         ),
                         gridData: const FlGridData(
-                            show: false), // Kesikli çizgileri kaldırır
+                            show: false),
                         borderData: FlBorderData(show: false),
                         barGroups: [
                           for (int i = 0; i < 7; i++)

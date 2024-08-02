@@ -124,6 +124,9 @@ flutter:
     - assets/images/flags/russia.png
     - assets/images/flags/china.png
     - assets/images/flags/spain.png
+    - assets/images/flags/india.png
+    - assets/images/flags/japan.png
+
 
 
   fonts:

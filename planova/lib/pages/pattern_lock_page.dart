@@ -20,9 +20,9 @@ class _PatternLockPageState extends State<PatternLockPage> {
   void _addPattern(int index) {
     setState(() {
       if (_pattern.contains(index)) {
-        _pattern.remove(index); // Eğer index zaten varsa, çıkart
+        _pattern.remove(index);
       } else {
-        _pattern.add(index); // Eğer index yoksa, ekle
+        _pattern.add(index);
       }
     });
   }
@@ -66,7 +66,7 @@ class _PatternLockPageState extends State<PatternLockPage> {
 
         backgroundColor: theme.background,
         iconTheme: IconThemeData(
-            color: theme.addButton), // Geri butonunun rengini buradan ayarlayın
+            color: theme.addButton),
       ),
       backgroundColor: theme.background,
       body: Padding(

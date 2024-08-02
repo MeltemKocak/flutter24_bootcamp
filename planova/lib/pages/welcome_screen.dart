@@ -200,6 +200,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       flagPath = 'assets/images/flags/china.png';
     } else if (locale.languageCode == 'ru') {
       flagPath = 'assets/images/flags/russia.png';
+    } else if (locale.languageCode == 'ja') {
+      flagPath = 'assets/images/flags/japan.png';
+    } else if (locale.languageCode == 'hi') {
+      flagPath = 'assets/images/flags/india.png';
     } else {
       flagPath = 'assets/images/flags/uk.png';
     }

@@ -304,5 +304,12 @@
     "contact_us": "Contáctanos:",
     "contact_info": "Para cualquier consulta o soporte, por favor contáctanos en support@planovaapp.com.",
     "managing_time": "Gestionar el tiempo correctamente es la base para lograr el éxito en todas las áreas de la vida, y la aplicación Planova será tu mayor asistente en este camino.",
-    "You cannot use this section while logged in as a guest. Please create an account.":"No puede utilizar esta sección mientras esté conectado como invitado. Por favor, cree una cuenta."
+    "You cannot use this section while logged in as a guest. Please create an account.":"No puede utilizar esta sección mientras esté conectado como invitado. Por favor, cree una cuenta.",
+    "Name cannot be empty":"El nombre no puede estar vacío",
+    "Profile saved successfully":"Perfil guardado con éxito",
+    "I understand":"Entiendo",
+    "Click the plus button to add tasks.\nSwipe left to favorite, right to delete.": "Haz clic en el botón más para agregar tareas.\nDesliza a la izquierda para marcar como favorito, a la derecha para eliminar.",
+  "Track habits and view progress.\nAdd new habits with the plus button.": "Sigue hábitos y mira el progreso.\nAgrega nuevos hábitos con el botón más.",
+  "Add notes, pictures, and voice.\nLock private notes with a pin.": "Añade notas, imágenes y voz.\nBloquea notas privadas con un pin.",
+  "View and edit your profile.\nAnalyze your daily and weekly progress.": "Ve y edita tu perfil.\nAnaliza tu progreso diario y semanal."
 }

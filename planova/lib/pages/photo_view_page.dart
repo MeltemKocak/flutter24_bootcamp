@@ -17,7 +17,7 @@ class PhotoViewPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: theme.background,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: theme.welcomeText, size: 30), // Increase the size and change the color
+          icon: Icon(Icons.arrow_back, color: theme.welcomeText, size: 30),
           onPressed: () {
             Navigator.pop(context);
           },

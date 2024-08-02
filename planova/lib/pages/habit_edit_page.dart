@@ -117,7 +117,6 @@ class _HabitEditPageState extends State<HabitEditPage> {
         });
         _loadHabitData();
       }).catchError((error) {
-        // Error handling
       });
     }
   }
@@ -149,11 +148,10 @@ class _HabitEditPageState extends State<HabitEditPage> {
           .then((value) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const Homes()),
+          MaterialPageRoute(builder: (context) =>  Homes()),
           (Route<dynamic> route) => false,
         );
       }).catchError((error) {
-        // Error handling
       });
     }
   }

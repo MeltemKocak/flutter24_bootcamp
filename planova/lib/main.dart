@@ -20,17 +20,19 @@ Future<void> main() async {
   );
   runApp(
     EasyLocalization(
-      supportedLocales: [
-        Locale('en', 'US'), 
-        Locale('tr', 'TR'), 
+      supportedLocales: const [
+        Locale('en', 'US'),
+        Locale('tr', 'TR'),
         Locale('de', 'DE'),
         Locale('es', 'ES'),
         Locale('fr', 'FR'),
         Locale('zh', 'CN'),
         Locale('ru', 'RU'),
+        Locale('ja', 'JP'),
+        Locale('hi', 'IN'),
       ],
       path: 'assets/translations',
-      fallbackLocale: Locale('en', 'US'),
+      fallbackLocale: const Locale('en', 'US'),
       child: ChangeNotifierProvider(
         create: (_) => ThemeProvider(),
         child: const MyApp(),
@@ -56,7 +58,7 @@ class MyApp extends StatelessWidget {
       ),
       home: const AuthCheck(),
       routes: {
-        '/home': (context) => const Homes(),
+        '/home': (context) =>  Homes(),
         '/login': (context) => LoginScreen(),
       },
     );
@@ -74,7 +76,7 @@ class AuthCheck extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
         } else if (snapshot.hasData) {
-          return const Homes();
+          return  Homes();
         } else {
           return const WelcomeScreen();
         }

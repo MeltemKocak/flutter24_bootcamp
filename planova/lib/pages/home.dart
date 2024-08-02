@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -29,7 +30,9 @@ class LanguageChangeNotifier extends ChangeNotifier {
 }
 
 class Homes extends StatelessWidget {
-  const Homes({super.key});
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+  Homes({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,25 +41,51 @@ class Homes extends StatelessWidget {
 
     return ChangeNotifierProvider(
       create: (_) => LanguageChangeNotifier(),
-      child: MaterialApp(
-        theme: ThemeData(
-          useMaterial3: true,
-          navigationBarTheme: NavigationBarThemeData(
-            indicatorColor: theme.addButton,
-            labelTextStyle: MaterialStateProperty.all(
-              GoogleFonts.didactGothic(color: theme.welcomeText),
+      child: Consumer<LanguageChangeNotifier>(
+        builder: (context, languageNotifier, child) {
+          return MaterialApp(
+            navigatorKey: navigatorKey,
+            theme: ThemeData(
+              useMaterial3: true,
+              navigationBarTheme: NavigationBarThemeData(
+                indicatorColor: theme.addButton,
+                labelTextStyle: MaterialStateProperty.all(
+                  GoogleFonts.didactGothic(color: theme.welcomeText),
+                ),
+              ),
             ),
-          ),
-        ),
-        locale: EasyLocalization.of(context)!.currentLocale,
-        home: const NavigationExample(),
+            locale: EasyLocalization.of(context)!.currentLocale,
+            home: Navigator(
+              onGenerateRoute: (settings) {
+                return MaterialPageRoute(
+                  builder: (context) => NavigationExample(
+                    onSettingsChanged: () {
+                      navigatorKey.currentState?.pushReplacement(
+                        MaterialPageRoute(builder: (_) => NavigationExample()),
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
+            builder: (context, child) {
+              return Builder(
+                builder: (context) {
+                  return child!;
+                },
+              );
+            },
+          );
+        },
       ),
     );
   }
 }
 
 class NavigationExample extends StatefulWidget {
-  const NavigationExample({super.key});
+  final VoidCallback? onSettingsChanged;
+
+  const NavigationExample({Key? key, this.onSettingsChanged}) : super(key: key);
 
   @override
   State<NavigationExample> createState() => _NavigationExampleState();
@@ -68,11 +97,21 @@ class _NavigationExampleState extends State<NavigationExample> {
   String? userProfileImageUrl;
   String userName = "";
   String filter = tr('All Tasks');
+  int currentPageIndex = 0;
+  late SharedPreferences prefs;
+  final EasyInfiniteDateTimelineController _controller =
+      EasyInfiniteDateTimelineController();
+  DateTime? _focusDate = DateTime.now();
+  bool showHintToday = false;
+  bool showHintHabits = false;
+  bool showHintJournal = false;
+  bool showHintProfile = false;
 
   @override
   void initState() {
     super.initState();
     _loadUserProfileImage();
+    _checkHintStatus();
   }
 
   Future<void> _loadUserProfileImage() async {
@@ -89,14 +128,74 @@ class _NavigationExampleState extends State<NavigationExample> {
     }
   }
 
-  static int currentPageIndex = 0;
+  Future<void> _checkHintStatus() async {
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('hint')
+        .doc(user!.uid)
+        .get();
+
+    if (userDoc.exists) {
+      setState(() {
+        showHintToday = !(userDoc['hasSeenHintToday'] ?? false);
+        showHintHabits = !(userDoc['hasSeenHintHabits'] ?? false);
+        showHintJournal = !(userDoc['hasSeenHintJournal'] ?? false);
+        showHintProfile = !(userDoc['hasSeenHintProfile'] ?? false);
+      });
+    } else {
+      await FirebaseFirestore.instance.collection('hint').doc(user!.uid).set({
+        'hasSeenHintToday': false,
+        'hasSeenHintHabits': false,
+        'hasSeenHintJournal': false,
+        'hasSeenHintProfile': false,
+      });
+
+      setState(() {
+        showHintToday = true;
+        showHintHabits = true;
+        showHintJournal = true;
+        showHintProfile = true;
+      });
+    }
+  }
+
+  void _closeHintToday() async {
+    setState(() {
+      showHintToday = false;
+    });
+    await FirebaseFirestore.instance.collection('hint').doc(user!.uid).update({
+      'hasSeenHintToday': true,
+    });
+  }
+
+  void _closeHintHabits() async {
+    setState(() {
+      showHintHabits = false;
+    });
+    await FirebaseFirestore.instance.collection('hint').doc(user!.uid).update({
+      'hasSeenHintHabits': true,
+    });
+  }
+
+  void _closeHintJournal() async {
+    setState(() {
+      showHintJournal = false;
+    });
+    await FirebaseFirestore.instance.collection('hint').doc(user!.uid).update({
+      'hasSeenHintJournal': true,
+    });
+  }
+
+  void _closeHintProfile() async {
+    setState(() {
+      showHintProfile = false;
+    });
+    await FirebaseFirestore.instance.collection('hint').doc(user!.uid).update({
+      'hasSeenHintProfile': true,
+    });
+  }
 
   List<String> get appBarTitles =>
       [tr("Today"), tr("Habits"), tr("Journal"), tr("Profile")];
-
-  final EasyInfiniteDateTimelineController _controller =
-      EasyInfiniteDateTimelineController();
-  DateTime? _focusDate = DateTime.now();
 
   void _openCalendarBottomSheet() {
     showModalBottomSheet(
@@ -444,7 +543,7 @@ class _NavigationExampleState extends State<NavigationExample> {
                   currentPageIndex = 0;
                 });
                 languageNotifier
-                    .notify(); // Dil değişikliğini dinleyiciye bildirin
+                    .notify();
                 Navigator.of(context).pop();
               },
             ),
@@ -457,7 +556,7 @@ class _NavigationExampleState extends State<NavigationExample> {
                   currentPageIndex = 1;
                 });
                 languageNotifier
-                    .notify(); // Dil değişikliğini dinleyiciye bildirin
+                    .notify();
                 Navigator.of(context).pop();
               },
             ),
@@ -471,7 +570,7 @@ class _NavigationExampleState extends State<NavigationExample> {
                   currentPageIndex = 2;
                 });
                 languageNotifier
-                    .notify(); // Dil değişikliğini dinleyiciye bildirin
+                    .notify();
                 Navigator.of(context).pop();
               },
             ),
@@ -621,7 +720,7 @@ class _NavigationExampleState extends State<NavigationExample> {
           setState(() {
             currentPageIndex = index;
           });
-          languageNotifier.notify(); // Dil değişikliğini dinleyiciye bildirin
+          languageNotifier.notify();
         },
         selectedIndex: currentPageIndex,
         destinations: [
@@ -679,21 +778,73 @@ class _NavigationExampleState extends State<NavigationExample> {
           ),
         ],
       ),
-      body: [
-        TodayPage(
-          controller: _controller,
-          focusDate: _focusDate,
-          onDateChange: (selectedDate) {
-            setState(() {
-              _focusDate = selectedDate;
-            });
-          },
-          filter: filter,
-        ),
-        const HabitPage(),
-        const JournalPage(),
-        const ProfilePage(),
-      ][currentPageIndex],
+      body: Stack(
+        children: [
+          [
+            TodayPage(
+              controller: _controller,
+              focusDate: _focusDate,
+              onDateChange: (selectedDate) {
+                setState(() {
+                  _focusDate = selectedDate;
+                });
+              },
+              filter: filter,
+            ),
+            const HabitPage(),
+            const JournalPage(),
+            const ProfilePage(),
+          ][currentPageIndex],
+          if (currentPageIndex == 0 && showHintToday)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: HintWidget(
+                onClose: _closeHintToday,
+                title: "Welcome to Today Page!",
+                message:
+                    "Click the plus button to add tasks.\nSwipe left to favorite, right to delete.",
+              ),
+            ),
+          if (currentPageIndex == 1 && showHintHabits)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: HintWidget(
+                onClose: _closeHintHabits,
+                title: "Welcome to Habits Page!",
+                message:
+                    "Track habits and view progress.\nAdd new habits with the plus button.",
+              ),
+            ),
+          if (currentPageIndex == 2 && showHintJournal)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: HintWidget(
+                onClose: _closeHintJournal,
+                title: "Welcome to Journal Page!",
+                message:
+                    "Add notes, pictures, and voice.\nLock private notes with a pin.",
+              ),
+            ),
+          if (currentPageIndex == 3 && showHintProfile)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: HintWidget(
+                onClose: _closeHintProfile,
+                title: "Welcome to Profile Page!",
+                message:
+                    "View and edit your profile.\nAnalyze your daily and weekly progress.",
+              ),
+            ),
+        ],
+      ),
     );
   }
 
@@ -707,6 +858,83 @@ class _NavigationExampleState extends State<NavigationExample> {
     DocumentSnapshot userDoc =
         await FirebaseFirestore.instance.collection('users').doc(userId).get();
     return userDoc['name'] ?? tr('Unknown User');
+  }
+}
+
+class HintWidget extends StatelessWidget {
+  final VoidCallback onClose;
+  final String title;
+  final String message;
+
+  const HintWidget({
+    required this.onClose,
+    required this.title,
+    required this.message,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeProvider>(context).currentTheme;
+
+    return Container(
+      margin: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: theme.background,
+        borderRadius: BorderRadius.circular(12.0),
+        boxShadow: [
+          BoxShadow(
+            color: theme.addButtonIcon
+                .withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              color: theme.toDoTitle,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            message,
+            style: TextStyle(
+              color: theme.toDoIcons,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.close,
+                      color: theme.toDoIcons),
+                  onPressed: onClose,
+                ),
+                Text(
+                  tr("I understand"),
+                  style: TextStyle(
+                    color: Colors.green,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

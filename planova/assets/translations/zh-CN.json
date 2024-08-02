@@ -277,5 +277,13 @@
     "contact_us": "联系我们：",
     "contact_info": "如有任何疑问或支持请求，请联系我们 support@planovaapp.com。",
     "managing_time": "正确管理时间是实现所有领域成功的基础，Planova 应用程序将在这条道路上成为您的最大助手。",
-    "You cannot use this section while logged in as a guest. Please create an account.":"以访客身份登录时无法使用本部分。请创建一个账户。"
+    "You cannot use this section while logged in as a guest. Please create an account.":"以访客身份登录时无法使用本部分。请创建一个账户。",
+    "Name cannot be empty":"名称不能为空",
+    "Profile saved successfully":"个人资料保存成功",
+    "I understand":"我明白了",
+    "Click the plus button to add tasks.\nSwipe left to favorite, right to delete.": "点击加号按钮添加任务。\n向左滑动以收藏，向右滑动以删除。",
+  "Track habits and view progress.\nAdd new habits with the plus button.": "跟踪习惯并查看进度。\n使用加号按钮添加新习惯。",
+  "Add notes, pictures, and voice.\nLock private notes with a pin.": "添加笔记、图片和语音。\n使用密码锁定私人笔记。",
+  "View and edit your profile.\nAnalyze your daily and weekly progress.": "查看并编辑您的个人资料。\n分析您的每日和每周进展。"
+
 }

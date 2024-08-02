@@ -96,12 +96,12 @@ class _PinEntryPageState extends State<PinEntryPage> {
     if (doc.exists) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => PatternLockPage()), // Pattern oluşturulmuşsa PatternLockPage'e git
+        MaterialPageRoute(builder: (context) => PatternLockPage()),
       );
     } else {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => PatternSetupPage()), // Pattern oluşturulmamışsa PatternSetupPage'e git
+        MaterialPageRoute(builder: (context) => PatternSetupPage()),
       );
     }
   }

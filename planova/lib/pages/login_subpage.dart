@@ -37,7 +37,7 @@ class LoginSubPage extends StatelessWidget {
             children: [
               const SizedBox(height: 20),
               _buildWelcomeSlider(context, theme),
-              const SizedBox(height: 10), // Reduced from 20 to 10
+              const SizedBox(height: 10),
               _buildContinueSection(
                   context, buttonWidth, iconButtonWidth, theme),
               const SizedBox(height: 20),
@@ -63,9 +63,9 @@ class LoginSubPage extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Container(
-      width: screenWidth * 0.8, // Adjust this value to set the desired width
+      width: screenWidth * 0.8, 
       margin: const EdgeInsets.symmetric(
-          horizontal: 12), // Adjust the horizontal margin as needed
+          horizontal: 12),
       child: CarouselSlider.builder(
         options: CarouselOptions(
           height: 138,
@@ -90,7 +90,7 @@ class LoginSubPage extends StatelessWidget {
       double iconButtonWidth, CustomThemeData theme) {
     return Container(
       width: double.maxFinite,
-      padding: const EdgeInsets.symmetric(vertical: 10), // Reduced from 14 to 10
+      padding: const EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
       ),
@@ -104,15 +104,15 @@ class LoginSubPage extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14),
               ),
-              padding: const EdgeInsets.symmetric(vertical: 12), // Reduced from 14 to 12
-              minimumSize: Size(buttonWidth, 0), // Width 80%
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              minimumSize: Size(buttonWidth, 0),
             ),
             onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        LoginScreen()), // Navigate to Login screen
+                        LoginScreen()),
               );
             },
             child: Text(
@@ -135,10 +135,10 @@ class LoginSubPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
               ),
               padding: const EdgeInsets.symmetric(vertical: 14),
-              minimumSize: Size(buttonWidth, 0), // Width 80%
+              minimumSize: Size(buttonWidth, 0),
             ),
             onPressed: () =>
-                _signInAnonymously(context), // Anonymous authentication
+                _signInAnonymously(context),
             child: Text(
               "Continue as a Guest",
               style: GoogleFonts.didactGothic(
@@ -180,11 +180,11 @@ class LoginSubPage extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
         ),
         padding: EdgeInsets.zero,
-        minimumSize: Size(buttonWidth, 60), // Width 40%, fixed height
+        minimumSize: Size(buttonWidth, 60),
       ),
       onPressed: onPressed,
       child: SizedBox(
-        width: buttonWidth, // Width 40%
+        width: buttonWidth,
         height: 60,
         child: Center(
           child: assetPath != null
@@ -216,7 +216,7 @@ class LoginSubPage extends StatelessWidget {
         await _firebaseAuth.signInWithCredential(credential);
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const Homes()),
+          MaterialPageRoute(builder: (context) =>  Homes()),
         );
       }
     } catch (e) {
@@ -231,7 +231,7 @@ class LoginSubPage extends StatelessWidget {
       await _firebaseAuth.signInAnonymously();
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const Homes()),
+        MaterialPageRoute(builder: (context) =>  Homes()),
       );
     } catch (e) {
       showToast(context, message: "Some error occurred: $e");

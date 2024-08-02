@@ -1,5 +1,3 @@
-// TodayAddPage.dart
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -467,7 +465,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
           title: Text("Select Recurrence",
               style: TextStyle(color: theme.welcomeText)).tr(),
           content: DropdownButton<String>(
-            value: selectedRecurrence, // Bu değer "items" listesindeki bir öğeyle eşleşmelidir
+            value: selectedRecurrence,
   items: [
     DropdownMenuItem(
       value: 'Do not repeat',
@@ -614,7 +612,7 @@ class _TodayAddSubPageState extends State<TodayAddSubPage> {
   String _formatTimeOfDay(TimeOfDay time) {
     final now = DateTime.now();
     final dt = DateTime(now.year, now.month, now.day, time.hour, time.minute);
-    final format = DateFormat.jm(); // AM/PM format
+    final format = DateFormat.jm();
     return format.format(dt);
   }
 }

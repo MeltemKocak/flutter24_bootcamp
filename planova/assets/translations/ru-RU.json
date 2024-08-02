@@ -277,5 +277,12 @@
     "contact_us": "Свяжитесь с нами:",
     "contact_info": "По любым вопросам или для поддержки, пожалуйста, свяжитесь с нами support@planovaapp.com.",
     "managing_time": "Правильное управление временем - это основа для достижения успеха во всех сферах жизни, и приложение Planova станет вашим лучшим помощником на этом пути.",
-    "You cannot use this section while logged in as a guest. Please create an account.":"Вы не можете использовать этот раздел, если вошли в систему как гость. Пожалуйста, создайте учетную запись."
+    "You cannot use this section while logged in as a guest. Please create an account.":"Вы не можете использовать этот раздел, если вошли в систему как гость. Пожалуйста, создайте учетную запись.",
+    "Name cannot be empty":"Имя не может быть пустым",
+    "Profile saved successfully":"Профиль успешно сохранен",
+    "I understand":"Я понимаю",
+    "Click the plus button to add tasks.\nSwipe left to favorite, right to delete.": "Нажмите кнопку плюс, чтобы добавить задачи.\nСвайп влево, чтобы добавить в избранное, вправо — чтобы удалить.",
+    "Track habits and view progress.\nAdd new habits with the plus button.": "Отслеживайте привычки и смотрите прогресс.\nДобавляйте новые привычки с помощью кнопки плюс.",
+    "Add notes, pictures, and voice.\nLock private notes with a pin.": "Добавляйте заметки, картинки и голосовые записи.\nЗакрывайте личные заметки пин-кодом.",
+    "View and edit your profile.\nAnalyze your daily and weekly progress.": "Просматривайте и редактируйте свой профиль.\nАнализируйте ваш ежедневный и еженедельный прогресс."
 }

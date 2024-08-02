@@ -94,7 +94,6 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
           storyExists = true;
         });
 
-        // Store the story in Firestore
         String selectedDateString =
             DateFormat('yyyy-MM-dd').format(selectedDate);
         await FirebaseFirestore.instance.collection('stories').add({
@@ -103,7 +102,6 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
           'story': fullResponse,
         });
 
-        // Fetch updated stories
         _fetchStory();
       } catch (e) {
         setState(() {
@@ -205,7 +203,7 @@ class _UserStoriesPageState extends State<UserStoriesPage> {
             Navigator.pop(context);
           },
         ),
-        title: Container(), // Empty Container to center the title properly
+        title: Container(),
       ),
       body: SingleChildScrollView(
         child: Column(

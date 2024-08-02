@@ -21,7 +21,7 @@ class _SettingsPageState extends State<SettingsPage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios, color: theme.welcomeText),
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(true);
           },
         ),
         elevation: 0,
@@ -148,7 +148,13 @@ class _SettingsPageState extends State<SettingsPage> {
                   'assets/images/flags/china.png'),
               _buildLanguageOption(context, "Russian", const Locale('ru', 'RU'),
                   'assets/images/flags/russia.png'),
-              // Add more languages and their corresponding flag images here
+              _buildLanguageOption(
+                  context,
+                  "Japanese",
+                  const Locale('ja', 'JP'),
+                  'assets/images/flags/japan.png'),
+              _buildLanguageOption(context, "Hindi", const Locale('hi', 'IN'),
+                  'assets/images/flags/india.png'),
             ],
           ),
         );
@@ -177,16 +183,16 @@ class _SettingsPageState extends State<SettingsPage> {
       title: Row(
         children: [
           Image.asset(flagPath,
-              width: 30, height: 20), // Display the flag image
+              width: 30, height: 20),
           const SizedBox(width: 10),
           Text(languageName,
               style: GoogleFonts.didactGothic(color: theme.welcomeText)),
         ],
       ),
       onTap: () async {
-        await context.setLocale(locale); // Update the locale
-        Navigator.of(context).pop(); // Close the dialog
-        setState(() {}); // Rebuild the widget to reflect changes
+        await context.setLocale(locale);
+        Navigator.of(context).pop(true);
+        setState(() {});
       },
     );
   }
@@ -205,11 +211,12 @@ class FeedbackSupportPage extends StatelessWidget {
           style: GoogleFonts.didactGothic(color: theme.welcomeText),
         ).tr(),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: theme.loginTextAndBorder),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
+  icon: Icon(Icons.arrow_back_ios, color: theme.welcomeText),
+  onPressed: () {
+    Navigator.of(context).pop(true);
+  },
+)
+
       ),
       backgroundColor: theme.background,
       body: ListView(
