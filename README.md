@@ -623,7 +623,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
   * `450`
 
 - **Point Completion Logic:**
-  * A total target of `1200` points was set. `300` points were completed in the first sprint. In the second sprint, `450` points completed. In the third sprint, since the remaining tasks will be completed and integration studies will be carried out, a target of `450` points was set and completed.
+  * A total target of `1200` points was set. `300` points were completed in the first sprint. In the second sprint, `450` points completed. In the third sprint, since the remaining tasks will be completed and integration studies will be carried out, a target of `500` points was set and completed.
 
 - **Daily Scrum:**  [Sprint 3 Daily Scrum](https://github.com/olgnbrn/flutter24_bootcamp/tree/main/Project_Management_Files/Sprint_3/Sprint3_Daily_Scrum)
 
@@ -685,7 +685,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
   * `450`
 
 - **Puan Tamamlama Mantığı:**
-  * Toplamda `1200` puanlık bir hedef belirlendi. Birinci sprintte `300` puan tamamlanmıştır. İkinci sprintte, `450` puan tamamlanmıştır. Üçüncü sprintte ise kalan görevlerin tamamlanması ve entegrasyon çalışmaları yapılacağından `450` puan hedefi konulmuş ve tamamlanmıştır.
+  * Toplamda `1200` puanlık bir hedef belirlendi. Birinci sprintte `300` puan tamamlanmıştır. İkinci sprintte, `500` puan tamamlanmıştır. Üçüncü sprintte ise kalan görevlerin tamamlanması ve entegrasyon çalışmaları yapılacağından `450` puan hedefi konulmuş ve tamamlanmıştır.
 
 - **Sprint Gözden Geçirilmesi:**
   * 3. Sprinte  Arkadaşla Alışkanlık Takip sayfası Oğuzhan ve Olgun tarafından yapılarak başlanıldı.
