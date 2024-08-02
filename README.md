@@ -403,11 +403,11 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 ---
 ### Journal Page
-![Habitpage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_2/Sprint2_App_ss/Sprint2_journalpage.png)
+![Journalpage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_2/Sprint2_App_ss/Sprint2_journalpage.png)
 
 ---
 ### Profile Page
-![Habitpage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_2/Sprint2_App_ss/Sprint2_Profilepage.png)
+![Profilepage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_2/Sprint2_App_ss/Sprint2_Profilepage.png)
 
 
 
@@ -548,26 +548,31 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 ### Login Page
 
-
+![Loginpage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_3/Sprint3_App_ss/Sprint3_Login_Page.png)
 
 ---
 ### Today(Home)page
 
+![Homepage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_3/Sprint3_App_ss/Sprint3_today_page.png)
 
 ---
 ### Habits Page
 
+![Habitpage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_3/Sprint3_App_ss/Sprint3_habit_page.png)
 
 ---
 ### Journal Page
 
+![Journalpage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_3/Sprint3_App_ss/Sprint3_journal_page.png)
 
 ---
 ### Profile Page
 
+---
 
+### Menu Screen
 
-
+![Menuscreen](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_3/Sprint3_App_ss/Sprint3_menu_scren.png)
 
    
 </details>
