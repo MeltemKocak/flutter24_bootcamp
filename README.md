@@ -568,6 +568,8 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 ---
 ### Profile Page
 
+![Profilepage](https://github.com/olgnbrn/flutter24_bootcamp/raw/main/Project_Management_Files/Sprint_3/Sprint3_App_ss/Sprint3_Profile_page.png)
+
 ---
 
 ### Menu Screen
