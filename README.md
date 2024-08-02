@@ -770,8 +770,10 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 <details>
   <summary><h2>Website</h2></summary>
+
+  [PlanovaApp Website](https://planovapp.com/)
   
-## Follow Us on LinkedIn
+### Follow Us on LinkedIn
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/company/planovapp/)
 </details>
 
