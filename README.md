@@ -746,9 +746,6 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 
 ---
 
-### Apk File
-
----
 <details>
   <summary><h2>Tech Tree</h2></summary>
 
@@ -769,7 +766,7 @@ Planova Uygulaması, geniş bir kullanıcı kitlesine hitap eder ve farklı yaş
 ---
 
 <details>
-  <summary><h2>Website</h2></summary>
+  <summary><h3>Website</h3></summary>
 
   [PlanovaApp Website](https://planovapp.com/)
   
